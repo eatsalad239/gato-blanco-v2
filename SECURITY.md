@@ -1,31 +1,74 @@
-Thanks for helping make GitHub safe for everyone.
+# Security Policy
 
-# Security
+## Supported Versions
 
-GitHub takes the security of our software products and services seriously, including all of the open source code repositories managed through our GitHub organizations, such as [GitHub](https://github.com/GitHub).
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.0.x   | :white_check_mark: |
 
-Even though [open source repositories are outside of the scope of our bug bounty program](https://bounty.github.com/index.html#scope) and therefore not eligible for bounty rewards, we will ensure that your finding gets passed along to the appropriate maintainers for remediation. 
+## Reporting Security Vulnerabilities
 
-## Reporting Security Issues
+If you discover a security vulnerability in Gato Blanco Café, please report it responsibly:
 
-If you believe you have found a security vulnerability in any GitHub-owned repository, please report it to us through coordinated disclosure.
+1. **Do NOT** create a public GitHub issue
+2. Email security concerns to: security@gatobalanco.com
+3. Include detailed information about the vulnerability
+4. Allow up to 48 hours for initial response
 
-**Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
+## Security Measures Implemented
 
-Instead, please send an email to opensource-security[@]github.com.
+### Frontend Security
+- **Content Security Policy** - Prevents XSS attacks
+- **X-Frame-Options** - Prevents clickjacking
+- **X-Content-Type-Options** - Prevents MIME sniffing
+- **Input Validation** - All user inputs are validated
+- **HTTPS Enforcement** - SSL/TLS encryption in production
 
-Please include as much of the information listed below as you can to help us better understand and resolve the issue:
+### Backend Security
+- **Environment Variables** - Sensitive data stored securely
+- **Database Security** - Parameterized queries prevent SQL injection
+- **Authentication** - JWT tokens for secure sessions
+- **Rate Limiting** - Prevents brute force attacks
+- **CORS Configuration** - Restricts cross-origin requests
 
-  * The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
-  * Full paths of source file(s) related to the manifestation of the issue
-  * The location of the affected source code (tag/branch/commit or direct URL)
-  * Any special configuration required to reproduce the issue
-  * Step-by-step instructions to reproduce the issue
-  * Proof-of-concept or exploit code (if possible)
-  * Impact of the issue, including how an attacker might exploit the issue
+### Infrastructure Security
+- **Docker Security** - Non-root containers
+- **Network Isolation** - Services run in isolated networks
+- **Regular Updates** - Dependencies updated regularly
+- **Backup Encryption** - All backups are encrypted
 
-This information will help us triage your report more quickly.
+### Data Protection
+- **PII Encryption** - Personal data encrypted at rest
+- **Secure Storage** - Passwords hashed with bcrypt
+- **Data Minimization** - Only necessary data collected
+- **GDPR Compliance** - Right to deletion implemented
 
-## Policy
+## Production Security Checklist
 
-See [GitHub's Safe Harbor Policy](https://docs.github.com/en/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor#1-safe-harbor-terms)
+Before deploying to production:
+
+- [ ] Change all default passwords
+- [ ] Configure SSL certificates
+- [ ] Set up firewall rules
+- [ ] Enable database encryption
+- [ ] Configure backup encryption
+- [ ] Set up monitoring and alerting
+- [ ] Review and update .env file
+- [ ] Test disaster recovery procedures
+
+## Incident Response
+
+In case of a security incident:
+
+1. **Immediate Action** - Isolate affected systems
+2. **Assessment** - Determine scope and impact
+3. **Containment** - Prevent further damage
+4. **Recovery** - Restore services safely
+5. **Lessons Learned** - Update security measures
+
+## Contact
+
+For security-related questions:
+- Email: security@gatobalanco.com
+- Response Time: 48 hours maximum
+- Encryption: PGP key available upon request

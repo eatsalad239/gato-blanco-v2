@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # Frontend Application
+  gato-blanco-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # SSL certificates (uncomment when you have them)
+      # - ./ssl:/etc/nginx/ssl:ro
+      # Custom nginx config if needed
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - gato-blanco-network
+
+  # Database (PostgreSQL for production data)
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: gato_blanco
+      POSTGRES_USER: gato_blanco_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gato_blanco_user -d gato_blanco"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - gato-blanco-network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-change_me_in_production}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - gato-blanco-network
+
+  # Backend API (Node.js/Express - to be created)
+  # Uncomment when backend is implemented
+  # api:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=postgresql://gato_blanco_user:${POSTGRES_PASSWORD:-change_me_in_production}@database:5432/gato_blanco
+  #     - REDIS_URL=redis://default:${REDIS_PASSWORD:-change_me_in_production}@redis:6379
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     database:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   networks:
+  #     - gato-blanco-network
+
+  # Monitoring with Prometheus (optional)
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/etc/prometheus/console_libraries'
+  #     - '--web.console.templates=/etc/prometheus/consoles'
+  #   networks:
+  #     - gato-blanco-network
+
+  # Grafana for monitoring dashboards (optional)
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   networks:
+  #     - gato-blanco-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  # prometheus_data:
+  #   driver: local
+  # grafana_data:
+  #   driver: local
+
+networks:
+  gato-blanco-network:
+    driver: bridge
