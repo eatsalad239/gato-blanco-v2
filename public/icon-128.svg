@@ -1,0 +1,13 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4469ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="url(#bg)" stroke="#60a5fa" stroke-width="3"/>
+  <rect x="32" y="51" width="64" height="42" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <path d="M96 57 Q112 57 112 73 Q112 89 96 89" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+  <text x="64" y="32" text-anchor="middle" font-size="20" fill="#60a5fa">⚡</text>
+  <text x="64" y="96" text-anchor="middle" font-size="12" fill="#f8fafc" font-weight="bold">GB</text>
+</svg>

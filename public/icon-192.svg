@@ -1,0 +1,35 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4469ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="lightning" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e7ff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="90" fill="url(#bg)" stroke="#60a5fa" stroke-width="4"/>
+  
+  <!-- Coffee cup body -->
+  <path d="M48 77 Q48 67 58 67 L134 67 Q144 67 144 77 L144 134 Q144 154 134 154 L58 154 Q48 154 48 134 Z" 
+        fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Coffee cup handle -->
+  <path d="M144 86 Q164 86 164 106 Q164 126 144 126" 
+        fill="none" stroke="#e2e8f0" stroke-width="4"/>
+  
+  <!-- Lightning bolt -->
+  <path d="M82 32 L72 58 L90 58 L78 90 L110 50 L92 50 L104 30 Z" 
+        fill="url(#lightning)" stroke="#1e40af" stroke-width="1"/>
+  
+  <!-- Steam lines -->
+  <path d="M67 48 Q67 38 72 38 Q72 48 72 38" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
+  <path d="M96 48 Q96 38 101 38 Q101 48 101 38" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
+  <path d="M125 48 Q125 38 130 38 Q130 48 130 38" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
+  
+  <!-- Coffee liquid -->
+  <ellipse cx="96" cy="90" rx="40" ry="8" fill="#8b4513" opacity="0.8"/>
+</svg>
