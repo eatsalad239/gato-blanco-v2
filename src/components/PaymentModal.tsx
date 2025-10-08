@@ -14,7 +14,7 @@ import {
 } from '@phosphor-icons/react';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice } from '../lib/pricing';
-import { toast } from 'sonner';
+import { notificationService } from '../lib/notifications';
 
 interface PaymentModalProps {
   total: number;
@@ -62,11 +62,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       // - Google Pay API for Google Pay
       // - Local Colombian payment processors like PSE, Nequi, etc.
       
-      toast.success(`Payment successful! ${formatPrice(total, currency, false)} charged via ${method}`);
+      notificationService.paymentSuccessful(total, currency);
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error('Payment failed. Please try again.');
+      notificationService.paymentFailed('Payment processing failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -77,7 +77,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     if ((window as any).ApplePaySession && (window as any).ApplePaySession.canMakePayments()) {
       handlePayment('apple');
     } else {
-      toast.error('Apple Pay is not available on this device');
+      notificationService.error('Apple Pay is not available on this device');
     }
   };
 
@@ -86,14 +86,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     if (window.google && window.google.payments) {
       handlePayment('google');
     } else {
-      toast.error('Google Pay is not available on this browser');
+      notificationService.error('Google Pay is not available on this browser');
     }
   };
 
   const handleCardPayment = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cardData.number || !cardData.expiry || !cardData.cvv || !cardData.name) {
-      toast.error('Please fill in all required fields');
+      notificationService.error('Please fill in all required fields');
       return;
     }
     

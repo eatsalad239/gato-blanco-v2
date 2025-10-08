@@ -7,7 +7,7 @@ import { Service } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice, detectUserType, getCurrency, generateId } from '../lib/pricing';
 import { useAdmin } from '../hooks/useAdmin';
-import { toast } from 'sonner';
+import { notificationService } from '../lib/notifications';
 import { Calendar, User, Phone, Envelope, Users } from '@phosphor-icons/react';
 import { PaymentModal } from './PaymentModal';
 
@@ -42,7 +42,7 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({ service, open, onC
 
     // Validate form
     if (!formData.name || !formData.email || !formData.date || !formData.time) {
-      toast.error('Please fill in all required fields');
+      notificationService.error('Please fill in all required fields');
       return;
     }
 
@@ -67,7 +67,7 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({ service, open, onC
       isGringo
     });
 
-    toast.success(t.booking.success);
+    notificationService.success(t.booking.success);
     
     // Reset form
     setFormData({

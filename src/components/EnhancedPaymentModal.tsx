@@ -23,7 +23,7 @@ import {
 } from '@phosphor-icons/react';
 
 import { usePayments, PaymentMethod, PaymentRequest } from '../lib/payments';
-import { useNotifications } from '../lib/notifications';
+import { notificationService } from '../lib/notifications';
 import { useBusiness } from '../lib/business';
 import { useLanguageStore, translations } from '../lib/translations';
 import { detectUserType } from '../lib/pricing';
@@ -52,7 +52,6 @@ export function EnhancedPaymentModal({
   onSuccess
 }: EnhancedPaymentModalProps) {
   const payments = usePayments();
-  const notifications = useNotifications();
   const business = useBusiness();
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage.code];
@@ -184,7 +183,7 @@ export function EnhancedPaymentModal({
         setSuccess(`Payment successful! Transaction ID: ${result.transactionId}`);
         
         // Notify success
-        notifications.notifyPaymentReceived(amount, currency, selectedMethod);
+        notificationService.paymentSuccessful(amount, currency);
         
         // Call success callback
         if (onSuccess && result.transactionId) {

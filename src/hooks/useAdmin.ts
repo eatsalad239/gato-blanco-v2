@@ -1,6 +1,7 @@
 import { useKV } from '@github/spark/hooks';
 import { Customer, Order, Booking } from '../types';
 import { generateId } from '../lib/pricing';
+import { notificationService } from '../lib/notifications';
 
 export const useAdmin = () => {
   const [customers, setCustomers] = useKV<Customer[]>('admin-customers', []);
@@ -68,6 +69,9 @@ export const useAdmin = () => {
       )
     );
 
+    // Send notification
+    notificationService.orderCreated(newOrder.id, orderData.total);
+
     return newOrder;
   };
 
@@ -113,6 +117,9 @@ export const useAdmin = () => {
           : customer
       )
     );
+
+    // Send notification
+    notificationService.bookingCreated(bookingData.serviceId, bookingData.date);
 
     return newBooking;
   };

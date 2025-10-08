@@ -29,10 +29,7 @@ import { MenuCard } from './components/MenuCard';
 import { ServiceCard } from './components/ServiceCard';
 import { CartDrawer } from './components/CartDrawer';
 import { BookingDialog } from './components/BookingDialog';
-import { EnhancedAdminDashboard } from './components/EnhancedAdminDashboard';
-import { FullStackDashboard } from './components/FullStackDashboard';
-import { BusinessIntelligenceDashboard } from './components/BusinessIntelligenceDashboard';
-import { AdvancedBusinessAutomation } from './components/AdvancedBusinessAutomation';
+import { SimpleAdminDashboard } from './components/SimpleAdminDashboard';
 import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
 
@@ -167,9 +164,7 @@ function App() {
             transition={{ duration: 0.6 }}
           >
             <div className="space-y-8">
-              <BusinessIntelligenceDashboard />
-              <Separator className="my-8" />
-              <AdvancedBusinessAutomation />
+              <SimpleAdminDashboard />
             </div>
           </motion.div>
         ) : (

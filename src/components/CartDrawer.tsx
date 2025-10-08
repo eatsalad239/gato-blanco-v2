@@ -8,6 +8,7 @@ import { useAdmin } from '../hooks/useAdmin';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice, detectUserType, getCurrency } from '../lib/pricing';
 import { PaymentModal } from './PaymentModal';
+import { toast } from 'sonner';
 
 export const CartDrawer: React.FC = () => {
   const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart } = useCart();
@@ -44,6 +45,8 @@ export const CartDrawer: React.FC = () => {
     });
 
     clearCart();
+    setPaymentModalOpen(false);
+    toast.success('Order placed successfully! 🎉');
   };
 
   return (
@@ -154,6 +157,7 @@ export const CartDrawer: React.FC = () => {
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
         onSuccess={handlePaymentSuccess}
+        onCustomerInfo={(info) => setCustomerInfo(info)}
         orderType="coffee"
       />
     </Sheet>
