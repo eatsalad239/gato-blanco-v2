@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import {
   TrendUp,
   TrendDown,
@@ -36,6 +37,14 @@ import { usePayments } from '../lib/payments';
 import { useLanguageStore } from '../lib/translations';
 import { fullMenu } from '../data/content';
 import { Customer, Order, Booking, Analytics } from '../types';
+import {
+  InventoryManager,
+  InventoryTable,
+  PaymentTransactionList,
+  RevenueChart,
+  CustomerAnalysisChart,
+  PerformanceMetrics
+} from './ManagementComponents';
 
 interface RealtimeStats {
   ordersToday: number;
@@ -65,20 +74,25 @@ export function FullStackDashboard() {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
+      // Initialize demo data if none exists
+      await initializeDemoData();
+      
       const [
         statsData,
         analyticsData,
         paymentData,
         alertsData,
         ordersData,
-        bookingsData
+        bookingsData,
+        customersData
       ] = await Promise.all([
         business.getRealtimeStats(),
         business.getAnalytics(selectedPeriod),
         payments.getPaymentAnalytics(selectedPeriod),
         business.checkAlerts(),
         business.getOrders({ dateFrom: Date.now() - 24 * 60 * 60 * 1000 }),
-        business.getBookings()
+        business.getBookings(),
+        business.generateCustomerReport()
       ]);
 
       setRealtimeStats(statsData);
@@ -87,10 +101,31 @@ export function FullStackDashboard() {
       setAlerts(alertsData);
       setOrders(ordersData);
       setBookings(bookingsData);
+      setCustomers(customersData);
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Initialize demo data for a functional dashboard
+  const initializeDemoData = async () => {
+    const existingInventory = await business.getInventory();
+    
+    if (existingInventory.length === 0) {
+      // Create demo inventory for some menu items
+      const demoItems = [
+        { itemId: 'coffee_americano', quantity: 45, cost: 2500 },
+        { itemId: 'coffee_latte', quantity: 8, cost: 3000 }, // Low stock
+        { itemId: 'cocktail_mojito', quantity: 25, cost: 8000 },
+        { itemId: 'beer_corona', quantity: 5, cost: 4000 }, // Low stock
+        { itemId: 'food_arepa', quantity: 30, cost: 3500 }
+      ];
+
+      for (const item of demoItems) {
+        await business.restockItem(item.itemId, item.quantity, item.cost);
+      }
     }
   };
 
@@ -124,6 +159,33 @@ export function FullStackDashboard() {
       console.error('Failed to generate report:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Generate AI-powered business insights
+  const generateBusinessInsights = async () => {
+    try {
+      const stats = await business.getRealtimeStats();
+      const analytics = await business.getAnalytics(selectedPeriod);
+      
+      const prompt = (window as any).spark.llmPrompt`
+You are a business consultant for Gato Blanco Café in Zona Rosa, Medellín.
+
+Current Data:
+- Orders today: ${stats.ordersToday}
+- Revenue today: ${stats.revenueToday} COP
+- Low stock items: ${stats.lowStockItems.length}
+- Total customers: ${analytics.customers.total}
+- Gringo percentage: ${analytics.customers.gringoPercentage}%
+
+Based on this data, provide 3 specific, actionable business insights that could improve operations, increase revenue, or enhance customer experience. Focus on practical recommendations for a Colombian coffee shop that serves both locals and tourists.
+
+Keep insights concise and specific to the current situation.
+`;
+      
+      return await (window as any).spark.llm(prompt);
+    } catch (error) {
+      return 'Unable to generate insights at this time. Please try again later.';
     }
   };
 
@@ -178,6 +240,19 @@ export function FullStackDashboard() {
           <Button variant="outline" size="sm" onClick={generateReport} disabled={loading}>
             <Download size={16} className="mr-2" />
             Export Report
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={async () => {
+              const insights = await generateBusinessInsights();
+              alert(insights);
+            }}
+            disabled={loading}
+          >
+            <Lightning size={16} className="mr-2" />
+            AI Insights
           </Button>
         </div>
       </div>
@@ -462,72 +537,335 @@ export function FullStackDashboard() {
           )}
         </TabsContent>
 
-        {/* Orders Tab */}
-        <TabsContent value="orders" className="space-y-6">
-          <Card className="nuclear-card">
-            <CardHeader>
-              <CardTitle className="nuclear-text">🛒 Recent Orders</CardTitle>
-              <CardDescription>Latest orders and their status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {orders.slice(0, 10).map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                    <div className="space-y-1">
-                      <p className="font-medium">Order #{order.id.slice(-8)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {order.items.length} items • {formatCurrency(order.total, order.currency)}
-                      </p>
+          <TabsContent value="orders" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Order Stats */}
+              <Card className="nuclear-card">
+                <CardHeader>
+                  <CardTitle className="nuclear-text">🛒 Order Overview</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span>Total Orders</span>
+                      <span className="font-bold text-nuclear-blue">{orders.length}</span>
                     </div>
-                    <div className="text-right space-y-1">
-                      <Badge className={
-                        order.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                        order.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-blue-500/20 text-blue-400'
-                      }>
-                        {order.status}
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(order.timestamp).toLocaleTimeString()}
-                      </p>
+                    <div className="flex justify-between">
+                      <span>Completed</span>
+                      <span className="font-bold text-green-400">
+                        {orders.filter(o => o.status === 'completed').length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Pending</span>
+                      <span className="font-bold text-yellow-400">
+                        {orders.filter(o => o.status === 'pending').length}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Completion Rate</span>
+                      <span className="font-medium">
+                        {orders.length > 0 ? 
+                          Math.round((orders.filter(o => o.status === 'completed').length / orders.length) * 100) 
+                          : 0}%
+                      </span>
+                    </div>
+                    <Progress 
+                      value={orders.length > 0 ? 
+                        (orders.filter(o => o.status === 'completed').length / orders.length) * 100 
+                        : 0} 
+                      className="h-2" 
+                    />
+                  </div>
 
-        {/* Other tabs would be implemented similarly... */}
+                  <Button 
+                    className="w-full nuclear-button"
+                    onClick={async () => {
+                      // Create a demo order to show functionality
+                      const newOrder = await business.createOrder({
+                        customerId: 'demo_customer',
+                        items: [
+                          { itemId: 'coffee_americano', quantity: 2, price: 8000 },
+                          { itemId: 'food_arepa', quantity: 1, price: 6000 }
+                        ],
+                        total: 14000,
+                        currency: 'COP',
+                        status: 'pending',
+                        type: 'pickup'
+                      });
+                      await loadDashboardData();
+                      toast.success('Demo order created!');
+                    }}
+                  >
+                    <ShoppingCart size={16} className="mr-2" />
+                    Create Demo Order
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Recent Orders */}
+              <Card className="nuclear-card lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="nuclear-text">📋 Recent Orders</CardTitle>
+                  <CardDescription>Latest order activity</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 max-h-80 overflow-y-auto">
+                    {orders.slice(0, 10).map((order) => (
+                      <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                        <div className="space-y-1">
+                          <p className="font-medium">Order #{order.id.slice(-8)}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {order.items.length} items • {order.type}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(order.timestamp).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="text-right space-y-1">
+                          <p className="font-bold text-electric-cyan">
+                            {formatCurrency(order.total, order.currency)}
+                          </p>
+                          <Badge className={
+                            order.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                            order.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                            'bg-blue-500/20 text-blue-400'
+                          }>
+                            {order.status}
+                          </Badge>
+                          <div className="flex gap-1 mt-1">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={async () => {
+                                await business.updateOrderStatus(order.id, 'completed');
+                                await loadDashboardData();
+                                toast.success('Order completed!');
+                              }}
+                              disabled={order.status === 'completed'}
+                            >
+                              <CheckCircle size={12} />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {orders.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <ShoppingCart size={48} className="mx-auto mb-4 opacity-50" />
+                        <p>No orders yet. Create a demo order to get started!</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+        {/* Customers Tab */}
         <TabsContent value="customers" className="space-y-6">
-          <div className="text-center py-12">
-            <Users size={48} className="mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Customer Management</h3>
-            <p className="text-muted-foreground">Detailed customer analytics and management tools coming soon...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Customer Stats */}
+            <Card className="nuclear-card">
+              <CardHeader>
+                <CardTitle className="nuclear-text">👥 Customer Overview</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span>Total Customers</span>
+                    <span className="font-bold text-nuclear-blue">{customers.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Gringo Customers</span>
+                    <span className="font-bold text-electric-cyan">
+                      {customers.filter(c => c.isGringo).length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>VIP Customers</span>
+                    <span className="font-bold text-plasma-blue">
+                      {customers.filter(c => c.totalSpent > 500000).length}
+                    </span>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="w-full nuclear-button"
+                  onClick={async () => {
+                    const newCustomers = await business.generateCustomerReport();
+                    setCustomers(newCustomers);
+                  }}
+                >
+                  <Users size={16} className="mr-2" />
+                  Generate Customer Report
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Top Customers */}
+            <Card className="nuclear-card lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="nuclear-text">🏆 Top Customers</CardTitle>
+                <CardDescription>Highest spending customers</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {customers
+                    .sort((a, b) => b.totalSpent - a.totalSpent)
+                    .slice(0, 5)
+                    .map((customer, index) => (
+                      <div key={customer.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Badge className="w-8 h-8 rounded-full flex items-center justify-center bg-nuclear-blue/20 text-nuclear-blue">
+                            {index + 1}
+                          </Badge>
+                          <div>
+                            <p className="font-medium">{customer.name}</p>
+                            <p className="text-sm text-muted-foreground">{customer.email}</p>
+                          </div>
+                          {customer.isGringo && (
+                            <Badge className="bg-plasma-blue/20 text-plasma-blue">GRINGO</Badge>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-electric-cyan">
+                            {formatCurrency(customer.totalSpent, 'COP')}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {customer.orders.length} orders
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 
+        {/* Inventory Tab */}
         <TabsContent value="inventory" className="space-y-6">
-          <div className="text-center py-12">
-            <Package size={48} className="mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inventory Management</h3>
-            <p className="text-muted-foreground">Real-time stock tracking and reorder alerts coming soon...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Inventory Stats */}
+            <Card className="nuclear-card">
+              <CardHeader>
+                <CardTitle className="nuclear-text">📦 Inventory Status</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <InventoryManager />
+              </CardContent>
+            </Card>
+
+            {/* Inventory Items */}
+            <Card className="nuclear-card lg:col-span-3">
+              <CardHeader>
+                <CardTitle className="nuclear-text">📋 Stock Levels</CardTitle>
+                <CardDescription>Current inventory status</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InventoryTable />
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 
+        {/* Payments Tab */}
         <TabsContent value="payments" className="space-y-6">
-          <div className="text-center py-12">
-            <CreditCard size={48} className="mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Payment Analytics</h3>
-            <p className="text-muted-foreground">Detailed payment processing analytics coming soon...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Payment Stats */}
+            <Card className="nuclear-card">
+              <CardHeader>
+                <CardTitle className="nuclear-text">💳 Payment Analytics</CardTitle>
+                <CardDescription>Payment processing insights</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {paymentAnalytics && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">Success Rate</p>
+                        <p className="text-2xl font-bold nuclear-text">
+                          {paymentAnalytics.successRate.toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">Failed Payments</p>
+                        <p className="text-xl font-bold text-red-400">
+                          {paymentAnalytics.failedCount || 0}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Apple Pay</span>
+                        <span className="font-medium">
+                          {Math.round(((paymentAnalytics.methodBreakdown.apple_pay || 0) / paymentAnalytics.totalVolume) * 100)}%
+                        </span>
+                      </div>
+                      <Progress 
+                        value={((paymentAnalytics.methodBreakdown.apple_pay || 0) / paymentAnalytics.totalVolume) * 100} 
+                        className="h-2" 
+                      />
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Recent Transactions */}
+            <Card className="nuclear-card">
+              <CardHeader>
+                <CardTitle className="nuclear-text">🧾 Recent Payments</CardTitle>
+                <CardDescription>Latest payment transactions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PaymentTransactionList />
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 
+        {/* Analytics Tab */}
         <TabsContent value="analytics" className="space-y-6">
-          <div className="text-center py-12">
-            <ChartBar size={48} className="mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Advanced Analytics</h3>
-            <p className="text-muted-foreground">Comprehensive business intelligence dashboard coming soon...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Revenue Trends */}
+            <Card className="nuclear-card">
+              <CardHeader>
+                <CardTitle className="nuclear-text">📈 Revenue Trends</CardTitle>
+                <CardDescription>Financial performance over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RevenueChart analytics={analytics} />
+              </CardContent>
+            </Card>
+
+            {/* Customer Analysis */}
+            <Card className="nuclear-card">
+              <CardHeader>
+                <CardTitle className="nuclear-text">👥 Customer Analysis</CardTitle>
+                <CardDescription>Customer behavior insights</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CustomerAnalysisChart customers={customers} />
+              </CardContent>
+            </Card>
+
+            {/* Performance Metrics */}
+            <Card className="nuclear-card lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="nuclear-text">⚡ Performance Metrics</CardTitle>
+                <CardDescription>Key business performance indicators</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PerformanceMetrics analytics={analytics} orders={orders} />
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
       </Tabs>

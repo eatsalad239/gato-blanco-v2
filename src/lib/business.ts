@@ -346,6 +346,51 @@ Format it as a clear, actionable business report that owners can use to make dec
     return await (window as any).spark.llm(prompt);
   }
 
+  async generateCustomerReport(): Promise<Customer[]> {
+    const customers = await (window as any).spark.kv.get('customers') || [];
+    
+    // If no customers exist, generate some demo data
+    if (customers.length === 0) {
+      const demoCustomers: Customer[] = [
+        {
+          id: 'customer_demo_1',
+          name: 'Maria González',
+          email: 'maria@email.com',
+          phone: '+57 300 123 4567',
+          isGringo: false,
+          totalSpent: 250000,
+          orders: [],
+          bookings: []
+        },
+        {
+          id: 'customer_demo_2',
+          name: 'John Smith',
+          email: 'john@email.com',
+          phone: '+1 555 123 4567',
+          isGringo: true,
+          totalSpent: 850000,
+          orders: [],
+          bookings: []
+        },
+        {
+          id: 'customer_demo_3',
+          name: 'Carlos Restrepo',
+          email: 'carlos@email.com',
+          phone: '+57 301 987 6543',
+          isGringo: false,
+          totalSpent: 180000,
+          orders: [],
+          bookings: []
+        }
+      ];
+      
+      await (window as any).spark.kv.set('customers', demoCustomers);
+      return demoCustomers;
+    }
+    
+    return customers;
+  }
+
   // AUTOMATED ALERTS
   async checkAlerts(): Promise<string[]> {
     const alerts: string[] = [];
