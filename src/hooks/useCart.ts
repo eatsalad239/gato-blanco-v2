@@ -1,10 +1,10 @@
 import { useKV } from '@github/spark/hooks';
-import { CoffeeItem } from '../types';
+import { MenuItem } from '../types';
 import { generateId } from '../lib/pricing';
 
 interface CartItem {
   id: string;
-  item: CoffeeItem;
+  item: MenuItem;
   quantity: number;
   price: number;
 }
@@ -12,7 +12,7 @@ interface CartItem {
 export const useCart = () => {
   const [cartItems, setCartItems] = useKV<CartItem[]>('cart-items', []);
 
-  const addToCart = (item: CoffeeItem, price: number, quantity: number = 1) => {
+  const addToCart = (item: MenuItem, price: number, quantity: number = 1) => {
     setCartItems(currentItems => {
       const items = currentItems || [];
       const existingItem = items.find(cartItem => cartItem.item.id === item.id);

@@ -6,7 +6,7 @@ import { Plus, Clock, Wine, Lightning, Atom, Fire } from '@phosphor-icons/react'
 import { MenuItem } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice } from '../lib/pricing';
-import { useCartStore } from '../lib/cart';
+import { useCart } from '../hooks/useCart';
 import { motion } from 'framer-motion';
 
 interface MenuCardProps {
@@ -17,7 +17,7 @@ interface MenuCardProps {
 export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage.code];
-  const addToCart = useCartStore((state) => state.addItem);
+  const { addToCart } = useCart();
   
   const isAlcoholic = ['liquor', 'cocktail', 'beer', 'wine'].includes(item.category);
   const currentTime = new Date().getHours();
@@ -168,7 +168,7 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
             )}
             
             <Button 
-              onClick={() => addToCart({ itemId: item.id, quantity: 1, price: item.basePrice })}
+              onClick={() => addToCart(item, item.basePrice, 1)}
               disabled={!available}
               className={`w-full gap-2 font-bold ${available ? 'nuclear-button' : ''}`}
               variant={available ? "default" : "secondary"}

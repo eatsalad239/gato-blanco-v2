@@ -664,6 +664,11 @@ function App() {
         onClose={closeBookingDialog}
       />
       
+      {/* Mobile Cart Drawer */}
+      {isMobile && (
+        <CartDrawer />
+      )}
+      
       <Toaster position="top-right" />
     </div>
   );

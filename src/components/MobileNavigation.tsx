@@ -11,7 +11,7 @@ import {
   MusicNote
 } from '@phosphor-icons/react';
 import { useLanguageStore, translations } from '../lib/translations';
-import { useCartStore } from '../lib/cart';
+import { useCart } from '../hooks/useCart';
 import { useIsMobile } from '../hooks/use-mobile';
 
 interface MobileNavigationProps {
@@ -27,7 +27,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
 }) => {
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage.code];
-  const itemCount = useCartStore((state) => state.getItemCount());
+  const { getItemCount } = useCart();
+  const itemCount = getItemCount();
   const isMobile = useIsMobile();
 
   if (!isMobile) return null;
