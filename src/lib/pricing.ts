@@ -1,6 +1,12 @@
 import { EXCHANGE_RATE, GRINGO_MULTIPLIER } from '../data/content';
 
-export const formatPrice = (priceInCOP: number, currency: 'COP' | 'USD', isGringo: boolean = false): string => {
+export const formatPrice = (priceInCOP: number, currency?: 'COP' | 'USD', isGringo?: boolean): string => {
+  // Auto-detect if no parameters provided
+  if (currency === undefined) {
+    // Simple COP formatting for menu display
+    return `$${priceInCOP.toLocaleString('es-CO')} COP`;
+  }
+  
   const finalPrice = isGringo ? priceInCOP * GRINGO_MULTIPLIER : priceInCOP;
   
   if (currency === 'USD') {

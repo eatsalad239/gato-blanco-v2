@@ -10,19 +10,23 @@ import {
   MapPin, 
   Clock, 
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  Wine,
+  Calendar as CalendarIcon,
+  MusicNote
 } from '@phosphor-icons/react';
 
 import { LanguageSwitcher } from './components/LanguageSwitcher';
-import { CoffeeCard } from './components/CoffeeCard';
+import { MenuCard } from './components/MenuCard';
 import { ServiceCard } from './components/ServiceCard';
 import { CartDrawer } from './components/CartDrawer';
 import { BookingDialog } from './components/BookingDialog';
-import { AdminDashboard } from './components/AdminDashboard';
+import { EnhancedAdminDashboard } from './components/EnhancedAdminDashboard';
 import { MobileNavigation } from './components/MobileNavigation';
+import { EventsSection } from './components/EventsSection';
 
 import { useLanguageStore, translations } from './lib/translations';
-import { coffeeMenu, services } from './data/content';
+import { fullMenu, services } from './data/content';
 import { Service } from './types';
 import { detectUserType } from './lib/pricing';
 import { useIsMobile } from './hooks/use-mobile';
@@ -90,14 +94,16 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {isAdminMode ? (
-          <AdminDashboard />
+          <EnhancedAdminDashboard />
         ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
           {!isMobile && (
-            <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
               <TabsTrigger value="home" className="text-xs sm:text-sm">{t.nav.home}</TabsTrigger>
               <TabsTrigger value="menu" className="text-xs sm:text-sm">{t.nav.menu}</TabsTrigger>
+              <TabsTrigger value="drinks" className="text-xs sm:text-sm">{t.nav.drinks}</TabsTrigger>
               <TabsTrigger value="services" className="text-xs sm:text-sm">{t.nav.services}</TabsTrigger>
+              <TabsTrigger value="events" className="text-xs sm:text-sm">{t.nav.events}</TabsTrigger>
               <TabsTrigger value="about" className="text-xs sm:text-sm">{t.nav.about}</TabsTrigger>
             </TabsList>
           )}
@@ -116,17 +122,28 @@ function App() {
                   {t.hero.description}
                 </p>
               </div>
-              <Button 
-                size="lg" 
-                className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-3 text-lg"
-                onClick={() => setActiveTab('services')}
-              >
-                {t.hero.cta}
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-3 text-lg"
+                  onClick={() => setActiveTab('services')}
+                >
+                  {t.hero.cta}
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="px-8 py-3 text-lg gap-2"
+                  onClick={() => setActiveTab('events')}
+                >
+                  <CalendarIcon size={20} />
+                  View Events
+                </Button>
+              </div>
             </section>
 
             {/* Quick Stats */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <Card className="text-center">
                 <CardHeader>
                   <Star size={32} className="text-colombian-gold mx-auto" />
@@ -150,6 +167,14 @@ function App() {
                   <CardDescription>Colombian Coffee</CardDescription>
                 </CardHeader>
               </Card>
+
+              <Card className="text-center">
+                <CardHeader>
+                  <Wine size={32} className="text-purple-500 mx-auto" />
+                  <CardTitle className="text-2xl">Night Life</CardTitle>
+                  <CardDescription>Cocktails & Events</CardDescription>
+                </CardHeader>
+              </Card>
             </section>
           </TabsContent>
 
@@ -159,11 +184,173 @@ function App() {
               <p className="text-lg text-muted-foreground">{t.menu.subtitle}</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {coffeeMenu.map((item) => (
-                <CoffeeCard key={item.id} item={item} />
-              ))}
+            <Tabs defaultValue="coffee" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="coffee">{t.menu.coffee}</TabsTrigger>
+                <TabsTrigger value="food">Food</TabsTrigger>
+                <TabsTrigger value="pastries">Pastries</TabsTrigger>
+                <TabsTrigger value="nonalcoholic">All Day</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="coffee" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'coffee').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="food" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'food').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="pastries" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'pastry').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="nonalcoholic" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => ['coffee', 'food', 'pastry'].includes(item.category)).map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          <TabsContent value="drinks" className="space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold text-foreground">{t.drinks.title}</h2>
+              <p className="text-lg text-muted-foreground">{t.drinks.subtitle}</p>
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                <Badge className="bg-accent/10 text-accent border-accent/20">
+                  🍹 {t.drinks.happyHour}
+                </Badge>
+                <Badge className="bg-primary/10 text-primary border-primary/20">
+                  🌙 {t.drinks.lateNight}
+                </Badge>
+              </div>
             </div>
+            
+            <Tabs defaultValue="cocktails" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="cocktails">{t.drinks.cocktails}</TabsTrigger>
+                <TabsTrigger value="beer">{t.drinks.beer}</TabsTrigger>
+                <TabsTrigger value="spirits">{t.drinks.spirits}</TabsTrigger>
+                <TabsTrigger value="wine">{t.drinks.wine}</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="cocktails" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'cocktail').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="beer" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'beer').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="spirits" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'liquor').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="wine" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fullMenu.filter(item => item.category === 'wine').map((item) => (
+                  <MenuCard key={item.id} item={item} />
+                ))}
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          <TabsContent value="events" className="space-y-8">
+            <EventsSection />
+          </TabsContent>
+
+          <TabsContent value="services" className="space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold text-foreground">{t.services.title}</h2>
+              <p className="text-lg text-muted-foreground">{t.services.subtitle}</p>
+              {isGringo && (
+                <Badge className="bg-accent/10 text-accent border-accent/20 text-base sm:text-lg px-4 py-2">
+                  🎯 Premium Pricing for International Visitors
+                </Badge>
+              )}
+            </div>
+            
+            <Tabs defaultValue="tourism" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+                <TabsTrigger value="tourism">{t.services.tourism}</TabsTrigger>
+                <TabsTrigger value="classes">{t.services.classes}</TabsTrigger>
+                <TabsTrigger value="events">{t.services.events}</TabsTrigger>
+                <TabsTrigger value="party">{t.services.party}</TabsTrigger>
+                <TabsTrigger value="vip">{t.services.vip}</TabsTrigger>
+                <TabsTrigger value="nightlife">{t.services.nightlife}</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="tourism" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {services.filter(service => service.category === 'tourism').map((service) => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onBook={handleBookService}
+                  />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="classes" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {services.filter(service => service.category === 'classes').map((service) => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onBook={handleBookService}
+                  />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="events" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {services.filter(service => service.category === 'events').map((service) => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onBook={handleBookService}
+                  />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="party" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {services.filter(service => service.category === 'party').map((service) => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onBook={handleBookService}
+                  />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="vip" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {services.filter(service => service.category === 'vip').map((service) => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onBook={handleBookService}
+                  />
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="nightlife" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {services.filter(service => service.category === 'nightlife').map((service) => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onBook={handleBookService}
+                  />
+                ))}
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           <TabsContent value="services" className="space-y-8">
@@ -178,90 +365,6 @@ function App() {
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {services.map((service) => (
-                <ServiceCard 
-                  key={service.id} 
-                  service={service} 
-                  onBook={handleBookService}
-                />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="about" className="space-y-8">
-            <div className="max-w-4xl mx-auto">
-              <Card className="overflow-hidden">
-                <div className="h-2 bg-gradient-to-r from-primary via-secondary to-accent"></div>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-3xl font-bold">{t.about.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    {t.about.story}
-                  </p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary">
-                        <MapPin size={20} />
-                        <span className="font-semibold">Location</span>
-                      </div>
-                      <p className="text-muted-foreground">{t.about.location}</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary">
-                        <Clock size={20} />
-                        <span className="font-semibold">Hours</span>
-                      </div>
-                      <p className="text-muted-foreground">{t.about.hours}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Mobile "More" Tab */}
-          {isMobile && (
-            <TabsContent value="more" className="space-y-6">
-              <div className="grid grid-cols-1 gap-4">
-                <Button 
-                  onClick={() => setActiveTab('services')}
-                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground justify-start gap-3 p-6"
-                >
-                  <MapPin size={20} />
-                  <div className="text-left">
-                    <div className="font-semibold">{t.nav.services}</div>
-                    <div className="text-sm opacity-90">{t.services.subtitle}</div>
-                  </div>
-                </Button>
-                <Button 
-                  onClick={() => setActiveTab('about')}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground justify-start gap-3 p-6"
-                >
-                  <Coffee size={20} />
-                  <div className="text-left">
-                    <div className="font-semibold">{t.nav.about}</div>
-                    <div className="text-sm opacity-90">Learn about our story</div>
-                  </div>
-                </Button>
-              </div>
-            </TabsContent>
-          )}
-
-          <TabsContent value="services" className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">{t.services.title}</h2>
-              <p className="text-lg text-muted-foreground">{t.services.subtitle}</p>
-              {isGringo && (
-                <Badge className="bg-accent/10 text-accent border-accent/20 text-base sm:text-lg px-4 py-2">
-                  🎯 Premium Pricing for International Visitors
-                </Badge>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
               {services.map((service) => (
                 <ServiceCard 
                   key={service.id} 
@@ -299,6 +402,22 @@ function App() {
                         <span className="font-semibold">Hours</span>
                       </div>
                       <p className="text-muted-foreground">{t.about.hours}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-accent">
+                        <MusicNote size={20} />
+                        <span className="font-semibold">Nightlife</span>
+                      </div>
+                      <p className="text-muted-foreground">{t.about.nightlife}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-secondary">
+                        <CalendarIcon size={20} />
+                        <span className="font-semibold">Events</span>
+                      </div>
+                      <p className="text-muted-foreground">{t.about.events}</p>
                     </div>
                   </div>
                 </CardContent>

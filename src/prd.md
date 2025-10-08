@@ -1,113 +1,147 @@
-# Gato Blanco Coffee Shop & Gringo Services - Product Requirements Document
+# Gato Blanco Coffee, Nightlife & Gringo Services - Product Requirements Document
 
 ## Core Purpose & Success
 
-**Mission Statement**: Create a comprehensive digital platform for Gato Blanco coffee shop in Zona Rosa, Medellín, that seamlessly serves both local Colombian customers and international visitors (gringos) with premium coffee and curated gringo services, while providing robust backend management capabilities.
+**Mission Statement**: Create a comprehensive digital platform for Gato Blanco in Zona Rosa, Medellín, that seamlessly serves both local Colombian customers and international visitors (gringos) with premium coffee by day, vibrant nightlife by night, and curated gringo services, while providing robust backend management capabilities for a complete hospitality business.
 
 **Success Indicators**: 
 - Increased gringo service bookings and premium pricing acceptance
-- Streamlined coffee shop operations with digital ordering
-- Enhanced customer relationship management
+- Streamlined coffee shop and bar operations with digital ordering
+- Enhanced customer relationship management across all services
 - Mobile-first user experience with PWA capabilities
 - Dual-currency pricing system effectiveness
-- Admin dashboard usage for business insights
+- Admin dashboard usage for comprehensive business insights
+- Event booking and nightlife revenue growth
+- Inventory management efficiency for food and liquor
+- Customer retention through integrated service offerings
 
-**Experience Qualities**: Premium, Welcoming, Efficient
+**Experience Qualities**: Premium, Welcoming, Vibrant, Efficient
 
 ## Project Classification & Approach
 
-**Complexity Level**: Complex Application (advanced functionality, customer management, payment processing, bilingual support)
+**Complexity Level**: Complex Application (advanced functionality, customer management, payment processing, bilingual support, inventory management, event management)
 
 **Primary User Activity**: 
-- **Customers**: Ordering coffee, booking services, making payments
-- **Admin**: Managing inventory, customer relationships, tracking revenue
-- **Staff**: Processing orders and bookings
+- **Customers**: Ordering coffee/drinks, booking services, event tickets, making payments
+- **Admin**: Managing inventory, customer relationships, tracking revenue, event planning
+- **Staff**: Processing orders, bookings, and event management
 
 ## Core Problem Analysis
 
-Gato Blanco needed a digital solution to:
-1. Bridge the gap between local Colombian coffee culture and international visitor expectations
+Gato Blanco needed a comprehensive digital solution to:
+1. Bridge the gap between local Colombian coffee culture, nightlife, and international visitor expectations
 2. Implement premium pricing for gringo services without discrimination concerns
-3. Streamline operations with integrated ordering and booking systems
-4. Build customer relationships through CRM functionality
-5. Provide mobile-optimized experience for on-the-go customers
+3. Streamline operations with integrated ordering, booking, and event management systems
+4. Build customer relationships through comprehensive CRM functionality
+5. Provide mobile-optimized experience for all business aspects
+6. Manage complex inventory including coffee, food, liquor, and event supplies
+7. Create a unified platform for day (coffee) and night (bar/events) operations
 
 ## Essential Features
 
 ### Customer-Facing Features
 1. **Bilingual Interface (English/Spanish)** - Automatic language detection and manual switching
-2. **Coffee Menu with Pricing** - Dynamic pricing based on customer type (local vs gringo)
-3. **Service Booking System** - Tourism, classes, and events with scheduling
-4. **Payment Integration** - Apple Pay, Google Pay, and card payments
-5. **Shopping Cart** - Persistent cart with quantity management
-6. **Mobile PWA** - App-like experience with offline capabilities
+2. **Complete Menu System** - Coffee, food, cocktails, beer, wine, spirits with time-based availability
+3. **Service Booking System** - Tourism, classes, events, VIP services with scheduling
+4. **Event Management** - Live music, parties, karaoke with ticket booking
+5. **Payment Integration** - Apple Pay, Google Pay, and card payments for all services
+6. **Shopping Cart** - Persistent cart with quantity management across all categories
+7. **Mobile PWA** - App-like experience with offline capabilities
+8. **Age Verification** - For alcoholic beverages and age-restricted events
 
 ### Admin Features
-1. **Customer Relationship Management** - Complete customer database with spending tracking
-2. **Order Management** - Real-time order tracking and fulfillment
-3. **Booking Management** - Service reservation management
-4. **Revenue Analytics** - Separate tracking of gringo vs local revenue
-5. **Data Export** - Business intelligence and reporting capabilities
+1. **Comprehensive Dashboard** - Overview of all business metrics
+2. **Customer Relationship Management** - Complete customer database with spending tracking
+3. **Order Management** - Real-time order tracking for food and drinks
+4. **Booking Management** - Service and event reservation management
+5. **Event Management** - Create, manage, and track events with capacity management
+6. **Inventory Management** - Track stock levels for coffee, food, liquor with low-stock alerts
+7. **Revenue Analytics** - Separate tracking of gringo vs local revenue across all services
+8. **Business Intelligence** - Comprehensive reporting and data export capabilities
 
 ### Technical Features
 1. **Responsive Design** - Mobile-first approach with desktop optimization
-2. **Data Persistence** - Local storage with sync capabilities
+2. **Data Persistence** - Local storage with sync capabilities  
 3. **Payment Processing** - Secure payment handling with multiple options
-4. **Admin Dashboard** - Comprehensive business management tools
+4. **Comprehensive Admin Dashboard** - Complete business management tools
+5. **Inventory Management** - Real-time stock tracking with alerts
+6. **Event Management System** - Complete event lifecycle management
+7. **Time-Based Availability** - Menu items available at appropriate times (coffee all day, alcohol from 6PM)
+8. **Multi-Category Management** - Coffee, food, liquor, events, and services
 
 ## Design Direction
 
 ### Visual Tone & Identity
-**Emotional Response**: The design evokes warmth and authenticity of Colombian coffee culture while maintaining modern sophistication for international appeal.
+**Emotional Response**: The design evokes warmth and authenticity of Colombian coffee culture by day, transforming to sophisticated nightlife energy by evening, while maintaining international appeal for gringo services.
 
-**Design Personality**: Warm, sophisticated, and approachable - balancing traditional Colombian coffee culture with contemporary digital experience.
+**Design Personality**: Warm and sophisticated by day, vibrant and energetic by night - balancing traditional Colombian coffee culture with contemporary digital experience and nightlife sophistication.
 
-**Visual Metaphors**: Coffee beans, Colombian earth tones, and subtle cultural elements that celebrate local heritage.
+**Visual Metaphors**: Coffee beans for daytime, cocktail elements for nightlife, Colombian earth tones, and subtle cultural elements that celebrate local heritage while appealing to international visitors.
 
-**Simplicity Spectrum**: Clean and minimal interface that doesn't overwhelm, allowing coffee and services to be the focus.
+**Simplicity Spectrum**: Clean and adaptive interface that adjusts context based on time of day and user type, allowing products and services to be the focus.
 
 ### Color Strategy
-**Color Scheme Type**: Warm earth-tone palette with Colombian-inspired colors
+**Color Scheme Type**: Warm earth-tone palette with Colombian-inspired colors that adapt for day/night context
 
 **Primary Colors**:
-- Deep coffee brown (oklch(0.35 0.08 45)) - representing authentic Colombian coffee
+- Deep coffee brown (oklch(0.35 0.08 45)) - representing authentic Colombian coffee and earth
 - Warm cream background (oklch(0.96 0.02 65)) - creating comfortable, café-like atmosphere
 
 **Secondary Colors**:
-- Colombian gold accent (oklch(0.65 0.18 145)) - highlighting premium services and CTAs
-- Warm copper secondary (oklch(0.75 0.15 15)) - supporting elements and highlights
+- Colombian emerald accent (oklch(0.65 0.18 145)) - highlighting premium services, events, and CTAs
+- Warm copper secondary (oklch(0.75 0.15 15)) - supporting elements and food/drink highlights
+
+**Contextual Colors**:
+- Amber/gold tones for liquor and premium spirits
+- Wine purple for wine selections
+- Beer yellow for beer options
+- Event accent colors for different event types
 
 **Color Psychology**: 
 - Brown conveys reliability, earthiness, and coffee authenticity
-- Cream provides warmth and comfort
-- Gold suggests premium quality and exclusivity
-- The palette creates trust while emphasizing the premium gringo services
+- Cream provides warmth and comfort throughout the day
+- Emerald suggests Colombian heritage and premium quality
+- Contextual colors create intuitive category recognition
+- The palette creates trust while emphasizing premium international services
 
-**Accessibility**: All color combinations meet WCAG AA standards with minimum 4.5:1 contrast ratios.
+**Accessibility**: All color combinations meet WCAG AA standards with minimum 4.5:1 contrast ratios across all contexts.
 
 ### Typography System
 **Font Pairing Strategy**: 
-- **Headings**: Poppins - Modern, friendly, and approachable
-- **Body Text**: Inter - Highly legible and optimized for digital reading
+- **Headings**: Poppins - Modern, friendly, and internationally appealing
+- **Body Text**: Inter - Highly legible, optimized for bilingual content
 
 **Typographic Hierarchy**: 
 - Clear distinction between headings (Poppins 600-700 weight)
-- Body text (Inter 400-500 weight) optimized for mobile readability
-- Consistent spacing relationships maintaining rhythm
+- Body text (Inter 400-500 weight) optimized for mobile and bilingual readability
+- Consistent spacing relationships maintaining rhythm across all content types
+- Special pricing typography with monospace elements for clarity
 
-**Legibility Check**: Both fonts are optimized for multilingual support (English/Spanish) and mobile readability.
+**Bilingual Optimization**: Both fonts support extended Latin characters for proper Spanish typography including accents and special characters.
+
+**Legibility Check**: Fonts tested across both languages with optimal line heights and spacing for international audience.
 
 ### UI Elements & Component Selection
 **Component Usage**: 
 - Shadcn components for consistency and accessibility
-- Custom coffee and service cards with pricing display
-- Mobile-optimized navigation with bottom tab bar
-- Payment modal with multiple payment options
-- Admin dashboard with data visualization
+- Custom menu cards with category icons, pricing, and availability indicators
+- Service cards with capacity, duration, and booking functionality
+- Event cards with tickets, capacity tracking, and feature highlights
+- Mobile-optimized navigation with contextual bottom tabs
+- Payment modal with multiple payment options (Apple Pay, cards, cash)
+- Comprehensive admin dashboard with real-time analytics
+
+**Time-Based Adaptations**:
+- Menu categories change based on time of day
+- Availability indicators for alcohol service
+- Event schedule integration
+- Different UI emphasis for day vs. night operations
 
 **Mobile Adaptation**: 
-- Bottom navigation for mobile devices
+- Adaptive bottom navigation (5-6 tabs with overflow)
 - Touch-optimized button sizes (minimum 44px)
+- Swipeable content sections
+- Collapsible admin sections for mobile management
 - Swipe-friendly card layouts
 - Mobile-first responsive design
 
