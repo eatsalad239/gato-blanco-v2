@@ -708,7 +708,7 @@ export function BusinessIntelligenceDashboard() {
                           campaign.status === 'paused' ? 'bg-yellow-500/20 text-yellow-500' :
                           'bg-gray-500/20 text-gray-500'
                         }>
-                          {campaign.status.toUpperCase()}
+                          {campaign.status?.toUpperCase() || 'UNKNOWN'}
                         </Badge>
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
@@ -814,7 +814,7 @@ export function BusinessIntelligenceDashboard() {
                             insight.impact === 'medium' ? 'bg-yellow-500/20 text-yellow-500' :
                             'bg-green-500/20 text-green-500'
                           }`}>
-                            {insight.impact.toUpperCase()} IMPACT
+                            {insight.impact?.toUpperCase() || 'UNKNOWN'} IMPACT
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">{insight.description}</p>
@@ -975,7 +975,7 @@ export function BusinessIntelligenceDashboard() {
                         integration.status === 'pending' ? 'bg-yellow-500/20 text-yellow-500' :
                         'bg-gray-500/20 text-gray-500'
                       }>
-                        {integration.status.toUpperCase()}
+                        {integration.status?.toUpperCase() || 'UNKNOWN'}
                       </Badge>
                     </div>
                     <CardTitle className="text-lg">{integration.name}</CardTitle>

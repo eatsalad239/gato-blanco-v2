@@ -77,7 +77,7 @@ export function SimpleAdminDashboard() {
 
     return (
       <Badge className={`${getStatusColor(status)} nuclear-glow`}>
-        {status.toUpperCase()}
+        {status?.toUpperCase() || 'UNKNOWN'}
       </Badge>
     );
   };

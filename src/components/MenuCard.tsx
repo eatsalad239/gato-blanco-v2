@@ -16,7 +16,7 @@ interface MenuCardProps {
 
 export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
   const { currentLanguage } = useLanguageStore();
-  const t = translations[currentLanguage.code];
+  const t = translations[currentLanguage?.code || 'en'];
   const { addToCart } = useCart();
   
   const isAlcoholic = ['liquor', 'cocktail', 'beer', 'wine'].includes(item.category);
@@ -116,13 +116,13 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
             <div className="flex items-start justify-between">
               <div className="space-y-2 flex-1">
                 <CardTitle className="text-lg leading-tight nuclear-text">
-                  ⚡ {item.name[currentLanguage.code]} ⚡
+                  ⚡ {item.name[currentLanguage?.code || 'en']} ⚡
                 </CardTitle>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className={getCategoryColor()}>
                     <div className="flex items-center gap-1 font-bold">
                       {getCategoryIcon()}
-                      {item.category.toUpperCase()}
+                      {item.category?.toUpperCase() || 'UNKNOWN'}
                     </div>
                   </Badge>
                   {isAlcoholic && item.alcoholContent && (
@@ -148,7 +148,7 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
           
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              🚀 {item.description[currentLanguage.code]} ⚡
+              🚀 {item.description[currentLanguage?.code || 'en']} ⚡
             </p>
             
             {showAvailability && item.availability && !item.availability.allDay && (

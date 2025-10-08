@@ -41,7 +41,7 @@ import { useIsMobile } from './hooks/use-mobile';
 
 function App() {
   const { currentLanguage } = useLanguageStore();
-  const t = translations[currentLanguage.code];
+  const t = translations[currentLanguage?.code || 'en'];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
@@ -50,7 +50,7 @@ function App() {
   const [coffeeEnergy, setCoffeeEnergy] = useState(0);
   const isMobile = useIsMobile();
   
-  const isGringo = detectUserType(currentLanguage.code);
+  const isGringo = detectUserType(currentLanguage?.code || 'en');
 
   // Coffee energy animation effect
   useEffect(() => {

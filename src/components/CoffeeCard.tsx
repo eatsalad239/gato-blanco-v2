@@ -16,9 +16,9 @@ interface CoffeeCardProps {
 export const CoffeeCard: React.FC<CoffeeCardProps> = ({ item }) => {
   const { currentLanguage } = useLanguageStore();
   const { addToCart } = useCart();
-  const t = translations[currentLanguage.code];
+  const t = translations[currentLanguage?.code || 'en'];
   
-  const isGringo = detectUserType(currentLanguage.code);
+  const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
   const price = formatPrice(item.basePrice, currency, isGringo);
 
@@ -28,7 +28,7 @@ export const CoffeeCard: React.FC<CoffeeCardProps> = ({ item }) => {
       : item.basePrice * 1.5;
     
     addToCart(item, numericPrice);
-    toast.success(`${item.name[currentLanguage.code]} ${t.menu.addToCart.toLowerCase()}`);
+    toast.success(`${item.name[currentLanguage?.code || 'en']} ${(t.menu.addToCart || '').toLowerCase()}`);
   };
 
   const getCategoryColor = (category: string) => {
@@ -47,10 +47,10 @@ export const CoffeeCard: React.FC<CoffeeCardProps> = ({ item }) => {
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
               <Coffee size={20} className="text-primary" />
-              {item.name[currentLanguage.code]}
+              {item.name[currentLanguage?.code || 'en']}
             </CardTitle>
             <CardDescription className="text-sm text-muted-foreground mt-1">
-              {item.description[currentLanguage.code]}
+              {item.description[currentLanguage?.code || 'en']}
             </CardDescription>
           </div>
           <Badge className={`${getCategoryColor(item.category)} text-xs font-medium`}>

@@ -594,7 +594,7 @@ export function AdvancedBusinessAutomation() {
                   </div>
                 </div>
                 <Badge className="bg-nuclear-blue/20 text-nuclear-blue">
-                  {task.status.toUpperCase()}
+                  {task.status?.toUpperCase() || 'UNKNOWN'}
                 </Badge>
               </div>
             ))}

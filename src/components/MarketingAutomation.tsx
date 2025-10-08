@@ -349,10 +349,10 @@ export function MarketingAutomation() {
                     </div>
                     <div className="text-right space-y-2">
                       <Badge className={`${getStatusColor(campaign.status)} nuclear-glow`}>
-                        {campaign.status.toUpperCase()}
+                        {campaign.status?.toUpperCase() || 'UNKNOWN'}
                       </Badge>
                       <Badge className={`${getAudienceColor(campaign.audience)} nuclear-glow`}>
-                        {campaign.audience.toUpperCase()}
+                        {campaign.audience?.toUpperCase() || 'UNKNOWN'}
                       </Badge>
                     </div>
                   </div>

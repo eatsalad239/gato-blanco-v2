@@ -201,7 +201,7 @@ export function RealTimeOrderTracking() {
                           {formatPrice(order.total, order.currency, false)}
                         </div>
                         <Badge className={`${getStatusColor(tracking.status)} nuclear-glow`}>
-                          {tracking.status.toUpperCase()}
+                          {tracking.status?.toUpperCase() || 'UNKNOWN'}
                         </Badge>
                       </div>
                     </div>

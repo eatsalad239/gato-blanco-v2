@@ -16,7 +16,7 @@ export class BusinessManager {
     const customers = await (window as any).spark.kv.get('customers') || [];
     const customer: Customer = {
       ...data,
-      id: `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `customer_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       totalSpent: 0,
       orders: [],
       bookings: []
@@ -48,7 +48,7 @@ export class BusinessManager {
     const orders = await (window as any).spark.kv.get('orders') || [];
     const order: Order = {
       ...data,
-      id: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `order_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       timestamp: Date.now()
     };
     
@@ -114,7 +114,7 @@ export class BusinessManager {
     const bookings = await (window as any).spark.kv.get('bookings') || [];
     const booking: Booking = {
       ...data,
-      id: `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `booking_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
       timestamp: Date.now()
     };
     

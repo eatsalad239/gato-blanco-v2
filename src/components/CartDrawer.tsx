@@ -14,11 +14,11 @@ export const CartDrawer: React.FC = () => {
   const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart } = useCart();
   const { addOrder } = useAdmin();
   const { currentLanguage } = useLanguageStore();
-  const t = translations[currentLanguage.code];
+  const t = translations[currentLanguage?.code || 'en'];
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '' });
   
-  const isGringo = detectUserType(currentLanguage.code);
+  const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
   const total = getTotal();
   const itemCount = getItemCount();
@@ -86,7 +86,7 @@ export const CartDrawer: React.FC = () => {
                 <div key={cartItem.id} className="flex items-center gap-3 p-4 bg-card rounded-lg border">
                   <div className="flex-1">
                     <h4 className="font-medium text-card-foreground">
-                      {cartItem.item.name[currentLanguage.code]}
+                      {cartItem.item.name[currentLanguage?.code || 'en']}
                     </h4>
                     <p className="text-sm text-muted-foreground">
                       {formatPrice(cartItem.price, currency, false)}

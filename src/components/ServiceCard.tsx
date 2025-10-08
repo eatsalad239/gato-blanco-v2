@@ -15,9 +15,9 @@ interface ServiceCardProps {
 
 export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => {
   const { currentLanguage } = useLanguageStore();
-  const t = translations[currentLanguage.code];
+  const t = translations[currentLanguage?.code || 'en'];
   
-  const isGringo = detectUserType(currentLanguage.code);
+  const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
   const price = formatPrice(service.basePriceCOP, currency, isGringo);
 
@@ -99,14 +99,14 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
                   <motion.div variants={pulseVariants} animate="animate">
                     {getCategoryIcon(service.category)}
                   </motion.div>
-                  ⚡ {service.name[currentLanguage.code]} ⚡
+                  ⚡ {service.name[currentLanguage?.code || 'en']} ⚡
                 </CardTitle>
                 <CardDescription className="text-muted-foreground leading-relaxed">
-                  🚀 {service.description[currentLanguage.code]} 🚀
+                  🚀 {service.description[currentLanguage?.code || 'en']} 🚀
                 </CardDescription>
               </div>
               <Badge className={`${getCategoryColor(service.category)} text-xs font-bold border-2`}>
-                {service.category.toUpperCase()}
+                {service.category?.toUpperCase() || 'UNKNOWN'}
               </Badge>
             </div>
             
@@ -119,7 +119,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
           <CardContent className="pt-0">
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-3">
-                {service.highlights[currentLanguage.code].map((highlight, index) => (
+                {service.highlights[currentLanguage?.code || 'en'].map((highlight, index) => (
                   <motion.div 
                     key={index} 
                     className="flex items-center gap-3 text-sm"

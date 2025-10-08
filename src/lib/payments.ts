@@ -145,7 +145,7 @@ export class PaymentProcessor {
       // For demo purposes, simulate successful payment
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const transactionId = `apple_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const transactionId = `apple_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       
       // Store transaction
       await this.storeTransaction({
@@ -215,7 +215,7 @@ export class PaymentProcessor {
         };
       }
 
-      const transactionId = `card_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const transactionId = `card_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       const fees = this.calculateFees(request.amount, request.currency, false, 'card');
       
       // Store transaction
@@ -253,7 +253,7 @@ export class PaymentProcessor {
   // Process cash payment
   async processCashPayment(request: PaymentRequest): Promise<PaymentResult> {
     try {
-      const transactionId = `cash_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const transactionId = `cash_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       
       // Store transaction
       await this.storeTransaction({
