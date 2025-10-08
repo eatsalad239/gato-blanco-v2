@@ -29,6 +29,7 @@ import { ServiceCard } from './components/ServiceCard';
 import { CartDrawer } from './components/CartDrawer';
 import { BookingDialog } from './components/BookingDialog';
 import { EnhancedAdminDashboard } from './components/EnhancedAdminDashboard';
+import { FullStackDashboard } from './components/FullStackDashboard';
 import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
 
@@ -162,7 +163,7 @@ function App() {
             exit={nuclearVariants.exit}
             transition={{ duration: 0.6 }}
           >
-            <EnhancedAdminDashboard />
+            <FullStackDashboard />
           </motion.div>
         ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
