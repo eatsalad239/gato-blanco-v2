@@ -51,7 +51,7 @@ function App() {
   
   const isGringo = detectUserType(currentLanguage.code);
 
-  // Nuclear power animation effect
+  // Power animation effect
   useEffect(() => {
     const interval = setInterval(() => {
       setNuclearPower(prev => (prev + 1) % 100);
@@ -88,8 +88,8 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-background nuclear-pattern ${isMobile ? 'pb-20' : ''}`}>
-      {/* NUCLEAR NAVIGATION BAR */}
+    <div className={`min-h-screen bg-background power-pattern ${isMobile ? 'pb-20' : ''}`}>
+      {/* PREMIUM NAVIGATION BAR */}
       <nav className="border-b-2 border-nuclear-blue bg-card/80 backdrop-blur-xl sticky top-0 z-50 nuclear-glow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -108,7 +108,7 @@ function App() {
                 </motion.div>
                 <div>
                   <h1 className="text-2xl font-black nuclear-text">⚡ GATO BLANCO ⚡</h1>
-                  <p className="text-sm text-electric-cyan font-medium">NUCLEAR CAFÉ REVOLUTION</p>
+                  <p className="text-sm text-electric-cyan font-medium">PREMIUM CAFÉ EXPERIENCE</p>
                 </div>
               </div>
             </motion.div>
@@ -119,7 +119,7 @@ function App() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             >
-              {/* Nuclear Power Meter */}
+              {/* Power Meter */}
               <div className="hidden sm:flex items-center gap-2 bg-card/50 rounded-lg px-3 py-1 nuclear-border">
                 <Atom size={16} className="text-nuclear-blue" />
                 <div className="w-16 h-2 bg-deep-space rounded-full overflow-hidden">
@@ -147,7 +147,7 @@ function App() {
                 className="gap-2 nuclear-button"
               >
                 <UserCheck size={16} />
-                <span className="hidden sm:inline">{isAdminMode ? 'EXIT NUCLEAR' : '🚀 ADMIN'}</span>
+                <span className="hidden sm:inline">{isAdminMode ? 'EXIT ADMIN' : '🚀 ADMIN'}</span>
               </Button>
             </motion.div>
           </div>
@@ -203,7 +203,7 @@ function App() {
                     }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    ⚡ NUCLEAR COFFEE ⚡
+                    ⚡ EXPLOSIVE COFFEE ⚡
                   </motion.h1>
                   <motion.p 
                     className="text-2xl sm:text-4xl text-electric-cyan font-bold"
@@ -220,7 +220,7 @@ function App() {
                     transition={{ delay: 0.8 }}
                   >
                     Experience the most EXPLOSIVE coffee revolution in Zona Rosa, Medellín! 
-                    Our NUCLEAR-POWERED baristas create mind-blowing beverages that will launch your taste buds into orbit! 🛸☕
+                    Our expert baristas create mind-blowing beverages that will launch your taste buds into orbit! 🛸☕
                   </motion.p>
                 </div>
                 <motion.div 
@@ -257,7 +257,7 @@ function App() {
                 transition={{ delay: 1.2, staggerChildren: 0.1 }}
               >
                 {[
-                  { icon: Star, value: "⭐ 4.9/5", label: "NUCLEAR RATING", color: "text-yellow-400" },
+                  { icon: Star, value: "⭐ 4.9/5", label: "PREMIUM RATING", color: "text-yellow-400" },
                   { icon: Atom, value: "💥 1000+", label: "MINDS BLOWN", color: "text-nuclear-blue" },
                   { icon: Lightning, value: "⚡ INFINITE", label: "ENERGY BOOST", color: "text-electric-cyan" },
                   { icon: Sparkle, value: "✨ LEGENDARY", label: "COFFEE MAGIC", color: "text-plasma-blue" }
@@ -292,7 +292,7 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🚀 NUCLEAR MENU 🚀</h2>
+              <h2 className="text-4xl font-black nuclear-text">🚀 PREMIUM MENU 🚀</h2>
               <p className="text-xl text-electric-cyan">EXPLOSIVE FLAVORS FROM ANOTHER DIMENSION</p>
             </motion.div>
             
@@ -364,14 +364,14 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🍹 NUCLEAR COCKTAILS 🍹</h2>
-              <p className="text-xl text-electric-cyan">RADIOACTIVE REFRESHMENTS</p>
+              <h2 className="text-4xl font-black nuclear-text">🍹 CRAFT COCKTAILS 🍹</h2>
+              <p className="text-xl text-electric-cyan">ARTISANAL REFRESHMENTS</p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
                 <Badge className="bg-nuclear-blue/20 text-nuclear-blue border-nuclear-blue nuclear-glow">
-                  🍹 ATOMIC HAPPY HOUR
+                  🍹 HAPPY HOUR SPECIALS
                 </Badge>
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow">
-                  🌙 MIDNIGHT NUCLEAR ZONE
+                  🌙 MIDNIGHT LOUNGE
                 </Badge>
               </div>
             </motion.div>
@@ -454,12 +454,12 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">⚡ NUCLEAR SERVICES ⚡</h2>
-              <p className="text-xl text-electric-cyan">EXPLOSIVE GRINGO EXPERIENCES</p>
+              <h2 className="text-4xl font-black nuclear-text">⚡ PREMIUM SERVICES ⚡</h2>
+              <p className="text-xl text-electric-cyan">EXCLUSIVE GRINGO EXPERIENCES</p>
               {isGringo && (
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow text-lg px-6 py-3">
                   <Crown size={20} className="mr-2" />
-                  🎯 PREMIUM VIP NUCLEAR PRICING
+                  🎯 PREMIUM VIP PRICING
                 </Badge>
               )}
             </motion.div>
@@ -583,23 +583,23 @@ function App() {
                 <div className="h-4 bg-gradient-to-r from-nuclear-blue via-electric-cyan to-plasma-blue"></div>
                 <CardHeader className="text-center">
                   <CardTitle className="text-3xl sm:text-4xl font-black nuclear-text">
-                    ⚡ NUCLEAR COFFEE REVOLUTION ⚡
+                    ⚡ COFFEE REVOLUTION ⚡
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-8">
                   <p className="text-lg text-muted-foreground leading-relaxed">
                     Welcome to the most EXPLOSIVE coffee experience in the multiverse! 🚀 
-                    Our nuclear-powered café in Zona Rosa, Medellín harnesses the power of Colombian coffee beans 
+                    Our premium café in Zona Rosa, Medellín harnesses the power of Colombian coffee beans 
                     and transforms them into mind-blowing beverages that will launch your consciousness into orbit! 
                     We've revolutionized the gringo experience with our atomic-level service excellence! ⚡☕
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
                     {[
-                      { icon: MapPin, title: "NUCLEAR LOCATION", text: "Zona Rosa Ground Zero, Medellín 🗺️", color: "text-nuclear-blue" },
-                      { icon: Clock, title: "ATOMIC HOURS", text: "24/7 Nuclear Energy ⏰", color: "text-electric-cyan" },
-                      { icon: MusicNote, title: "EXPLOSIVE NIGHTLIFE", text: "Radioactive Beats & Cosmic Vibes 🎵", color: "text-plasma-blue" },
-                      { icon: CalendarIcon, title: "NUCLEAR EVENTS", text: "Mind-Blowing Experiences Daily 🎉", color: "text-nuclear-blue" }
+                      { icon: MapPin, title: "PRIME LOCATION", text: "Zona Rosa Ground Zero, Medellín 🗺️", color: "text-nuclear-blue" },
+                      { icon: Clock, title: "EXTENDED HOURS", text: "24/7 Energy ⏰", color: "text-electric-cyan" },
+                      { icon: MusicNote, title: "EXPLOSIVE NIGHTLIFE", text: "Premium Beats & Cosmic Vibes 🎵", color: "text-plasma-blue" },
+                      { icon: CalendarIcon, title: "SPECIAL EVENTS", text: "Mind-Blowing Experiences Daily 🎉", color: "text-nuclear-blue" }
                     ].map((item, index) => (
                       <motion.div
                         key={index}
@@ -640,10 +640,10 @@ function App() {
             transition={{ delay: 2 }}
           >
             <p className="text-electric-cyan font-bold text-lg">
-              ⚡ © 2024 GATO BLANCO NUCLEAR REVOLUTION ⚡
+              ⚡ © 2024 GATO BLANCO REVOLUTION ⚡
             </p>
             <p className="text-nuclear-blue font-medium">
-              🚀 Zona Rosa Ground Zero, Medellín - EXPLOSIVE Coffee & ATOMIC Gringo Services 🚀
+              🚀 Zona Rosa Ground Zero, Medellín - EXPLOSIVE Coffee & Premium Gringo Services 🚀
             </p>
             <div className="flex justify-center gap-4 text-plasma-blue">
               <Lightning size={20} />
