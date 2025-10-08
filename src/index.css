@@ -23,74 +23,74 @@
   }
 }
 
-/* NUCLEAR BLUE THEME - GOING NUCLEAR! ⚡💙 */
+/* BALANCED BLUE THEME - Nuclear Energy, Refined! ⚡💙 */
 :root {
-  /* Deep space backgrounds with electric blue accents */
-  --background: oklch(0.08 0.03 260);
-  --foreground: oklch(0.96 0.02 220);
-  --card: oklch(0.12 0.04 260);
-  --card-foreground: oklch(0.96 0.02 220);
-  --popover: oklch(0.10 0.03 260);
-  --popover-foreground: oklch(0.96 0.02 220);
+  /* Modern dark backgrounds with subtle blue tints */
+  --background: oklch(0.10 0.015 240);
+  --foreground: oklch(0.95 0.005 240);
+  --card: oklch(0.14 0.020 240);
+  --card-foreground: oklch(0.92 0.010 240);
+  --popover: oklch(0.12 0.018 240);
+  --popover-foreground: oklch(0.95 0.005 240);
   
-  /* Nuclear blue primary - electric and intense */
-  --primary: oklch(0.65 0.25 250);
-  --primary-foreground: oklch(0.98 0.01 220);
+  /* Professional blue primary that pops */
+  --primary: oklch(0.55 0.18 245);
+  --primary-foreground: oklch(0.98 0.005 240);
   
-  /* Cyber blue secondary */
-  --secondary: oklch(0.20 0.08 260);
-  --secondary-foreground: oklch(0.85 0.05 220);
+  /* Subtle secondary with good contrast */
+  --secondary: oklch(0.18 0.025 240);
+  --secondary-foreground: oklch(0.80 0.015 240);
   
-  /* Muted electric tones */
-  --muted: oklch(0.15 0.05 260);
-  --muted-foreground: oklch(0.65 0.03 240);
+  /* Well-balanced muted tones */
+  --muted: oklch(0.16 0.020 240);
+  --muted-foreground: oklch(0.60 0.015 240);
   
-  /* Nuclear accent - blazing electric blue */
-  --accent: oklch(0.70 0.30 240);
-  --accent-foreground: oklch(0.10 0.02 260);
+  /* Bright blue accent for highlights */
+  --accent: oklch(0.65 0.20 240);
+  --accent-foreground: oklch(0.12 0.020 240);
   
-  /* Destructive red with blue undertones */
+  /* Standard red destructive */
   --destructive: oklch(0.62 0.25 15);
-  --destructive-foreground: oklch(0.98 0.01 220);
+  --destructive-foreground: oklch(0.98 0.005 240);
   
-  /* Electric borders and inputs */
-  --border: oklch(0.25 0.08 250);
-  --input: oklch(0.18 0.06 260);
-  --ring: oklch(0.65 0.25 250);
+  /* Subtle borders that don't overwhelm */
+  --border: oklch(0.22 0.025 240);
+  --input: oklch(0.20 0.025 240);
+  --ring: oklch(0.55 0.18 245);
   
-  /* Nuclear border radius - more aggressive */
-  --radius: 1rem;
+  /* More reasonable border radius */
+  --radius: 0.75rem;
   
-  /* Special nuclear blue variants */
-  --nuclear-blue: oklch(0.60 0.28 245);
-  --electric-cyan: oklch(0.75 0.20 220);
-  --deep-space: oklch(0.05 0.02 260);
-  --plasma-blue: oklch(0.80 0.22 235);
+  /* Special blue variants - toned down */
+  --nuclear-blue: oklch(0.55 0.18 245);
+  --electric-cyan: oklch(0.65 0.15 220);
+  --deep-space: oklch(0.08 0.010 240);
+  --plasma-blue: oklch(0.70 0.16 235);
   
-  /* Chart colors - all blues! */
-  --chart-1: oklch(0.65 0.25 250);
-  --chart-2: oklch(0.70 0.20 240);
-  --chart-3: oklch(0.55 0.30 260);
-  --chart-4: oklch(0.75 0.18 230);
-  --chart-5: oklch(0.60 0.22 245);
+  /* Chart colors - balanced blues */
+  --chart-1: oklch(0.55 0.18 245);
+  --chart-2: oklch(0.65 0.15 220);
+  --chart-3: oklch(0.70 0.16 235);
+  --chart-4: oklch(0.60 0.14 250);
+  --chart-5: oklch(0.50 0.20 240);
   
-  /* Sidebar nuclear theme */
-  --sidebar: oklch(0.10 0.03 260);
-  --sidebar-foreground: oklch(0.90 0.03 220);
-  --sidebar-primary: oklch(0.65 0.25 250);
-  --sidebar-primary-foreground: oklch(0.98 0.01 220);
-  --sidebar-accent: oklch(0.20 0.08 260);
-  --sidebar-accent-foreground: oklch(0.85 0.05 220);
-  --sidebar-border: oklch(0.25 0.08 250);
-  --sidebar-ring: oklch(0.65 0.25 250);
+  /* Sidebar balanced theme */
+  --sidebar: oklch(0.12 0.018 240);
+  --sidebar-foreground: oklch(0.85 0.015 240);
+  --sidebar-primary: oklch(0.55 0.18 245);
+  --sidebar-primary-foreground: oklch(0.98 0.005 240);
+  --sidebar-accent: oklch(0.18 0.025 240);
+  --sidebar-accent-foreground: oklch(0.80 0.015 240);
+  --sidebar-border: oklch(0.22 0.025 240);
+  --sidebar-ring: oklch(0.55 0.18 245);
   
-  /* Nuclear shadows */
-  --shadow-color: oklch(0.65 0.25 250);
-  --shadow-opacity: 0.25;
-  --shadow-blur: 12px;
-  --shadow-spread: 2px;
+  /* Subtle nuclear shadows */
+  --shadow-color: oklch(0.55 0.18 245);
+  --shadow-opacity: 0.15;
+  --shadow-blur: 8px;
+  --shadow-spread: 1px;
   --shadow-offset-x: 0px;
-  --shadow-offset-y: 6px;
+  --shadow-offset-y: 4px;
   
   /* Nuclear fonts - futuristic */
   --font-sans: Exo 2;
@@ -131,74 +131,64 @@
   --radius-full: 9999px;
 }
 
-/* NUCLEAR BODY STYLING */
+/* BALANCED BODY STYLING */
 body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   @apply bg-background text-foreground;
   background-image: 
-    radial-gradient(circle at 20% 50%, var(--nuclear-blue) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, var(--electric-cyan) 0%, transparent 50%),
-    radial-gradient(circle at 40% 90%, var(--plasma-blue) 0%, transparent 40%);
+    radial-gradient(circle at 20% 80%, rgba(68, 105, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(96, 165, 250, 0.02) 0%, transparent 40%);
   background-attachment: fixed;
 }
 
-/* NUCLEAR TYPOGRAPHY */
+/* REFINED TYPOGRAPHY */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display), 'Orbitron', monospace;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan), var(--plasma-blue));
+  background: linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px var(--nuclear-blue);
 }
 
-/* NUCLEAR PATTERNS AND EFFECTS */
+/* SUBTLE PATTERNS AND EFFECTS */
 .nuclear-pattern {
   background-image: 
-    radial-gradient(circle at 25% 25%, var(--nuclear-blue) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, var(--electric-cyan) 0%, transparent 50%),
-    linear-gradient(135deg, transparent 40%, var(--plasma-blue) 50%, transparent 60%);
-  background-size: 100px 100px, 150px 150px, 200px 200px;
-  animation: nuclear-pulse 4s ease-in-out infinite;
+    radial-gradient(circle at 25% 25%, rgba(68, 105, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
+  background-size: 200px 200px, 300px 300px;
+  animation: nuclear-pulse 6s ease-in-out infinite;
 }
 
 @keyframes nuclear-pulse {
-  0%, 100% { opacity: 0.1; }
-  50% { opacity: 0.3; }
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
 
 .nuclear-glow {
   box-shadow: 
-    0 0 20px var(--nuclear-blue),
-    0 0 40px var(--electric-cyan),
-    inset 0 0 20px var(--plasma-blue);
+    0 0 10px rgba(68, 105, 255, 0.2),
+    0 0 20px rgba(59, 130, 246, 0.1);
 }
 
 .nuclear-border {
-  border: 2px solid transparent;
-  background: linear-gradient(var(--background), var(--background)) padding-box,
-              linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan), var(--plasma-blue)) border-box;
+  border: 1px solid var(--border);
+  background: var(--card);
 }
 
 .nuclear-text {
-  background: linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan), var(--plasma-blue));
+  background: linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: nuclear-shimmer 2s ease-in-out infinite;
 }
 
-@keyframes nuclear-shimmer {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.3); }
-}
-
-/* Mobile-specific nuclear optimizations */
+/* Mobile-specific optimizations */
 @media (max-width: 768px) {
   .nuclear-pattern {
-    background-size: 50px 50px, 75px 75px, 100px 100px;
-    animation-duration: 3s;
+    background-size: 100px 100px, 150px 150px;
+    animation-duration: 4s;
   }
   
   .mobile-nav {
@@ -207,7 +197,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     background: var(--card);
-    border-top: 2px solid var(--nuclear-blue);
+    border-top: 1px solid var(--border);
     z-index: 50;
     padding: 0.5rem;
     backdrop-filter: blur(20px);
@@ -216,18 +206,19 @@ h1, h2, h3, h4, h5, h6 {
   .mobile-card {
     margin: 0.5rem 0;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--nuclear-blue);
+    border: 1px solid var(--border);
   }
   
   .mobile-button {
     padding: 0.75rem 1rem;
     font-size: 1rem;
     min-height: 48px;
-    background: linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan));
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
-/* PWA nuclear optimizations */
+/* PWA optimizations */
 @media (display-mode: standalone) {
   .pwa-padding {
     padding-top: env(safe-area-inset-top);
@@ -244,43 +235,44 @@ h1, h2, h3, h4, h5, h6 {
   padding-top: env(safe-area-inset-top);
 }
 
-/* Nuclear mobile performance */
+/* Mobile performance */
 @media (max-width: 768px) {
   * {
-    -webkit-tap-highlight-color: var(--nuclear-blue);
+    -webkit-tap-highlight-color: rgba(68, 105, 255, 0.3);
   }
   
   button:active,
   [role="button"]:active {
     transform: scale(0.98);
     transition: transform 0.1s ease;
-    box-shadow: 0 0 15px var(--nuclear-blue);
   }
 }
 
-/* Nuclear button hover effects */
+/* Button hover effects */
 .nuclear-button {
-  background: linear-gradient(135deg, var(--nuclear-blue), var(--electric-cyan));
-  border: 1px solid var(--plasma-blue);
-  transition: all 0.3s ease;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
 }
 
 .nuclear-button:hover {
-  background: linear-gradient(135deg, var(--electric-cyan), var(--plasma-blue));
-  box-shadow: 0 0 25px var(--nuclear-blue);
-  transform: translateY(-2px);
+  background: var(--accent);
+  color: var(--accent-foreground);
+  box-shadow: 0 4px 12px rgba(68, 105, 255, 0.2);
+  transform: translateY(-1px);
 }
 
-/* Nuclear card effects */
+/* Card effects */
 .nuclear-card {
   background: var(--card);
-  border: 1px solid var(--nuclear-blue);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
 }
 
 .nuclear-card:hover {
-  border-color: var(--electric-cyan);
-  box-shadow: 0 0 30px var(--nuclear-blue);
-  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(68, 105, 255, 0.15);
+  transform: translateY(-2px);
 }
