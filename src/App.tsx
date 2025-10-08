@@ -47,15 +47,15 @@ function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [nuclearPower, setNuclearPower] = useState(0);
+  const [coffeeEnergy, setCoffeeEnergy] = useState(0);
   const isMobile = useIsMobile();
   
   const isGringo = detectUserType(currentLanguage.code);
 
-  // Power animation effect
+  // Coffee energy animation effect
   useEffect(() => {
     const interval = setInterval(() => {
-      setNuclearPower(prev => (prev + 1) % 100);
+      setCoffeeEnergy(prev => (prev + 1) % 100);
     }, 100);
     return () => clearInterval(interval);
   }, []);
@@ -108,8 +108,8 @@ function App() {
                   <Lightning size={32} className="text-primary-foreground" weight="fill" />
                 </motion.div>
                 <div>
-                  <h1 className="text-2xl font-black nuclear-text">⚡ GATO BLANCO ⚡</h1>
-                  <p className="text-sm text-electric-cyan font-medium">PREMIUM CAFÉ EXPERIENCE</p>
+                  <h1 className="text-2xl font-black nuclear-text">🇨🇴 GATO BLANCO 🇨🇴</h1>
+                  <p className="text-sm text-electric-cyan font-medium">CAFÉ COLOMBIANO PREMIUM</p>
                 </div>
               </div>
             </motion.div>
@@ -120,23 +120,23 @@ function App() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             >
-              {/* Power Meter */}
+              {/* Coffee Meter */}
               <div className="hidden sm:flex items-center gap-2 bg-card/50 rounded-lg px-3 py-1 nuclear-border">
-                <Atom size={16} className="text-nuclear-blue" />
+                <Coffee size={16} className="text-nuclear-blue" />
                 <div className="w-16 h-2 bg-deep-space rounded-full overflow-hidden">
                   <motion.div 
                     className="h-full bg-gradient-to-r from-nuclear-blue to-electric-cyan"
-                    style={{ width: `${nuclearPower}%` }}
+                    style={{ width: `${coffeeEnergy}%` }}
                     transition={{ duration: 0.1 }}
                   />
                 </div>
-                <span className="text-xs text-electric-cyan font-mono">{nuclearPower}%</span>
+                <span className="text-xs text-electric-cyan font-mono">{coffeeEnergy}%</span>
               </div>
               
               {isGringo && (
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow hidden sm:flex">
                   <Crown size={14} className="mr-1" />
-                  PREMIUM GRINGO VIP
+                  VISITANTE VIP PREMIUM
                 </Badge>
               )}
               <LanguageSwitcher />
@@ -204,7 +204,7 @@ function App() {
                     }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    ⚡ EXPLOSIVE COFFEE ⚡
+                    ☕ CAFÉ COLOMBIANO PREMIUM ☕
                   </motion.h1>
                   <motion.p 
                     className="text-2xl sm:text-4xl text-electric-cyan font-bold"
@@ -212,7 +212,7 @@ function App() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
-                    🚀 EXPLOSIVE FLAVOR EXPERIENCE 🚀
+                    🇨🇴 AUTÉNTICA EXPERIENCIA PAISA 🇨🇴
                   </motion.p>
                   <motion.p 
                     className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
@@ -220,8 +220,9 @@ function App() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
                   >
-                    Experience the most EXPLOSIVE coffee revolution in Zona Rosa, Medellín! 
-                    Our expert baristas create mind-blowing beverages that will launch your taste buds into orbit! 🛸☕
+                    Experience the authentic Colombian coffee culture in the heart of Zona Rosa, Medellín! 
+                    Our expert baristas create artisanal beverages with the finest Colombian beans, 
+                    bringing you the true paisa spirit! 🇨🇴☕
                   </motion.p>
                 </div>
                 <motion.div 
@@ -235,8 +236,8 @@ function App() {
                     className="nuclear-button px-10 py-4 text-xl font-bold"
                     onClick={() => setActiveTab('services')}
                   >
-                    <Rocket size={24} className="mr-2" />
-                    🚀 LAUNCH SERVICES
+                    <Coffee size={24} className="mr-2" />
+                    🇨🇴 DESCUBRIR SERVICIOS
                   </Button>
                   <Button 
                     size="lg" 
@@ -244,8 +245,8 @@ function App() {
                     className="nuclear-button px-10 py-4 text-xl gap-3"
                     onClick={() => setActiveTab('events')}
                   >
-                    <Fire size={24} />
-                    🔥 EXPLOSIVE EVENTS
+                    <MusicNote size={24} />
+                    🎵 EVENTOS PAISAS
                   </Button>
                 </motion.div>
               </motion.section>
@@ -258,10 +259,10 @@ function App() {
                 transition={{ delay: 1.2, staggerChildren: 0.1 }}
               >
                 {[
-                  { icon: Star, value: "⭐ 4.9/5", label: "PREMIUM RATING", color: "text-yellow-400" },
-                  { icon: Atom, value: "💥 1000+", label: "MINDS BLOWN", color: "text-nuclear-blue" },
-                  { icon: Lightning, value: "⚡ INFINITE", label: "ENERGY BOOST", color: "text-electric-cyan" },
-                  { icon: Sparkle, value: "✨ LEGENDARY", label: "COFFEE MAGIC", color: "text-plasma-blue" }
+                  { icon: Star, value: "⭐ 4.9/5", label: "CALIFICACIÓN PREMIUM", color: "text-yellow-400" },
+                  { icon: Coffee, value: "☕ 1000+", label: "TAZAS SERVIDAS", color: "text-nuclear-blue" },
+                  { icon: Lightning, value: "🇨🇴 AUTÉNTICO", label: "CAFÉ COLOMBIANO", color: "text-electric-cyan" },
+                  { icon: Sparkle, value: "✨ LEGENDARIO", label: "SABOR PAISA", color: "text-plasma-blue" }
                 ].map((stat, index) => (
                   <motion.div
                     key={index}
@@ -293,8 +294,8 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🚀 PREMIUM MENU 🚀</h2>
-              <p className="text-xl text-electric-cyan">EXPLOSIVE FLAVORS FROM ANOTHER DIMENSION</p>
+              <h2 className="text-4xl font-black nuclear-text">🇨🇴 MENÚ COLOMBIANO 🇨🇴</h2>
+              <p className="text-xl text-electric-cyan">SABORES AUTÉNTICOS DE COLOMBIA</p>
             </motion.div>
             
             <Tabs defaultValue="coffee" className="space-y-6">
@@ -365,8 +366,8 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🍹 CRAFT COCKTAILS 🍹</h2>
-              <p className="text-xl text-electric-cyan">ARTISANAL REFRESHMENTS</p>
+              <h2 className="text-4xl font-black nuclear-text">🍹 CÓCTELES ARTESANALES 🍹</h2>
+              <p className="text-xl text-electric-cyan">BEBIDAS PREMIUM COLOMBIANAS</p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
                 <Badge className="bg-nuclear-blue/20 text-nuclear-blue border-nuclear-blue nuclear-glow">
                   🍹 HAPPY HOUR SPECIALS
@@ -455,12 +456,12 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">⚡ PREMIUM SERVICES ⚡</h2>
-              <p className="text-xl text-electric-cyan">EXCLUSIVE GRINGO EXPERIENCES</p>
+              <h2 className="text-4xl font-black nuclear-text">🇨🇴 SERVICIOS PREMIUM 🇨🇴</h2>
+              <p className="text-xl text-electric-cyan">EXPERIENCIAS EXCLUSIVAS PARA EXTRANJEROS</p>
               {isGringo && (
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow text-lg px-6 py-3">
                   <Crown size={20} className="mr-2" />
-                  🎯 PREMIUM VIP PRICING
+                  🎯 PRECIOS VIP PREMIUM
                 </Badge>
               )}
             </motion.div>
@@ -584,23 +585,23 @@ function App() {
                 <div className="h-4 bg-gradient-to-r from-nuclear-blue via-electric-cyan to-plasma-blue"></div>
                 <CardHeader className="text-center">
                   <CardTitle className="text-3xl sm:text-4xl font-black nuclear-text">
-                    ⚡ COFFEE REVOLUTION ⚡
+                    ☕ REVOLUCIÓN CAFETERA ☕
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-8">
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    Welcome to the most EXPLOSIVE coffee experience in the multiverse! 🚀 
-                    Our premium café in Zona Rosa, Medellín harnesses the power of Colombian coffee beans 
-                    and transforms them into mind-blowing beverages that will launch your consciousness into orbit! 
-                    We've revolutionized the gringo experience with our atomic-level service excellence! ⚡☕
+                    Welcome to the most authentic Colombian coffee experience in Zona Rosa! 🇨🇴 
+                    Our premium café celebrates the rich heritage of Colombian coffee culture 
+                    while creating unforgettable experiences for visitors from around the world. 
+                    We blend traditional paisa hospitality with modern service excellence! ☕🎉
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
                     {[
-                      { icon: MapPin, title: "PRIME LOCATION", text: "Zona Rosa Ground Zero, Medellín 🗺️", color: "text-nuclear-blue" },
-                      { icon: Clock, title: "EXTENDED HOURS", text: "24/7 Energy ⏰", color: "text-electric-cyan" },
-                      { icon: MusicNote, title: "EXPLOSIVE NIGHTLIFE", text: "Premium Beats & Cosmic Vibes 🎵", color: "text-plasma-blue" },
-                      { icon: CalendarIcon, title: "SPECIAL EVENTS", text: "Mind-Blowing Experiences Daily 🎉", color: "text-nuclear-blue" }
+                      { icon: MapPin, title: "UBICACIÓN PRIVILEGIADA", text: "Corazón de Zona Rosa, Medellín 🗺️", color: "text-nuclear-blue" },
+                      { icon: Clock, title: "HORARIOS EXTENDIDOS", text: "Abierto hasta muy tarde ⏰", color: "text-electric-cyan" },
+                      { icon: MusicNote, title: "VIDA NOCTURNA PAISA", text: "Música en vivo y ambiente auténtico 🎵", color: "text-plasma-blue" },
+                      { icon: CalendarIcon, title: "EVENTOS ESPECIALES", text: "Experiencias culturales diarias 🎉", color: "text-nuclear-blue" }
                     ].map((item, index) => (
                       <motion.div
                         key={index}
@@ -641,17 +642,17 @@ function App() {
             transition={{ delay: 2 }}
           >
             <p className="text-electric-cyan font-bold text-lg">
-              ⚡ © 2024 GATO BLANCO REVOLUTION ⚡
+              🇨🇴 © 2024 GATO BLANCO - CAFÉ COLOMBIANO AUTÉNTICO 🇨🇴
             </p>
             <p className="text-nuclear-blue font-medium">
-              🚀 Zona Rosa Ground Zero, Medellín - EXPLOSIVE Coffee & Premium Gringo Services 🚀
+              ☕ Zona Rosa, Medellín - Café Premium & Servicios para Visitantes ☕
             </p>
             <div className="flex justify-center gap-4 text-plasma-blue">
-              <Lightning size={20} />
-              <Atom size={20} />
-              <Rocket size={20} />
-              <Fire size={20} />
-              <Sparkle size={20} />
+              <Coffee size={20} />
+              <Wine size={20} />
+              <MusicNote size={20} />
+              <CalendarIcon size={20} />
+              <MapPin size={20} />
             </div>
           </motion.div>
         </div>
