@@ -9,7 +9,8 @@ import {
   Star, 
   MapPin, 
   Clock, 
-  ShieldCheck
+  ShieldCheck,
+  UserCheck
 } from '@phosphor-icons/react';
 
 import { LanguageSwitcher } from './components/LanguageSwitcher';
@@ -17,11 +18,14 @@ import { CoffeeCard } from './components/CoffeeCard';
 import { ServiceCard } from './components/ServiceCard';
 import { CartDrawer } from './components/CartDrawer';
 import { BookingDialog } from './components/BookingDialog';
+import { AdminDashboard } from './components/AdminDashboard';
+import { MobileNavigation } from './components/MobileNavigation';
 
 import { useLanguageStore, translations } from './lib/translations';
 import { coffeeMenu, services } from './data/content';
 import { Service } from './types';
 import { detectUserType } from './lib/pricing';
+import { useIsMobile } from './hooks/use-mobile';
 
 function App() {
   const { currentLanguage } = useLanguageStore();
@@ -29,6 +33,9 @@ function App() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   const isGringo = detectUserType(currentLanguage.code);
 
@@ -43,8 +50,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background coffee-pattern">
-      <nav className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+    <div className={`min-h-screen bg-background coffee-pattern ${isMobile ? 'pb-20' : ''}`}>
+      <nav className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
@@ -59,27 +66,41 @@ function App() {
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {isGringo && (
                 <Badge className="bg-accent/10 text-accent border-accent/20 hidden sm:flex">
                   Premium Gringo Services
                 </Badge>
               )}
               <LanguageSwitcher />
-              <CartDrawer />
+              {!isMobile && <CartDrawer />}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsAdminMode(!isAdminMode)}
+                className="gap-2 border-primary/20 hover:border-primary hover:bg-primary/5"
+              >
+                <UserCheck size={16} />
+                <span className="hidden sm:inline">{isAdminMode ? 'Exit Admin' : t.nav.admin}</span>
+              </Button>
             </div>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
-            <TabsTrigger value="home">{t.nav.home}</TabsTrigger>
-            <TabsTrigger value="menu">{t.nav.menu}</TabsTrigger>
-            <TabsTrigger value="services">{t.nav.services}</TabsTrigger>
-            <TabsTrigger value="about">{t.nav.about}</TabsTrigger>
-          </TabsList>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {isAdminMode ? (
+          <AdminDashboard />
+        ) : (
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
+          {!isMobile && (
+            <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+              <TabsTrigger value="home" className="text-xs sm:text-sm">{t.nav.home}</TabsTrigger>
+              <TabsTrigger value="menu" className="text-xs sm:text-sm">{t.nav.menu}</TabsTrigger>
+              <TabsTrigger value="services" className="text-xs sm:text-sm">{t.nav.services}</TabsTrigger>
+              <TabsTrigger value="about" className="text-xs sm:text-sm">{t.nav.about}</TabsTrigger>
+            </TabsList>
+          )}
 
           <TabsContent value="home" className="space-y-12">
             {/* Hero Section */}
@@ -200,10 +221,102 @@ function App() {
               </Card>
             </div>
           </TabsContent>
+
+          {/* Mobile "More" Tab */}
+          {isMobile && (
+            <TabsContent value="more" className="space-y-6">
+              <div className="grid grid-cols-1 gap-4">
+                <Button 
+                  onClick={() => setActiveTab('services')}
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground justify-start gap-3 p-6"
+                >
+                  <MapPin size={20} />
+                  <div className="text-left">
+                    <div className="font-semibold">{t.nav.services}</div>
+                    <div className="text-sm opacity-90">{t.services.subtitle}</div>
+                  </div>
+                </Button>
+                <Button 
+                  onClick={() => setActiveTab('about')}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground justify-start gap-3 p-6"
+                >
+                  <Coffee size={20} />
+                  <div className="text-left">
+                    <div className="font-semibold">{t.nav.about}</div>
+                    <div className="text-sm opacity-90">Learn about our story</div>
+                  </div>
+                </Button>
+              </div>
+            </TabsContent>
+          )}
+
+          <TabsContent value="services" className="space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold text-foreground">{t.services.title}</h2>
+              <p className="text-lg text-muted-foreground">{t.services.subtitle}</p>
+              {isGringo && (
+                <Badge className="bg-accent/10 text-accent border-accent/20 text-base sm:text-lg px-4 py-2">
+                  🎯 Premium Pricing for International Visitors
+                </Badge>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+              {services.map((service) => (
+                <ServiceCard 
+                  key={service.id} 
+                  service={service} 
+                  onBook={handleBookService}
+                />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="about" className="space-y-8">
+            <div className="max-w-4xl mx-auto">
+              <Card className="overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl sm:text-3xl font-bold">{t.about.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                    {t.about.story}
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-primary">
+                        <MapPin size={20} />
+                        <span className="font-semibold">Location</span>
+                      </div>
+                      <p className="text-muted-foreground">{t.about.location}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-primary">
+                        <Clock size={20} />
+                        <span className="font-semibold">Hours</span>
+                      </div>
+                      <p className="text-muted-foreground">{t.about.hours}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
+        )}
       </main>
 
-      <footer className="border-t border-border/50 mt-16">
+      {/* Mobile Navigation */}
+      <MobileNavigation 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onCartOpen={() => setCartOpen(true)}
+      />
+
+      <footer className={`border-t border-border/50 mt-16 ${isMobile ? 'mb-20' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center space-y-2">
             <p className="text-muted-foreground">

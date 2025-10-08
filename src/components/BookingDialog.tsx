@@ -6,8 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Service } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice, detectUserType, getCurrency, generateId } from '../lib/pricing';
+import { useAdmin } from '../hooks/useAdmin';
 import { toast } from 'sonner';
 import { Calendar, User, Phone, Envelope, Users } from '@phosphor-icons/react';
+import { PaymentModal } from './PaymentModal';
 
 interface BookingDialogProps {
   service: Service | null;
@@ -17,7 +19,9 @@ interface BookingDialogProps {
 
 export const BookingDialog: React.FC<BookingDialogProps> = ({ service, open, onClose }) => {
   const { currentLanguage } = useLanguageStore();
+  const { addBooking } = useAdmin();
   const t = translations[currentLanguage.code];
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -36,17 +40,33 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({ service, open, onC
     
     if (!service) return;
 
-    // In a real app, this would save to database and send confirmation email
-    const booking = {
-      id: generateId(),
-      service,
-      ...formData,
-      timestamp: Date.now(),
-      total: service.basePriceCOP * (isGringo ? 1.5 : 1) * parseInt(formData.participants),
-      currency
-    };
+    // Validate form
+    if (!formData.name || !formData.email || !formData.date || !formData.time) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
 
-    console.log('Booking created:', booking);
+    // Open payment modal
+    setPaymentModalOpen(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    if (!service) return;
+
+    // Save booking to admin system
+    addBooking({
+      serviceId: service.id,
+      date: formData.date,
+      time: formData.time,
+      participants: parseInt(formData.participants),
+      total: totalPrice,
+      currency,
+      customerName: formData.name,
+      customerEmail: formData.email,
+      customerPhone: formData.phone,
+      isGringo
+    });
+
     toast.success(t.booking.success);
     
     // Reset form
@@ -59,6 +79,7 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({ service, open, onC
       participants: '1'
     });
     
+    setPaymentModalOpen(false);
     onClose();
   };
 
@@ -180,11 +201,20 @@ export const BookingDialog: React.FC<BookingDialogProps> = ({ service, open, onC
               type="submit" 
               className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
             >
-              {t.booking.submit}
+              Continue to Payment
             </Button>
           </div>
         </form>
       </DialogContent>
+      
+      <PaymentModal
+        total={totalPrice}
+        currency={currency}
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        onSuccess={handlePaymentSuccess}
+        orderType="service"
+      />
     </Dialog>
   );
 };

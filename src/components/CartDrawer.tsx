@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Trash, Plus, Minus } from '@phosphor-icons/react';
 import { useCart } from '../hooks/useCart';
+import { useAdmin } from '../hooks/useAdmin';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice, detectUserType, getCurrency } from '../lib/pricing';
+import { PaymentModal } from './PaymentModal';
 
 export const CartDrawer: React.FC = () => {
   const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart } = useCart();
+  const { addOrder } = useAdmin();
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage.code];
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '' });
   
   const isGringo = detectUserType(currentLanguage.code);
   const currency = getCurrency(isGringo);
@@ -18,8 +23,26 @@ export const CartDrawer: React.FC = () => {
   const itemCount = getItemCount();
 
   const handleCheckout = () => {
-    // In a real app, this would integrate with payment processor
-    alert('Payment integration would go here (Stripe, PayPal, etc.)');
+    setPaymentModalOpen(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    // Save order to admin system
+    addOrder({
+      items: cartItems.map(item => ({
+        itemId: item.item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      total,
+      currency,
+      customerName: customerInfo.name || 'Anonymous',
+      customerEmail: customerInfo.email || 'anonymous@example.com',
+      customerPhone: customerInfo.phone,
+      isGringo,
+      type: 'pickup'
+    });
+
     clearCart();
   };
 
@@ -124,6 +147,15 @@ export const CartDrawer: React.FC = () => {
           </div>
         )}
       </SheetContent>
+      
+      <PaymentModal
+        total={total}
+        currency={currency}
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        onSuccess={handlePaymentSuccess}
+        orderType="coffee"
+      />
     </Sheet>
   );
 };
