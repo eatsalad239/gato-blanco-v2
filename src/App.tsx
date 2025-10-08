@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Toaster } from '@/components/ui/sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Coffee, 
+  Lightning, 
   Star, 
   MapPin, 
   Clock, 
@@ -13,7 +14,13 @@ import {
   UserCheck,
   Wine,
   Calendar as CalendarIcon,
-  MusicNote
+  MusicNote,
+  Coffee,
+  Atom,
+  Rocket,
+  Fire,
+  Sparkle,
+  Crown
 } from '@phosphor-icons/react';
 
 import { LanguageSwitcher } from './components/LanguageSwitcher';
@@ -39,9 +46,18 @@ function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [nuclearPower, setNuclearPower] = useState(0);
   const isMobile = useIsMobile();
   
   const isGringo = detectUserType(currentLanguage.code);
+
+  // Nuclear power animation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNuclearPower(prev => (prev + 1) % 100);
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleBookService = (service: Service) => {
     setSelectedService(service);
@@ -53,27 +69,73 @@ function App() {
     setSelectedService(null);
   };
 
+  const nuclearVariants = {
+    initial: { scale: 0.8, opacity: 0, rotateY: -180 },
+    animate: { scale: 1, opacity: 1, rotateY: 0 },
+    exit: { scale: 0.8, opacity: 0, rotateY: 180 }
+  };
+
+  const pulseVariants = {
+    animate: {
+      scale: [1, 1.05, 1],
+      opacity: [0.8, 1, 0.8],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <div className={`min-h-screen bg-background coffee-pattern ${isMobile ? 'pb-20' : ''}`}>
-      <nav className="border-b border-border/50 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
+    <div className={`min-h-screen bg-background nuclear-pattern ${isMobile ? 'pb-20' : ''}`}>
+      {/* NUCLEAR NAVIGATION BAR */}
+      <nav className="border-b-2 border-nuclear-blue bg-card/80 backdrop-blur-xl sticky top-0 z-50 nuclear-glow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                  <Coffee size={24} className="text-primary-foreground" />
-                </div>
+          <div className="flex justify-between items-center h-20">
+            <motion.div 
+              className="flex items-center gap-4"
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <div className="flex items-center gap-3">
+                <motion.div 
+                  className="w-14 h-14 bg-gradient-to-br from-nuclear-blue to-electric-cyan rounded-full flex items-center justify-center nuclear-glow"
+                  animate={pulseVariants.animate}
+                >
+                  <Lightning size={32} className="text-primary-foreground" weight="fill" />
+                </motion.div>
                 <div>
-                  <h1 className="text-xl font-bold text-foreground">Gato Blanco</h1>
-                  <p className="text-xs text-muted-foreground">Zona Rosa, Medellín</p>
+                  <h1 className="text-2xl font-black nuclear-text">⚡ GATO BLANCO ⚡</h1>
+                  <p className="text-sm text-electric-cyan font-medium">NUCLEAR CAFÉ REVOLUTION</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
             
-            <div className="flex items-center gap-2 sm:gap-4">
+            <motion.div 
+              className="flex items-center gap-2 sm:gap-4"
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            >
+              {/* Nuclear Power Meter */}
+              <div className="hidden sm:flex items-center gap-2 bg-card/50 rounded-lg px-3 py-1 nuclear-border">
+                <Atom size={16} className="text-nuclear-blue" />
+                <div className="w-16 h-2 bg-deep-space rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-nuclear-blue to-electric-cyan"
+                    style={{ width: `${nuclearPower}%` }}
+                    transition={{ duration: 0.1 }}
+                  />
+                </div>
+                <span className="text-xs text-electric-cyan font-mono">{nuclearPower}%</span>
+              </div>
+              
               {isGringo && (
-                <Badge className="bg-accent/10 text-accent border-accent/20 hidden sm:flex">
-                  Premium Gringo Services
+                <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow hidden sm:flex">
+                  <Crown size={14} className="mr-1" />
+                  PREMIUM GRINGO VIP
                 </Badge>
               )}
               <LanguageSwitcher />
@@ -82,347 +144,481 @@ function App() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAdminMode(!isAdminMode)}
-                className="gap-2 border-primary/20 hover:border-primary hover:bg-primary/5"
+                className="gap-2 nuclear-button"
               >
                 <UserCheck size={16} />
-                <span className="hidden sm:inline">{isAdminMode ? 'Exit Admin' : t.nav.admin}</span>
+                <span className="hidden sm:inline">{isAdminMode ? 'EXIT NUCLEAR' : '🚀 ADMIN'}</span>
               </Button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {isAdminMode ? (
-          <EnhancedAdminDashboard />
+          <motion.div
+            initial={nuclearVariants.initial}
+            animate={nuclearVariants.animate}
+            exit={nuclearVariants.exit}
+            transition={{ duration: 0.6 }}
+          >
+            <EnhancedAdminDashboard />
+          </motion.div>
         ) : (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
           {!isMobile && (
-            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
-              <TabsTrigger value="home" className="text-xs sm:text-sm">{t.nav.home}</TabsTrigger>
-              <TabsTrigger value="menu" className="text-xs sm:text-sm">{t.nav.menu}</TabsTrigger>
-              <TabsTrigger value="drinks" className="text-xs sm:text-sm">{t.nav.drinks}</TabsTrigger>
-              <TabsTrigger value="services" className="text-xs sm:text-sm">{t.nav.services}</TabsTrigger>
-              <TabsTrigger value="events" className="text-xs sm:text-sm">{t.nav.events}</TabsTrigger>
-              <TabsTrigger value="about" className="text-xs sm:text-sm">{t.nav.about}</TabsTrigger>
-            </TabsList>
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid nuclear-border bg-card/50 backdrop-blur-sm">
+                <TabsTrigger value="home" className="text-xs sm:text-sm nuclear-button">🏠 {t.nav.home}</TabsTrigger>
+                <TabsTrigger value="menu" className="text-xs sm:text-sm nuclear-button">☕ {t.nav.menu}</TabsTrigger>
+                <TabsTrigger value="drinks" className="text-xs sm:text-sm nuclear-button">🍹 {t.nav.drinks}</TabsTrigger>
+                <TabsTrigger value="services" className="text-xs sm:text-sm nuclear-button">⚡ {t.nav.services}</TabsTrigger>
+                <TabsTrigger value="events" className="text-xs sm:text-sm nuclear-button">🎉 {t.nav.events}</TabsTrigger>
+                <TabsTrigger value="about" className="text-xs sm:text-sm nuclear-button">ℹ️ {t.nav.about}</TabsTrigger>
+              </TabsList>
+            </motion.div>
           )}
 
-          <TabsContent value="home" className="space-y-12">
-            {/* Hero Section */}
-            <section className="text-center space-y-6 py-12">
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-6xl font-bold text-foreground">
-                  {t.hero.title}
-                </h1>
-                <p className="text-xl sm:text-2xl text-secondary font-medium">
-                  {t.hero.subtitle}
-                </p>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  {t.hero.description}
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-3 text-lg"
-                  onClick={() => setActiveTab('services')}
+          <AnimatePresence mode="wait">
+            <TabsContent value="home" className="space-y-12">
+              <motion.section 
+                className="text-center space-y-8 py-16"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="space-y-6">
+                  <motion.h1 
+                    className="text-5xl sm:text-8xl font-black nuclear-text"
+                    animate={{
+                      textShadow: [
+                        "0 0 20px rgba(59, 130, 246, 0.5)",
+                        "0 0 40px rgba(59, 130, 246, 0.8)",
+                        "0 0 20px rgba(59, 130, 246, 0.5)"
+                      ]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    ⚡ NUCLEAR COFFEE ⚡
+                  </motion.h1>
+                  <motion.p 
+                    className="text-2xl sm:text-4xl text-electric-cyan font-bold"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    🚀 EXPLOSIVE FLAVOR EXPERIENCE 🚀
+                  </motion.p>
+                  <motion.p 
+                    className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    Experience the most EXPLOSIVE coffee revolution in Zona Rosa, Medellín! 
+                    Our NUCLEAR-POWERED baristas create mind-blowing beverages that will launch your taste buds into orbit! 🛸☕
+                  </motion.p>
+                </div>
+                <motion.div 
+                  className="flex flex-col sm:flex-row gap-6 justify-center"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1 }}
                 >
-                  {t.hero.cta}
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="px-8 py-3 text-lg gap-2"
-                  onClick={() => setActiveTab('events')}
-                >
-                  <CalendarIcon size={20} />
-                  View Events
-                </Button>
-              </div>
-            </section>
+                  <Button 
+                    size="lg" 
+                    className="nuclear-button px-10 py-4 text-xl font-bold"
+                    onClick={() => setActiveTab('services')}
+                  >
+                    <Rocket size={24} className="mr-2" />
+                    🚀 LAUNCH SERVICES
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="nuclear-button px-10 py-4 text-xl gap-3"
+                    onClick={() => setActiveTab('events')}
+                  >
+                    <Fire size={24} />
+                    🔥 EXPLOSIVE EVENTS
+                  </Button>
+                </motion.div>
+              </motion.section>
 
-            {/* Quick Stats */}
-            <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card className="text-center">
-                <CardHeader>
-                  <Star size={32} className="text-colombian-gold mx-auto" />
-                  <CardTitle className="text-2xl">4.9/5</CardTitle>
-                  <CardDescription>Customer Rating</CardDescription>
-                </CardHeader>
-              </Card>
-              
-              <Card className="text-center">
-                <CardHeader>
-                  <ShieldCheck size={32} className="text-accent mx-auto" />
-                  <CardTitle className="text-2xl">500+</CardTitle>
-                  <CardDescription>Happy Gringos Served</CardDescription>
-                </CardHeader>
-              </Card>
-              
-              <Card className="text-center">
-                <CardHeader>
-                  <Coffee size={32} className="text-primary mx-auto" />
-                  <CardTitle className="text-2xl">Premium</CardTitle>
-                  <CardDescription>Colombian Coffee</CardDescription>
-                </CardHeader>
-              </Card>
-
-              <Card className="text-center">
-                <CardHeader>
-                  <Wine size={32} className="text-purple-500 mx-auto" />
-                  <CardTitle className="text-2xl">Night Life</CardTitle>
-                  <CardDescription>Cocktails & Events</CardDescription>
-                </CardHeader>
-              </Card>
-            </section>
-          </TabsContent>
+              {/* NUCLEAR STATS GRID */}
+              <motion.section 
+                className="grid grid-cols-1 md:grid-cols-4 gap-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2, staggerChildren: 0.1 }}
+              >
+                {[
+                  { icon: Star, value: "⭐ 4.9/5", label: "NUCLEAR RATING", color: "text-yellow-400" },
+                  { icon: Atom, value: "💥 1000+", label: "MINDS BLOWN", color: "text-nuclear-blue" },
+                  { icon: Lightning, value: "⚡ INFINITE", label: "ENERGY BOOST", color: "text-electric-cyan" },
+                  { icon: Sparkle, value: "✨ LEGENDARY", label: "COFFEE MAGIC", color: "text-plasma-blue" }
+                ].map((stat, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ scale: 0, rotateY: 180 }}
+                    animate={{ scale: 1, rotateY: 0 }}
+                    transition={{ delay: 1.2 + index * 0.1, duration: 0.6 }}
+                  >
+                    <Card className="text-center nuclear-card">
+                      <CardHeader>
+                        <motion.div
+                          animate={pulseVariants.animate}
+                          className={`${stat.color} mx-auto`}
+                        >
+                          <stat.icon size={40} weight="fill" />
+                        </motion.div>
+                        <CardTitle className="text-3xl nuclear-text">{stat.value}</CardTitle>
+                        <CardDescription className="text-electric-cyan font-bold">{stat.label}</CardDescription>
+                      </CardHeader>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.section>
+            </TabsContent>
+          </AnimatePresence>
 
           <TabsContent value="menu" className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">{t.menu.title}</h2>
-              <p className="text-lg text-muted-foreground">{t.menu.subtitle}</p>
-            </div>
+            <motion.div 
+              className="text-center space-y-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h2 className="text-4xl font-black nuclear-text">🚀 NUCLEAR MENU 🚀</h2>
+              <p className="text-xl text-electric-cyan">EXPLOSIVE FLAVORS FROM ANOTHER DIMENSION</p>
+            </motion.div>
             
             <Tabs defaultValue="coffee" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="coffee">{t.menu.coffee}</TabsTrigger>
-                <TabsTrigger value="food">Food</TabsTrigger>
-                <TabsTrigger value="pastries">Pastries</TabsTrigger>
-                <TabsTrigger value="nonalcoholic">All Day</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 nuclear-border">
+                <TabsTrigger value="coffee" className="nuclear-button">☕ COFFEE</TabsTrigger>
+                <TabsTrigger value="food" className="nuclear-button">🍕 FOOD</TabsTrigger>
+                <TabsTrigger value="pastries" className="nuclear-button">🥐 PASTRIES</TabsTrigger>
+                <TabsTrigger value="nonalcoholic" className="nuclear-button">🥤 ALL DAY</TabsTrigger>
               </TabsList>
               
               <TabsContent value="coffee" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'coffee').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'coffee').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="food" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'food').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'food').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="pastries" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'pastry').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'pastry').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="nonalcoholic" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => ['coffee', 'food', 'pastry'].includes(item.category)).map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => ['coffee', 'food', 'pastry'].includes(item.category)).map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
+                    animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
             </Tabs>
           </TabsContent>
 
           <TabsContent value="drinks" className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">{t.drinks.title}</h2>
-              <p className="text-lg text-muted-foreground">{t.drinks.subtitle}</p>
+            <motion.div 
+              className="text-center space-y-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h2 className="text-4xl font-black nuclear-text">🍹 NUCLEAR COCKTAILS 🍹</h2>
+              <p className="text-xl text-electric-cyan">RADIOACTIVE REFRESHMENTS</p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                <Badge className="bg-accent/10 text-accent border-accent/20">
-                  🍹 {t.drinks.happyHour}
+                <Badge className="bg-nuclear-blue/20 text-nuclear-blue border-nuclear-blue nuclear-glow">
+                  🍹 ATOMIC HAPPY HOUR
                 </Badge>
-                <Badge className="bg-primary/10 text-primary border-primary/20">
-                  🌙 {t.drinks.lateNight}
+                <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow">
+                  🌙 MIDNIGHT NUCLEAR ZONE
                 </Badge>
               </div>
-            </div>
+            </motion.div>
             
             <Tabs defaultValue="cocktails" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="cocktails">{t.drinks.cocktails}</TabsTrigger>
-                <TabsTrigger value="beer">{t.drinks.beer}</TabsTrigger>
-                <TabsTrigger value="spirits">{t.drinks.spirits}</TabsTrigger>
-                <TabsTrigger value="wine">{t.drinks.wine}</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 nuclear-border">
+                <TabsTrigger value="cocktails" className="nuclear-button">🍸 COCKTAILS</TabsTrigger>
+                <TabsTrigger value="beer" className="nuclear-button">🍺 BEER</TabsTrigger>
+                <TabsTrigger value="spirits" className="nuclear-button">🥃 SPIRITS</TabsTrigger>
+                <TabsTrigger value="wine" className="nuclear-button">🍷 WINE</TabsTrigger>
               </TabsList>
               
               <TabsContent value="cocktails" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'cocktail').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'cocktail').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
+                    animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="beer" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'beer').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'beer').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
+                    animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="spirits" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'liquor').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'liquor').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
+                    animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="wine" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'wine').map((item) => (
-                  <MenuCard key={item.id} item={item} />
+                {fullMenu.filter(item => item.category === 'wine').map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
+                    animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <MenuCard item={item} />
+                  </motion.div>
                 ))}
               </TabsContent>
             </Tabs>
           </TabsContent>
 
           <TabsContent value="events" className="space-y-8">
-            <EventsSection />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <EventsSection />
+            </motion.div>
           </TabsContent>
 
           <TabsContent value="services" className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">{t.services.title}</h2>
-              <p className="text-lg text-muted-foreground">{t.services.subtitle}</p>
+            <motion.div 
+              className="text-center space-y-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h2 className="text-4xl font-black nuclear-text">⚡ NUCLEAR SERVICES ⚡</h2>
+              <p className="text-xl text-electric-cyan">EXPLOSIVE GRINGO EXPERIENCES</p>
               {isGringo && (
-                <Badge className="bg-accent/10 text-accent border-accent/20 text-base sm:text-lg px-4 py-2">
-                  🎯 Premium Pricing for International Visitors
+                <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow text-lg px-6 py-3">
+                  <Crown size={20} className="mr-2" />
+                  🎯 PREMIUM VIP NUCLEAR PRICING
                 </Badge>
               )}
-            </div>
+            </motion.div>
             
             <Tabs defaultValue="tourism" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-                <TabsTrigger value="tourism">{t.services.tourism}</TabsTrigger>
-                <TabsTrigger value="classes">{t.services.classes}</TabsTrigger>
-                <TabsTrigger value="events">{t.services.events}</TabsTrigger>
-                <TabsTrigger value="party">{t.services.party}</TabsTrigger>
-                <TabsTrigger value="vip">{t.services.vip}</TabsTrigger>
-                <TabsTrigger value="nightlife">{t.services.nightlife}</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 nuclear-border">
+                <TabsTrigger value="tourism" className="nuclear-button">🌎 TOURISM</TabsTrigger>
+                <TabsTrigger value="classes" className="nuclear-button">📚 CLASSES</TabsTrigger>
+                <TabsTrigger value="events" className="nuclear-button">🎉 EVENTS</TabsTrigger>
+                <TabsTrigger value="party" className="nuclear-button">🎊 PARTY</TabsTrigger>
+                <TabsTrigger value="vip" className="nuclear-button">👑 VIP</TabsTrigger>
+                <TabsTrigger value="nightlife" className="nuclear-button">🌙 NIGHTLIFE</TabsTrigger>
               </TabsList>
               
               <TabsContent value="tourism" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {services.filter(service => service.category === 'tourism').map((service) => (
-                  <ServiceCard 
-                    key={service.id} 
-                    service={service} 
-                    onBook={handleBookService}
-                  />
+                {services.filter(service => service.category === 'tourism').map((service, index) => (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, x: -100, rotateY: -90 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <ServiceCard 
+                      service={service} 
+                      onBook={handleBookService}
+                    />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="classes" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {services.filter(service => service.category === 'classes').map((service) => (
-                  <ServiceCard 
-                    key={service.id} 
-                    service={service} 
-                    onBook={handleBookService}
-                  />
+                {services.filter(service => service.category === 'classes').map((service, index) => (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, x: -100, rotateY: -90 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <ServiceCard 
+                      service={service} 
+                      onBook={handleBookService}
+                    />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="events" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {services.filter(service => service.category === 'events').map((service) => (
-                  <ServiceCard 
-                    key={service.id} 
-                    service={service} 
-                    onBook={handleBookService}
-                  />
+                {services.filter(service => service.category === 'events').map((service, index) => (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, x: -100, rotateY: -90 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <ServiceCard 
+                      service={service} 
+                      onBook={handleBookService}
+                    />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="party" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {services.filter(service => service.category === 'party').map((service) => (
-                  <ServiceCard 
-                    key={service.id} 
-                    service={service} 
-                    onBook={handleBookService}
-                  />
+                {services.filter(service => service.category === 'party').map((service, index) => (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, x: -100, rotateY: -90 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <ServiceCard 
+                      service={service} 
+                      onBook={handleBookService}
+                    />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="vip" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {services.filter(service => service.category === 'vip').map((service) => (
-                  <ServiceCard 
-                    key={service.id} 
-                    service={service} 
-                    onBook={handleBookService}
-                  />
+                {services.filter(service => service.category === 'vip').map((service, index) => (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, x: -100, rotateY: -90 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <ServiceCard 
+                      service={service} 
+                      onBook={handleBookService}
+                    />
+                  </motion.div>
                 ))}
               </TabsContent>
               
               <TabsContent value="nightlife" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {services.filter(service => service.category === 'nightlife').map((service) => (
-                  <ServiceCard 
-                    key={service.id} 
-                    service={service} 
-                    onBook={handleBookService}
-                  />
+                {services.filter(service => service.category === 'nightlife').map((service, index) => (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, x: -100, rotateY: -90 }}
+                    animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                  >
+                    <ServiceCard 
+                      service={service} 
+                      onBook={handleBookService}
+                    />
+                  </motion.div>
                 ))}
               </TabsContent>
             </Tabs>
           </TabsContent>
 
-          <TabsContent value="services" className="space-y-8">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold text-foreground">{t.services.title}</h2>
-              <p className="text-lg text-muted-foreground">{t.services.subtitle}</p>
-              {isGringo && (
-                <Badge className="bg-accent/10 text-accent border-accent/20 text-lg px-4 py-2">
-                  🎯 Premium Pricing for International Visitors
-                </Badge>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {services.map((service) => (
-                <ServiceCard 
-                  key={service.id} 
-                  service={service} 
-                  onBook={handleBookService}
-                />
-              ))}
-            </div>
-          </TabsContent>
-
           <TabsContent value="about" className="space-y-8">
-            <div className="max-w-4xl mx-auto">
-              <Card className="overflow-hidden">
-                <div className="h-2 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+            <motion.div 
+              className="max-w-4xl mx-auto"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Card className="overflow-hidden nuclear-card">
+                <div className="h-4 bg-gradient-to-r from-nuclear-blue via-electric-cyan to-plasma-blue"></div>
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl sm:text-3xl font-bold">{t.about.title}</CardTitle>
+                  <CardTitle className="text-3xl sm:text-4xl font-black nuclear-text">
+                    ⚡ NUCLEAR COFFEE REVOLUTION ⚡
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                    {t.about.story}
+                <CardContent className="space-y-8">
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Welcome to the most EXPLOSIVE coffee experience in the multiverse! 🚀 
+                    Our nuclear-powered café in Zona Rosa, Medellín harnesses the power of Colombian coffee beans 
+                    and transforms them into mind-blowing beverages that will launch your consciousness into orbit! 
+                    We've revolutionized the gringo experience with our atomic-level service excellence! ⚡☕
                   </p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary">
-                        <MapPin size={20} />
-                        <span className="font-semibold">Location</span>
-                      </div>
-                      <p className="text-muted-foreground">{t.about.location}</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary">
-                        <Clock size={20} />
-                        <span className="font-semibold">Hours</span>
-                      </div>
-                      <p className="text-muted-foreground">{t.about.hours}</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-accent">
-                        <MusicNote size={20} />
-                        <span className="font-semibold">Nightlife</span>
-                      </div>
-                      <p className="text-muted-foreground">{t.about.nightlife}</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-secondary">
-                        <CalendarIcon size={20} />
-                        <span className="font-semibold">Events</span>
-                      </div>
-                      <p className="text-muted-foreground">{t.about.events}</p>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+                    {[
+                      { icon: MapPin, title: "NUCLEAR LOCATION", text: "Zona Rosa Ground Zero, Medellín 🗺️", color: "text-nuclear-blue" },
+                      { icon: Clock, title: "ATOMIC HOURS", text: "24/7 Nuclear Energy ⏰", color: "text-electric-cyan" },
+                      { icon: MusicNote, title: "EXPLOSIVE NIGHTLIFE", text: "Radioactive Beats & Cosmic Vibes 🎵", color: "text-plasma-blue" },
+                      { icon: CalendarIcon, title: "NUCLEAR EVENTS", text: "Mind-Blowing Experiences Daily 🎉", color: "text-nuclear-blue" }
+                    ].map((item, index) => (
+                      <motion.div
+                        key={index}
+                        className="space-y-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                      >
+                        <div className={`flex items-center gap-3 ${item.color}`}>
+                          <item.icon size={24} weight="fill" />
+                          <span className="font-bold">{item.title}</span>
+                        </div>
+                        <p className="text-muted-foreground font-medium">{item.text}</p>
+                      </motion.div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            </motion.div>
           </TabsContent>
         </Tabs>
         )}
@@ -435,16 +631,28 @@ function App() {
         onCartOpen={() => setCartOpen(true)}
       />
 
-      <footer className={`border-t border-border/50 mt-16 ${isMobile ? 'mb-20' : ''}`}>
+      <footer className={`border-t-2 border-nuclear-blue nuclear-glow mt-16 ${isMobile ? 'mb-20' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center space-y-2">
-            <p className="text-muted-foreground">
-              © 2024 Gato Blanco x Gringo Connection
+          <motion.div 
+            className="text-center space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+          >
+            <p className="text-electric-cyan font-bold text-lg">
+              ⚡ © 2024 GATO BLANCO NUCLEAR REVOLUTION ⚡
             </p>
-            <p className="text-sm text-muted-foreground">
-              Zona Rosa, Medellín - Premium Coffee & Gringo Services
+            <p className="text-nuclear-blue font-medium">
+              🚀 Zona Rosa Ground Zero, Medellín - EXPLOSIVE Coffee & ATOMIC Gringo Services 🚀
             </p>
-          </div>
+            <div className="flex justify-center gap-4 text-plasma-blue">
+              <Lightning size={20} />
+              <Atom size={20} />
+              <Rocket size={20} />
+              <Fire size={20} />
+              <Sparkle size={20} />
+            </div>
+          </motion.div>
         </div>
       </footer>
 
