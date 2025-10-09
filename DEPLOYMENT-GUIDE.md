@@ -1,399 +1,260 @@
-# 🚀 Gato Blanco Café - Complete Deployment Guide
+# Gato Blanco Café - Docker & Play Store Setup Guide
 
-## 🎯 QUICK START (Launch in 5 minutes!)
+## 🚀 Quick Start
 
-### Option 1: Local Docker Deployment
+### Prerequisites
+- Docker and Docker Compose installed
+- Node.js 18+ installed
+- Android Studio (for Play Store deployment)
+
+### Local Development
 ```bash
-# 1. Clone or have the project ready
-cd gato-blanco-cafe
+# Build and run locally
+./deploy.sh full
 
-# 2. Create environment file
-cp .env.example .env
-
-# 3. Edit environment variables (optional for local testing)
-nano .env
-
-# 4. Build and launch
-docker-compose up -d
-
-# 5. Access your café at http://localhost
+# Or step by step:
+./deploy.sh check     # Check dependencies
+./deploy.sh build     # Build the app
+./deploy.sh docker    # Build Docker image
+./deploy.sh local     # Run locally
 ```
 
-### Option 2: GitHub Pages (Free Hosting)
+Access your app at: `http://localhost`
+
+## 🐳 Docker Deployment
+
+### Environment Setup
+1. Copy the environment template:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` with your production values:
+   - Database passwords
+   - Stripe API keys
+   - Email configuration
+   - Domain settings
+
+### Local Deployment
 ```bash
-# 1. Push to GitHub repository
-git add .
-git commit -m "Deploy Gato Blanco Café"
-git push origin main
-
-# 2. Enable GitHub Pages in repository settings
-# 3. Set source to "GitHub Actions"
-# 4. Use the workflow file below
-```
-
-### Option 3: Production VPS/Cloud
-```bash
-# 1. On your server (Ubuntu/Debian)
-sudo apt update && sudo apt install docker.io docker-compose
-
-# 2. Clone your repository
-git clone https://github.com/yourusername/gato-blanco-cafe.git
-cd gato-blanco-cafe
-
-# 3. Set production environment
-cp .env.example .env
-nano .env  # Set real passwords and domain
-
-# 4. Deploy
-./deploy.sh
-```
-
-## 🔧 DETAILED DEPLOYMENT OPTIONS
-
-### A. Docker Compose (Recommended for Production)
-
-**What you get:**
-- ✅ Full application with database
-- ✅ Production-ready nginx
-- ✅ Redis caching
-- ✅ Automatic health checks
-- ✅ SSL ready
-- ✅ Database backups
-
-**Requirements:**
-- Docker & Docker Compose installed
-- 2GB RAM minimum
-- 10GB disk space
-
-**Commands:**
-```bash
-# Quick deploy
+# Start all services
 docker-compose up -d
 
 # View logs
 docker-compose logs -f
 
-# Stop
+# Stop services
 docker-compose down
 
-# Update app
-git pull && docker-compose up -d --build
-
-# Backup database
-npm run backup:db
+# Health check
+./deploy.sh health
 ```
 
-### B. GitHub Pages (Free Static Hosting)
+### Production Deployment
+```bash
+# Deploy to production
+./deploy.sh prod
 
-**What you get:**
-- ✅ Free hosting
-- ✅ HTTPS included
-- ✅ Global CDN
-- ⚠️ No backend (uses browser storage)
+# Create database backup
+./deploy.sh backup
 
-**Setup:**
-1. Create `.github/workflows/deploy.yml`:
+# Monitor logs
+./deploy.sh logs
+```
 
+## 📱 Android Play Store Setup
+
+### 1. Build the Android App
+The Android app is a TWA (Trusted Web Activity) that wraps your web app:
+
+```bash
+cd android-app
+./gradlew assembleRelease
+```
+
+### 2. Digital Asset Links
+Add this to your web app's `/.well-known/assetlinks.json`:
+
+```json
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.gatoblanco.cafe",
+    "sha256_cert_fingerprints": ["YOUR_RELEASE_KEY_SHA256"]
+  }
+}]
+```
+
+### 3. Generate Release Key
+```bash
+keytool -genkey -v -keystore gato-blanco-release.keystore -alias gato-blanco -keyalg RSA -keysize 2048 -validity 10000
+```
+
+### 4. Sign the APK
+```bash
+cd android-app
+./gradlew assembleRelease -Pandroid.injected.signing.store.file=../gato-blanco-release.keystore -Pandroid.injected.signing.store.password=YOUR_PASSWORD -Pandroid.injected.signing.key.alias=gato-blanco -Pandroid.injected.signing.key.password=YOUR_PASSWORD
+```
+
+### 5. Play Store Submission
+1. Create Google Play Console account
+2. Upload APK/AAB file
+3. Fill in store listing:
+   - Title: "Gato Blanco Café - Premium Colombian Coffee"
+   - Description: "Authentic Colombian coffee experience in Zona Rosa, Medellín"
+   - Screenshots: Use the generated ones in `/android-app/screenshots/`
+   - Category: Food & Drink
+
+## 🌐 Domain & SSL Setup
+
+### 1. Domain Configuration
+Point your domain to your server:
+```
+A record: gatoblanco.cafe -> YOUR_SERVER_IP
+CNAME: www.gatoblanco.cafe -> gatoblanco.cafe
+```
+
+### 2. SSL Certificate (Let's Encrypt)
+The production setup includes automatic SSL via Traefik:
 ```yaml
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Build
-        run: npm run build
-        
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+# In docker-compose.prod.yml
+traefik:
+  - "traefik.http.routers.gato-blanco.tls.certresolver=letsencrypt"
 ```
 
-2. Push to GitHub and enable Pages in Settings
+## 🔧 Production Configuration
 
-### C. Vercel (Easy Deployment)
+### Required Services
+- **Web App**: Main React application
+- **Database**: PostgreSQL for persistent data
+- **Cache**: Redis for sessions and caching
+- **Reverse Proxy**: Traefik for SSL and load balancing
+- **Monitoring**: Prometheus + Grafana
 
-**What you get:**
-- ✅ Free tier available
-- ✅ Automatic deployments
-- ✅ Global CDN
-- ✅ Custom domains
+### Security Checklist
+- [ ] Change all default passwords
+- [ ] Configure firewall (ports 80, 443, 22 only)
+- [ ] Enable automatic updates
+- [ ] Set up database backups
+- [ ] Configure monitoring alerts
 
-**Setup:**
-1. Connect GitHub repo to Vercel
-2. Set build command: `npm run build`
-3. Set output directory: `dist`
-4. Deploy!
+### Performance Optimization
+- [ ] Enable gzip compression
+- [ ] Configure CDN for static assets
+- [ ] Set up database connection pooling
+- [ ] Configure Redis for caching
 
-### D. DigitalOcean Droplet
+## 📊 Monitoring & Maintenance
 
-**What you get:**
-- ✅ Full control
-- ✅ Database included
-- ✅ $5/month minimum
-- ✅ Root access
-
-**Setup:**
+### Health Checks
 ```bash
-# 1. Create Ubuntu 22.04 droplet
-# 2. SSH into server
-ssh root@your-server-ip
+# Application health
+curl -f http://localhost/health
 
-# 3. Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
+# Database health
+docker-compose exec database pg_isready
 
-# 4. Clone and deploy
-git clone https://github.com/yourusername/gato-blanco-cafe.git
-cd gato-blanco-cafe
-cp .env.example .env
-nano .env  # Set passwords and domain
-docker-compose up -d
-
-# 5. Setup domain (optional)
-# Point your domain's A record to your droplet's IP
+# Redis health
+docker-compose exec redis redis-cli ping
 ```
 
-## 🌐 DOMAIN & SSL SETUP
-
-### Free Domain Options:
-- **Freenom**: .tk, .ml, .ga domains
-- **Subdomain**: yourname.github.io (GitHub Pages)
-- **Netlify/Vercel**: Free subdomain included
-
-### SSL Certificate (Free with Let's Encrypt):
+### Backups
 ```bash
-# Install certbot
-sudo apt install certbot python3-certbot-nginx
+# Create database backup
+./deploy.sh backup
 
-# Get certificate
-sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
-
-# Auto-renewal (add to crontab)
-0 12 * * * /usr/bin/certbot renew --quiet
+# Restore from backup
+docker-compose exec -T database psql -U gato_blanco_user -d gato_blanco < backup_file.sql
 ```
 
-### Update nginx.conf for SSL:
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name yourdomain.com www.yourdomain.com;
-    
-    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-    
-    # Your existing nginx config...
-}
-
-server {
-    listen 80;
-    server_name yourdomain.com www.yourdomain.com;
-    return 301 https://$server_name$request_uri;
-}
-```
-
-## 🔧 ENVIRONMENT CONFIGURATION
-
-### Minimal .env for Local Testing:
+### Log Management
 ```bash
-POSTGRES_PASSWORD=localpassword123
-REDIS_PASSWORD=localredis123
-NODE_ENV=development
-```
-
-### Production .env Example:
-```bash
-# Database (use strong passwords!)
-POSTGRES_PASSWORD=YourSuperSecure2024Password!
-POSTGRES_USER=gato_blanco_user
-POSTGRES_DB=gato_blanco
-
-# Redis
-REDIS_PASSWORD=YourRedisPassword2024!
-
-# Application
-NODE_ENV=production
-DOMAIN=yourdomain.com
-
-# SSL (for Let's Encrypt)
-SSL_EMAIL=admin@yourdomain.com
-
-# Security
-JWT_SECRET=your-very-long-random-jwt-secret-here-minimum-32-chars
-ENCRYPTION_KEY=32-character-encryption-key-here
-
-# Payment (when ready)
-STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key
-
-# Email notifications
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your.business.email@gmail.com
-SMTP_PASS=your-app-password
-
-# External APIs
-GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-WHATSAPP_API_TOKEN=your_whatsapp_business_api_token
-```
-
-## 📊 MONITORING & MAINTENANCE
-
-### Check Application Health:
-```bash
-# Check all services
-docker-compose ps
-
-# View application logs
+# View specific service logs
 docker-compose logs -f gato-blanco-app
-
-# Check database
 docker-compose logs -f database
+docker-compose logs -f redis
 
-# Monitor resource usage
-docker stats
+# Follow all logs
+docker-compose logs -f
 ```
 
-### Backup Strategy:
-```bash
-# Manual database backup
-npm run backup:db
+## 🚨 Troubleshooting
 
-# Automated daily backup (add to crontab)
-0 2 * * * cd /path/to/gato-blanco-cafe && npm run backup:db
+### Common Issues
 
-# Backup files to cloud storage (optional)
-# Use rsync, AWS CLI, or similar tools
+1. **Port conflicts**
+   ```bash
+   # Check what's using port 80
+   lsof -i :80
+   # Kill process if needed
+   sudo kill -9 PID
+   ```
+
+2. **Database connection issues**
+   ```bash
+   # Check database logs
+   docker-compose logs database
+   # Reset database
+   docker-compose down -v
+   docker-compose up -d
+   ```
+
+3. **SSL certificate issues**
+   ```bash
+   # Check Traefik logs
+   docker-compose logs traefik
+   # Verify domain DNS
+   nslookup gatoblanco.cafe
+   ```
+
+### Performance Issues
+1. Check resource usage: `docker stats`
+2. Monitor database performance: Access Grafana at `http://localhost:3001`
+3. Analyze logs for errors: `./deploy.sh logs | grep ERROR`
+
+## 📈 Scaling
+
+### Horizontal Scaling
+```yaml
+# In docker-compose.prod.yml
+gato-blanco-app:
+  deploy:
+    replicas: 3  # Run 3 instances
 ```
 
-### Security Updates:
-```bash
-# Update system packages
-sudo apt update && sudo apt upgrade
+### Database Scaling
+- Consider read replicas for high traffic
+- Implement database connection pooling
+- Use Redis for session storage
 
-# Update Docker images
-docker-compose pull && docker-compose up -d
+### CDN Integration
+- Configure Cloudflare or AWS CloudFront
+- Cache static assets
+- Optimize images
 
-# Update application
-git pull && docker-compose up -d --build
-```
+## 🛡️ Security
 
-## 🚀 GO-LIVE CHECKLIST
+### Web Application
+- HTTPS only (enforced by Traefik)
+- Security headers configured
+- Input validation and sanitization
+- Rate limiting
 
-### Before Launch:
-- [ ] Set strong passwords in .env
-- [ ] Configure domain and SSL
-- [ ] Test all features (menu, booking, admin)
-- [ ] Setup automated backups
-- [ ] Configure email notifications
-- [ ] Test mobile PWA installation
-- [ ] Verify admin dashboard access
+### Database
+- Encrypted connections
+- Regular security updates
+- Backup encryption
+- Access control
 
-### Post-Launch:
-- [ ] Monitor error logs for first 24 hours
-- [ ] Test real customer workflows
-- [ ] Setup payment processing (Stripe)
-- [ ] Configure email confirmations
-- [ ] Add contact information
-- [ ] Setup Google Analytics (optional)
-- [ ] Create social media accounts
-- [ ] Plan marketing launch
+### Android App
+- Certificate pinning
+- Secure storage
+- Runtime application self-protection (RASP)
 
-## 🆘 TROUBLESHOOTING
+## 📞 Support
 
-### Common Issues:
-
-**Port 80 already in use:**
-```bash
-# Find what's using port 80
-sudo lsof -i :80
-# Kill the process or change port in docker-compose.yml
-```
-
-**Database connection failed:**
-```bash
-# Check database logs
-docker-compose logs database
-# Ensure passwords match in .env
-```
-
-**Can't access admin:**
-```bash
-# Admin button is in top-right corner
-# No login required - click "🚀 ADMIN" button
-```
-
-**PWA not installing:**
-```bash
-# Convert SVG icons to PNG:
-# Use https://cloudconvert.com/svg-to-png
-# Upload icon-72.svg, icon-192.svg etc.
-# Download PNG files and replace in public/
-```
-
-## 💡 COST BREAKDOWN
-
-### Free Options:
-- **GitHub Pages**: $0/month (static hosting)
-- **Netlify/Vercel Free**: $0/month (static)
-
-### Paid Options:
-- **DigitalOcean Droplet**: $5/month (basic)
-- **AWS EC2 t3.micro**: ~$8/month
-- **Google Cloud Run**: Pay per use (~$5-20/month)
-- **Domain**: $10-15/year
-- **Email service**: $0-10/month
-
-### Recommended for Café Business:
-**DigitalOcean $5/month droplet** = Total cost under $10/month with domain!
-
-## 🎯 NEXT STEPS AFTER DEPLOYMENT
-
-1. **Test Everything** (30 minutes)
-2. **Add Real Content** (2 hours)
-3. **Setup Payment Processing** (4 hours)
-4. **Configure Email** (1 hour)
-5. **Launch Marketing** (ongoing)
-
-Your café app is now ready to serve real customers! 🚀☕
+For technical support or questions:
+- Check logs: `./deploy.sh logs`
+- Health check: `./deploy.sh health`
+- Documentation: See README files in each service directory

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <shortcut
+        android:shortcutId="menu"
+        android:enabled="true"
+        android:icon="@mipmap/ic_menu"
+        android:shortcutShortLabel="@string/shortcut_menu"
+        android:shortcutLongLabel="@string/shortcut_menu_desc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://gatoblanco.cafe/?tab=menu" />
+    </shortcut>
+    
+    <shortcut
+        android:shortcutId="services"
+        android:enabled="true"
+        android:icon="@mipmap/ic_services"
+        android:shortcutShortLabel="@string/shortcut_services"
+        android:shortcutLongLabel="@string/shortcut_services_desc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://gatoblanco.cafe/?tab=services" />
+    </shortcut>
+    
+    <shortcut
+        android:shortcutId="events"
+        android:enabled="true"
+        android:icon="@mipmap/ic_events"
+        android:shortcutShortLabel="@string/shortcut_events"
+        android:shortcutLongLabel="@string/shortcut_events_desc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://gatoblanco.cafe/?tab=events" />
+    </shortcut>
+    
+    <shortcut
+        android:shortcutId="admin"
+        android:enabled="true"
+        android:icon="@mipmap/ic_admin"
+        android:shortcutShortLabel="@string/shortcut_admin"
+        android:shortcutLongLabel="@string/shortcut_admin_desc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://gatoblanco.cafe/?admin=true" />
+    </shortcut>
+    
+</shortcuts>

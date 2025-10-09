@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Gato Blanco Café</string>
+    <string name="app_short_name">Gato Blanco</string>
+    <string name="app_description">Premium coffee and authentic Colombian experience in Zona Rosa, Medellín</string>
+    
+    <!-- TWA specific -->
+    <string name="twa_name">Gato Blanco Café</string>
+    <string name="twa_url">https://gatoblanco.cafe</string>
+    
+    <!-- Digital Asset Links -->
+    <string name="asset_statements">
+        [{
+            \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+            \"target\": {
+                \"namespace\": \"web\",
+                \"site\": \"https://gatoblanco.cafe\"
+            }
+        }]
+    </string>
+    
+    <!-- Shortcuts -->
+    <string name="shortcut_menu">Menu</string>
+    <string name="shortcut_menu_desc">View our premium coffee menu</string>
+    <string name="shortcut_services">Services</string>
+    <string name="shortcut_services_desc">Book gringo services</string>
+    <string name="shortcut_events">Events</string>
+    <string name="shortcut_events_desc">Check upcoming events</string>
+    <string name="shortcut_admin">Admin</string>
+    <string name="shortcut_admin_desc">Business dashboard</string>
+    
+    <!-- Content descriptions -->
+    <string name="menu_button">Menu</string>
+    <string name="services_button">Services</string>
+    <string name="events_button">Events</string>
+    <string name="admin_button">Admin Dashboard</string>
+    <string name="cart_button">Shopping Cart</string>
+    <string name="language_switcher">Change Language</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_orders">Order Updates</string>
+    <string name="notification_channel_events">Event Notifications</string>
+    <string name="notification_channel_promotions">Promotions</string>
+</resources>

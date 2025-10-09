@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4469ff</color>
+    <color name="colorPrimaryDark">#3851db</color>
+    <color name="colorAccent">#bf9c4b</color>
+    <color name="colorBackground">#1e1e1e</color>
+    <color name="colorSurface">#2a2a2a</color>
+    <color name="colorOnPrimary">#ffffff</color>
+    <color name="colorOnBackground">#f5f5f5</color>
+    <color name="colorOnSurface">#f5f5f5</color>
+    
+    <!-- Colombian flag colors -->
+    <color name="colombia_blue">#4469ff</color>
+    <color name="colombia_yellow">#bf9c4b</color>
+    <color name="colombia_red">#8b4513</color>
+    
+    <!-- Status bar and navigation bar -->
+    <color name="status_bar_color">@color/colorPrimary</color>
+    <color name="navigation_bar_color">@color/colorPrimary</color>
+</resources>

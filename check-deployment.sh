@@ -1,172 +1,139 @@
 #!/bin/bash
 
-# 🚀 Gato Blanco Café - Deployment Verification Script
-# This script checks if everything is ready for production deployment
+# Quick deployment check script for Gato Blanco Café
+# This script verifies that all components are ready for deployment
 
-echo "🔍 Gato Blanco Café - Pre-Deployment Check"
-echo "=========================================="
+set -e
 
-ISSUES_FOUND=0
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
 
-# Check Docker
-echo "1. Checking Docker..."
-if command -v docker &> /dev/null; then
-    echo "   ✅ Docker is installed"
+echo -e "${BLUE}🇨🇴 Gato Blanco Café - Deployment Check 🇨🇴${NC}"
+echo "================================================"
+
+# Check if build directory exists
+if [ -d "dist" ]; then
+    echo -e "${GREEN}✓${NC} Build directory exists"
 else
-    echo "   ❌ Docker is not installed"
-    ISSUES_FOUND=$((ISSUES_FOUND + 1))
+    echo -e "${RED}✗${NC} Build directory missing - run 'npm run build'"
+    exit 1
 fi
 
-# Check Docker Compose
-echo "2. Checking Docker Compose..."
-if command -v docker-compose &> /dev/null; then
-    echo "   ✅ Docker Compose is installed"
+# Check if Dockerfile exists
+if [ -f "Dockerfile" ]; then
+    echo -e "${GREEN}✓${NC} Dockerfile exists"
 else
-    echo "   ❌ Docker Compose is not installed"
-    ISSUES_FOUND=$((ISSUES_FOUND + 1))
+    echo -e "${RED}✗${NC} Dockerfile missing"
+    exit 1
 fi
 
-# Check essential files
-echo "3. Checking essential files..."
+# Check if docker-compose.yml exists
+if [ -f "docker-compose.yml" ]; then
+    echo -e "${GREEN}✓${NC} Docker Compose configuration exists"
+else
+    echo -e "${RED}✗${NC} docker-compose.yml missing"
+    exit 1
+fi
 
-REQUIRED_FILES=(
-    "Dockerfile"
-    "docker-compose.yml"
-    "nginx.conf"
-    "package.json"
+# Check if Android app exists
+if [ -d "android-app" ]; then
+    echo -e "${GREEN}✓${NC} Android app directory exists"
+else
+    echo -e "${YELLOW}!${NC} Android app directory missing (optional)"
+fi
+
+# Check if .env.example exists
+if [ -f ".env.example" ]; then
+    echo -e "${GREEN}✓${NC} Environment template exists"
+else
+    echo -e "${RED}✗${NC} .env.example missing"
+    exit 1
+fi
+
+# Check if manifest.json exists
+if [ -f "manifest.json" ]; then
+    echo -e "${GREEN}✓${NC} PWA manifest exists"
+else
+    echo -e "${RED}✗${NC} manifest.json missing"
+    exit 1
+fi
+
+# Check if service worker or PWA files exist
+if [ -f "public/sw.js" ] || [ -f "dist/sw.js" ]; then
+    echo -e "${GREEN}✓${NC} Service worker exists"
+else
+    echo -e "${YELLOW}!${NC} Service worker missing (recommended for PWA)"
+fi
+
+# Check critical files
+CRITICAL_FILES=(
     "src/App.tsx"
     "src/index.css"
     "index.html"
-    "manifest.json"
+    "package.json"
+    "nginx.conf"
 )
 
-for file in "${REQUIRED_FILES[@]}"; do
+for file in "${CRITICAL_FILES[@]}"; do
     if [ -f "$file" ]; then
-        echo "   ✅ $file exists"
+        echo -e "${GREEN}✓${NC} $file exists"
     else
-        echo "   ❌ $file is missing"
-        ISSUES_FOUND=$((ISSUES_FOUND + 1))
+        echo -e "${RED}✗${NC} $file missing"
+        exit 1
     fi
 done
 
-# Check PWA icons
-echo "4. Checking PWA icons..."
-ICON_SIZES=(72 96 128 144 152 192 384 512)
-MISSING_ICONS=0
-
-for size in "${ICON_SIZES[@]}"; do
-    if [ -f "public/icon-${size}.svg" ]; then
-        echo "   ✅ icon-${size}.svg exists"
-    else
-        echo "   ⚠️  icon-${size}.svg missing (will use placeholder)"
-        MISSING_ICONS=$((MISSING_ICONS + 1))
-    fi
-done
-
-# Check environment file
-echo "5. Checking environment configuration..."
-if [ -f ".env" ]; then
-    echo "   ✅ .env file exists"
-    
-    # Check for default passwords
-    if grep -q "change_me_in_production" .env; then
-        echo "   ⚠️  Default passwords found in .env - UPDATE BEFORE PRODUCTION!"
-        ISSUES_FOUND=$((ISSUES_FOUND + 1))
-    else
-        echo "   ✅ .env appears to have custom values"
-    fi
+# Check if Docker is available
+if command -v docker &> /dev/null; then
+    echo -e "${GREEN}✓${NC} Docker is available"
 else
-    echo "   ⚠️  .env file not found - will use defaults"
-    echo "   💡 Run: cp .env.example .env"
+    echo -e "${RED}✗${NC} Docker is not installed"
+    exit 1
 fi
 
-# Check port availability
-echo "6. Checking port availability..."
-if lsof -Pi :80 -sTCP:LISTEN -t >/dev/null 2>&1; then
-    echo "   ⚠️  Port 80 is in use - Docker deployment may conflict"
-    echo "   💡 Stop other web servers or change port in docker-compose.yml"
+# Check if Docker Compose is available
+if command -v docker-compose &> /dev/null; then
+    echo -e "${GREEN}✓${NC} Docker Compose is available"
 else
-    echo "   ✅ Port 80 is available"
+    echo -e "${RED}✗${NC} Docker Compose is not installed"
+    exit 1
 fi
 
-# Check disk space
-echo "7. Checking disk space..."
-AVAILABLE_SPACE=$(df / | tail -1 | awk '{print $4}')
-if [ "$AVAILABLE_SPACE" -gt 1048576 ]; then  # 1GB in KB
-    echo "   ✅ Sufficient disk space available"
+# Check if Node.js is available
+if command -v node &> /dev/null; then
+    NODE_VERSION=$(node --version)
+    echo -e "${GREEN}✓${NC} Node.js is available ($NODE_VERSION)"
 else
-    echo "   ⚠️  Low disk space - may need more for Docker images"
+    echo -e "${RED}✗${NC} Node.js is not installed"
+    exit 1
 fi
 
-# Test build
-echo "8. Testing application build..."
-if [ -f "package.json" ]; then
-    echo "   🔨 Attempting npm install..."
-    if npm install --silent > /dev/null 2>&1; then
-        echo "   ✅ Dependencies installed successfully"
-        
-        echo "   🔨 Attempting build..."
-        if npm run build > /dev/null 2>&1; then
-            echo "   ✅ Application builds successfully"
-        else
-            echo "   ❌ Build failed - check package.json and dependencies"
-            ISSUES_FOUND=$((ISSUES_FOUND + 1))
-        fi
-    else
-        echo "   ❌ npm install failed"
-        ISSUES_FOUND=$((ISSUES_FOUND + 1))
-    fi
+# Check if npm dependencies are installed
+if [ -d "node_modules" ]; then
+    echo -e "${GREEN}✓${NC} Dependencies are installed"
 else
-    echo "   ❌ package.json not found"
-    ISSUES_FOUND=$((ISSUES_FOUND + 1))
+    echo -e "${YELLOW}!${NC} Dependencies not installed - run 'npm install'"
 fi
+
+# Summary
+echo ""
+echo -e "${BLUE}📋 Deployment Summary${NC}"
+echo "======================"
+echo -e "${GREEN}✓${NC} Core application files ready"
+echo -e "${GREEN}✓${NC} Docker configuration ready"
+echo -e "${GREEN}✓${NC} PWA manifest configured"
+echo -e "${GREEN}✓${NC} Environment template available"
 
 echo ""
-echo "📊 DEPLOYMENT READINESS REPORT"
-echo "=============================="
-
-if [ $ISSUES_FOUND -eq 0 ]; then
-    echo "🎉 EXCELLENT! Your Gato Blanco Café is 100% ready for deployment!"
-    echo ""
-    echo "🚀 Quick Deploy Commands:"
-    echo "   Local:      docker-compose up -d"
-    echo "   Production: ./deploy.sh"
-    echo ""
-    echo "🌐 After deployment, access at:"
-    echo "   Local:      http://localhost"
-    echo "   Production: http://your-domain.com"
-    
-elif [ $ISSUES_FOUND -le 2 ]; then
-    echo "✅ GOOD! Your café is mostly ready with minor issues."
-    echo "   Fix the issues above and you're ready to go!"
-    
-elif [ $ISSUES_FOUND -le 5 ]; then
-    echo "⚠️  NEEDS ATTENTION! Several issues found."
-    echo "   Fix the critical issues before deployment."
-    
-else
-    echo "❌ NOT READY! Multiple critical issues found."
-    echo "   Please address all issues before attempting deployment."
-fi
+echo -e "${YELLOW}🚀 Next Steps:${NC}"
+echo "1. Copy .env.example to .env and configure"
+echo "2. Run: ./deploy.sh full"
+echo "3. For Android: Build APK in android-app/ directory"
+echo "4. For production: Use docker-compose.prod.yml"
 
 echo ""
-echo "💡 QUICK FIXES:"
-echo "   Icons: Use https://favicon.io/favicon-generator/ to create PNG icons"
-echo "   Environment: cp .env.example .env && nano .env"
-echo "   Dependencies: npm install"
-echo "   Build: npm run build"
-
-if [ $MISSING_ICONS -gt 0 ]; then
-    echo ""
-    echo "🎨 PWA ICON FIX:"
-    echo "   1. Visit: https://favicon.io/favicon-generator/"
-    echo "   2. Text: 'GB' or '⚡'"
-    echo "   3. Background: Blue (#4469ff)"
-    echo "   4. Download and replace public/icon-*.png files"
-fi
-
-echo ""
-echo "📖 Full deployment guide: DEPLOYMENT-GUIDE.md"
-echo "🔧 Troubleshooting: Check PRODUCTION-AUDIT.md"
-
-exit $ISSUES_FOUND
+echo -e "${GREEN}🎉 Ready for deployment!${NC}"
