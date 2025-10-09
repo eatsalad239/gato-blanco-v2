@@ -109,7 +109,9 @@ function App() {
                 </motion.div>
                 <div>
                   <h1 className="text-2xl font-black nuclear-text">🇨🇴 GATO BLANCO 🇨🇴</h1>
-                  <p className="text-sm text-electric-cyan font-medium">CAFÉ COLOMBIANO PREMIUM</p>
+                  <p className="text-sm text-electric-cyan font-medium">
+                    {currentLanguage?.code === 'es' ? 'CAFÉ COLOMBIANO PREMIUM' : 'PREMIUM COLOMBIAN COFFEE'}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -136,19 +138,24 @@ function App() {
               {isGringo && (
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow hidden sm:flex">
                   <Crown size={14} className="mr-1" />
-                  VISITANTE VIP PREMIUM
+                  {currentLanguage?.code === 'es' ? 'VISITANTE VIP PREMIUM' : 'VIP PREMIUM VISITOR'}
                 </Badge>
               )}
               <LanguageSwitcher />
               {!isMobile && <CartDrawer />}
-              <Button
+                <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAdminMode(!isAdminMode)}
                 className="gap-2 nuclear-button"
               >
                 <UserCheck size={16} />
-                <span className="hidden sm:inline">{isAdminMode ? 'EXIT ADMIN' : '🚀 ADMIN'}</span>
+                <span className="hidden sm:inline">
+                  {isAdminMode 
+                    ? (currentLanguage?.code === 'es' ? 'SALIR ADMIN' : 'EXIT ADMIN')
+                    : (currentLanguage?.code === 'es' ? '🚀 ADMIN' : '🚀 ADMIN')
+                  }
+                </span>
               </Button>
             </motion.div>
           </div>
@@ -206,7 +213,10 @@ function App() {
                     }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    ☕ CAFÉ COLOMBIANO PREMIUM ☕
+                    {currentLanguage?.code === 'es' 
+                      ? '☕ CAFÉ COLOMBIANO PREMIUM ☕'
+                      : '☕ PREMIUM COLOMBIAN COFFEE ☕'
+                    }
                   </motion.h1>
                   <motion.p 
                     className="text-2xl sm:text-4xl text-electric-cyan font-bold"
@@ -214,7 +224,10 @@ function App() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
-                    🇨🇴 AUTÉNTICA EXPERIENCIA PAISA 🇨🇴
+                    {currentLanguage?.code === 'es'
+                      ? '🇨🇴 AUTÉNTICA EXPERIENCIA PAISA 🇨🇴'
+                      : '🇨🇴 AUTHENTIC PAISA EXPERIENCE 🇨🇴'
+                    }
                   </motion.p>
                   <motion.p 
                     className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
@@ -222,9 +235,10 @@ function App() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8 }}
                   >
-                    Experience the authentic Colombian coffee culture in the heart of Zona Rosa, Medellín! 
-                    Our expert baristas create artisanal beverages with the finest Colombian beans, 
-                    bringing you the true paisa spirit! 🇨🇴☕
+                    {currentLanguage?.code === 'es'
+                      ? 'Experimenta la auténtica cultura del café colombiano en el corazón de la Zona Rosa, Medellín! Nuestros baristas expertos crean bebidas artesanales con los mejores granos colombianos, ¡trayéndote el verdadero espíritu paisa! 🇨🇴☕'
+                      : t.hero.description
+                    }
                   </motion.p>
                 </div>
                 <motion.div 
@@ -239,7 +253,10 @@ function App() {
                     onClick={() => setActiveTab('services')}
                   >
                     <Coffee size={24} className="mr-2" />
-                    🇨🇴 DESCUBRIR SERVICIOS
+                    {currentLanguage?.code === 'es' 
+                      ? '🇨🇴 DESCUBRIR SERVICIOS'
+                      : '🇨🇴 DISCOVER SERVICES'
+                    }
                   </Button>
                   <Button 
                     size="lg" 
@@ -248,7 +265,10 @@ function App() {
                     onClick={() => setActiveTab('events')}
                   >
                     <MusicNote size={24} />
-                    🎵 EVENTOS PAISAS
+                    {currentLanguage?.code === 'es'
+                      ? '🎵 EVENTOS PAISAS'
+                      : '🎵 PAISA EVENTS'
+                    }
                   </Button>
                 </motion.div>
               </motion.section>
@@ -261,10 +281,10 @@ function App() {
                 transition={{ delay: 1.2, staggerChildren: 0.1 }}
               >
                 {[
-                  { icon: Star, value: "⭐ 4.9/5", label: "CALIFICACIÓN PREMIUM", color: "text-yellow-400" },
-                  { icon: Coffee, value: "☕ 1000+", label: "TAZAS SERVIDAS", color: "text-nuclear-blue" },
-                  { icon: Lightning, value: "🇨🇴 AUTÉNTICO", label: "CAFÉ COLOMBIANO", color: "text-electric-cyan" },
-                  { icon: Sparkle, value: "✨ LEGENDARIO", label: "SABOR PAISA", color: "text-plasma-blue" }
+                  { icon: Star, value: "⭐ 4.9/5", label: currentLanguage?.code === 'es' ? "CALIFICACIÓN PREMIUM" : "PREMIUM RATING", color: "text-yellow-400" },
+                  { icon: Coffee, value: "☕ 1000+", label: currentLanguage?.code === 'es' ? "TAZAS SERVIDAS" : "CUPS SERVED", color: "text-nuclear-blue" },
+                  { icon: Lightning, value: "🇨🇴 AUTÉNTICO", label: currentLanguage?.code === 'es' ? "CAFÉ COLOMBIANO" : "COLOMBIAN COFFEE", color: "text-electric-cyan" },
+                  { icon: Sparkle, value: "✨ LEGENDARIO", label: currentLanguage?.code === 'es' ? "SABOR PAISA" : "PAISA FLAVOR", color: "text-plasma-blue" }
                 ].map((stat, index) => (
                   <motion.div
                     key={index}
@@ -296,16 +316,28 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🇨🇴 MENÚ COLOMBIANO 🇨🇴</h2>
-              <p className="text-xl text-electric-cyan">SABORES AUTÉNTICOS DE COLOMBIA</p>
+              <h2 className="text-4xl font-black nuclear-text">
+                {currentLanguage?.code === 'es' ? '🇨🇴 MENÚ COLOMBIANO 🇨🇴' : '🇨🇴 COLOMBIAN MENU 🇨🇴'}
+              </h2>
+              <p className="text-xl text-electric-cyan">
+                {currentLanguage?.code === 'es' ? 'SABORES AUTÉNTICOS DE COLOMBIA' : 'AUTHENTIC FLAVORS OF COLOMBIA'}
+              </p>
             </motion.div>
             
             <Tabs defaultValue="coffee" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4 nuclear-border">
-                <TabsTrigger value="coffee" className="nuclear-button">☕ COFFEE</TabsTrigger>
-                <TabsTrigger value="food" className="nuclear-button">🍕 FOOD</TabsTrigger>
-                <TabsTrigger value="pastries" className="nuclear-button">🥐 PASTRIES</TabsTrigger>
-                <TabsTrigger value="nonalcoholic" className="nuclear-button">🥤 ALL DAY</TabsTrigger>
+                <TabsTrigger value="coffee" className="nuclear-button">
+                  ☕ {currentLanguage?.code === 'es' ? 'CAFÉ' : 'COFFEE'}
+                </TabsTrigger>
+                <TabsTrigger value="food" className="nuclear-button">
+                  🍕 {currentLanguage?.code === 'es' ? 'COMIDA' : 'FOOD'}
+                </TabsTrigger>
+                <TabsTrigger value="pastries" className="nuclear-button">
+                  🥐 {currentLanguage?.code === 'es' ? 'PASTELES' : 'PASTRIES'}
+                </TabsTrigger>
+                <TabsTrigger value="nonalcoholic" className="nuclear-button">
+                  🥤 {currentLanguage?.code === 'es' ? 'TODO EL DÍA' : 'ALL DAY'}
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="coffee" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -368,24 +400,36 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🍹 CÓCTELES ARTESANALES 🍹</h2>
-              <p className="text-xl text-electric-cyan">BEBIDAS PREMIUM COLOMBIANAS</p>
+              <h2 className="text-4xl font-black nuclear-text">
+                {currentLanguage?.code === 'es' ? '🍹 CÓCTELES ARTESANALES 🍹' : '🍹 ARTISAN COCKTAILS 🍹'}
+              </h2>
+              <p className="text-xl text-electric-cyan">
+                {currentLanguage?.code === 'es' ? 'BEBIDAS PREMIUM COLOMBIANAS' : 'PREMIUM COLOMBIAN BEVERAGES'}
+              </p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
                 <Badge className="bg-nuclear-blue/20 text-nuclear-blue border-nuclear-blue nuclear-glow">
-                  🍹 HAPPY HOUR SPECIALS
+                  {currentLanguage?.code === 'es' ? '🍹 ESPECIALES HORA FELIZ' : '🍹 HAPPY HOUR SPECIALS'}
                 </Badge>
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow">
-                  🌙 MIDNIGHT LOUNGE
+                  {currentLanguage?.code === 'es' ? '🌙 SALÓN NOCTURNO' : '🌙 MIDNIGHT LOUNGE'}
                 </Badge>
               </div>
             </motion.div>
             
             <Tabs defaultValue="cocktails" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4 nuclear-border">
-                <TabsTrigger value="cocktails" className="nuclear-button">🍸 COCKTAILS</TabsTrigger>
-                <TabsTrigger value="beer" className="nuclear-button">🍺 BEER</TabsTrigger>
-                <TabsTrigger value="spirits" className="nuclear-button">🥃 SPIRITS</TabsTrigger>
-                <TabsTrigger value="wine" className="nuclear-button">🍷 WINE</TabsTrigger>
+                <TabsTrigger value="cocktails" className="nuclear-button">
+                  🍸 {currentLanguage?.code === 'es' ? 'CÓCTELES' : 'COCKTAILS'}
+                </TabsTrigger>
+                <TabsTrigger value="beer" className="nuclear-button">
+                  🍺 {currentLanguage?.code === 'es' ? 'CERVEZA' : 'BEER'}
+                </TabsTrigger>
+                <TabsTrigger value="spirits" className="nuclear-button">
+                  🥃 {currentLanguage?.code === 'es' ? 'LICORES' : 'SPIRITS'}
+                </TabsTrigger>
+                <TabsTrigger value="wine" className="nuclear-button">
+                  🍷 {currentLanguage?.code === 'es' ? 'VINO' : 'WINE'}
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="cocktails" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -458,24 +502,40 @@ function App() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-4xl font-black nuclear-text">🇨🇴 SERVICIOS PREMIUM 🇨🇴</h2>
-              <p className="text-xl text-electric-cyan">EXPERIENCIAS EXCLUSIVAS PARA EXTRANJEROS</p>
+              <h2 className="text-4xl font-black nuclear-text">
+                {currentLanguage?.code === 'es' ? '🇨🇴 SERVICIOS PREMIUM 🇨🇴' : '🇨🇴 PREMIUM SERVICES 🇨🇴'}
+              </h2>
+              <p className="text-xl text-electric-cyan">
+                {currentLanguage?.code === 'es' ? 'EXPERIENCIAS EXCLUSIVAS PARA EXTRANJEROS' : 'EXCLUSIVE EXPERIENCES FOR FOREIGNERS'}
+              </p>
               {isGringo && (
                 <Badge className="bg-plasma-blue/20 text-plasma-blue border-plasma-blue nuclear-glow text-lg px-6 py-3">
                   <Crown size={20} className="mr-2" />
-                  🎯 PRECIOS VIP PREMIUM
+                  {currentLanguage?.code === 'es' ? '🎯 PRECIOS VIP PREMIUM' : '🎯 VIP PREMIUM PRICING'}
                 </Badge>
               )}
             </motion.div>
             
             <Tabs defaultValue="tourism" className="space-y-6">
               <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 nuclear-border">
-                <TabsTrigger value="tourism" className="nuclear-button">🌎 TOURISM</TabsTrigger>
-                <TabsTrigger value="classes" className="nuclear-button">📚 CLASSES</TabsTrigger>
-                <TabsTrigger value="events" className="nuclear-button">🎉 EVENTS</TabsTrigger>
-                <TabsTrigger value="party" className="nuclear-button">🎊 PARTY</TabsTrigger>
-                <TabsTrigger value="vip" className="nuclear-button">👑 VIP</TabsTrigger>
-                <TabsTrigger value="nightlife" className="nuclear-button">🌙 NIGHTLIFE</TabsTrigger>
+                <TabsTrigger value="tourism" className="nuclear-button">
+                  🌎 {currentLanguage?.code === 'es' ? 'TURISMO' : 'TOURISM'}
+                </TabsTrigger>
+                <TabsTrigger value="classes" className="nuclear-button">
+                  📚 {currentLanguage?.code === 'es' ? 'CLASES' : 'CLASSES'}
+                </TabsTrigger>
+                <TabsTrigger value="events" className="nuclear-button">
+                  🎉 {currentLanguage?.code === 'es' ? 'EVENTOS' : 'EVENTS'}
+                </TabsTrigger>
+                <TabsTrigger value="party" className="nuclear-button">
+                  🎊 {currentLanguage?.code === 'es' ? 'FIESTA' : 'PARTY'}
+                </TabsTrigger>
+                <TabsTrigger value="vip" className="nuclear-button">
+                  👑 VIP
+                </TabsTrigger>
+                <TabsTrigger value="nightlife" className="nuclear-button">
+                  🌙 {currentLanguage?.code === 'es' ? 'VIDA NOCTURNA' : 'NIGHTLIFE'}
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="tourism" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -587,23 +647,43 @@ function App() {
                 <div className="h-4 bg-gradient-to-r from-nuclear-blue via-electric-cyan to-plasma-blue"></div>
                 <CardHeader className="text-center">
                   <CardTitle className="text-3xl sm:text-4xl font-black nuclear-text">
-                    ☕ REVOLUCIÓN CAFETERA ☕
+                    {currentLanguage?.code === 'es' ? '☕ REVOLUCIÓN CAFETERA ☕' : '☕ COFFEE REVOLUTION ☕'}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-8">
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    Welcome to the most authentic Colombian coffee experience in Zona Rosa! 🇨🇴 
-                    Our premium café celebrates the rich heritage of Colombian coffee culture 
-                    while creating unforgettable experiences for visitors from around the world. 
-                    We blend traditional paisa hospitality with modern service excellence! ☕🎉
+                    {currentLanguage?.code === 'es'
+                      ? 'Bienvenido a la experiencia de café colombiano más auténtica en Zona Rosa! 🇨🇴 Nuestro café premium celebra la rica herencia de la cultura cafetera colombiana mientras crea experiencias inolvidables para visitantes de todo el mundo. ¡Combinamos la hospitalidad paisa tradicional con la excelencia del servicio moderno! ☕🎉'
+                      : t.about.story
+                    }
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
                     {[
-                      { icon: MapPin, title: "UBICACIÓN PRIVILEGIADA", text: "Corazón de Zona Rosa, Medellín 🗺️", color: "text-nuclear-blue" },
-                      { icon: Clock, title: "HORARIOS EXTENDIDOS", text: "Abierto hasta muy tarde ⏰", color: "text-electric-cyan" },
-                      { icon: MusicNote, title: "VIDA NOCTURNA PAISA", text: "Música en vivo y ambiente auténtico 🎵", color: "text-plasma-blue" },
-                      { icon: CalendarIcon, title: "EVENTOS ESPECIALES", text: "Experiencias culturales diarias 🎉", color: "text-nuclear-blue" }
+                      { 
+                        icon: MapPin, 
+                        title: currentLanguage?.code === 'es' ? "UBICACIÓN PRIVILEGIADA" : "PRIME LOCATION", 
+                        text: currentLanguage?.code === 'es' ? "Corazón de Zona Rosa, Medellín 🗺️" : "Heart of Zona Rosa, Medellín 🗺️", 
+                        color: "text-nuclear-blue" 
+                      },
+                      { 
+                        icon: Clock, 
+                        title: currentLanguage?.code === 'es' ? "HORARIOS EXTENDIDOS" : "EXTENDED HOURS", 
+                        text: currentLanguage?.code === 'es' ? "Abierto hasta muy tarde ⏰" : "Open until very late ⏰", 
+                        color: "text-electric-cyan" 
+                      },
+                      { 
+                        icon: MusicNote, 
+                        title: currentLanguage?.code === 'es' ? "VIDA NOCTURNA PAISA" : "PAISA NIGHTLIFE", 
+                        text: currentLanguage?.code === 'es' ? "Música en vivo y ambiente auténtico 🎵" : "Live music and authentic atmosphere 🎵", 
+                        color: "text-plasma-blue" 
+                      },
+                      { 
+                        icon: CalendarIcon, 
+                        title: currentLanguage?.code === 'es' ? "EVENTOS ESPECIALES" : "SPECIAL EVENTS", 
+                        text: currentLanguage?.code === 'es' ? "Experiencias culturales diarias 🎉" : "Daily cultural experiences 🎉", 
+                        color: "text-nuclear-blue" 
+                      }
                     ].map((item, index) => (
                       <motion.div
                         key={index}
@@ -644,10 +724,16 @@ function App() {
             transition={{ delay: 2 }}
           >
             <p className="text-electric-cyan font-bold text-lg">
-              🇨🇴 © 2024 GATO BLANCO - CAFÉ COLOMBIANO AUTÉNTICO 🇨🇴
+              {currentLanguage?.code === 'es'
+                ? '🇨🇴 © 2024 GATO BLANCO - CAFÉ COLOMBIANO AUTÉNTICO 🇨🇴'
+                : '🇨🇴 © 2024 GATO BLANCO - AUTHENTIC COLOMBIAN COFFEE 🇨🇴'
+              }
             </p>
             <p className="text-nuclear-blue font-medium">
-              ☕ Zona Rosa, Medellín - Café Premium & Servicios para Visitantes ☕
+              {currentLanguage?.code === 'es'
+                ? '☕ Zona Rosa, Medellín - Café Premium & Servicios para Visitantes ☕'
+                : '☕ Zona Rosa, Medellín - Premium Coffee & Visitor Services ☕'
+              }
             </p>
             <div className="flex justify-center gap-4 text-plasma-blue">
               <Coffee size={20} />
