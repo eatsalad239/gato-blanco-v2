@@ -89,7 +89,7 @@ export const CartDrawer: React.FC = () => {
                       {cartItem.item.name[currentLanguage?.code || 'en']}
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      {formatPrice(cartItem.price, currency, false)}
+                      {`$${cartItem.price.toLocaleString('es-CO')} COP`}
                     </p>
                   </div>
                   
@@ -136,7 +136,7 @@ export const CartDrawer: React.FC = () => {
             <div className="flex justify-between items-center text-lg font-semibold">
               <span>{t.cart.total}:</span>
               <span className="text-primary font-mono">
-                {formatPrice(total, currency, false)}
+                {currency === 'USD' ? `$${(total / 4200).toFixed(2)}` : `$${total.toLocaleString('es-CO')} COP`}
               </span>
             </div>
             

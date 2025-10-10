@@ -12,7 +12,7 @@ export const languages: Language[] = [
 ];
 
 export const useLanguageStore = create<LanguageState>((set) => ({
-  currentLanguage: languages[1], // Default to Spanish
+  currentLanguage: languages[0], // Default to English for global compatibility
   setLanguage: (language) => set({ currentLanguage: language }),
 }));
 

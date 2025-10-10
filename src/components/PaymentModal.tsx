@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,11 +11,13 @@ import {
   ShieldCheck, 
   AppleLogo,
   GoogleLogo,
-  Lock
+  Lock,
+  CheckCircle,
+  XCircle
 } from '@phosphor-icons/react';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice } from '../lib/pricing';
-import { notificationService } from '../lib/notifications';
+import { toast } from 'sonner';
 
 interface PaymentModalProps {
   total: number;
@@ -36,9 +39,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onCustomerInfo
 }) => {
   const { currentLanguage } = useLanguageStore();
-  const t = translations[currentLanguage.code];
+  const t = translations[currentLanguage?.code || 'en'];
   
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple' | 'google'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple' | 'google' | 'cash'>('card');
   const [cardData, setCardData] = useState({
     number: '',
     expiry: '',
@@ -48,68 +51,79 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     phone: ''
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'failed'>('idle');
 
-  const handlePayment = async (method: 'card' | 'apple' | 'google') => {
+  const handlePayment = async () => {
     setIsProcessing(true);
-    
-    try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In a real app, this would integrate with:
-      // - Stripe for card payments
-      // - Apple Pay API for Apple Pay
-      // - Google Pay API for Google Pay
-      // - Local Colombian payment processors like PSE, Nequi, etc.
-      
-      notificationService.paymentSuccessful(total, currency);
-      onSuccess();
-      onClose();
-    } catch (error) {
-      notificationService.paymentFailed('Payment processing failed. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+    setPaymentStatus('processing');
 
-  const handleApplePay = () => {
-    // Check if Apple Pay is available
-    if ((window as any).ApplePaySession && (window as any).ApplePaySession.canMakePayments()) {
-      handlePayment('apple');
-    } else {
-      notificationService.error('Apple Pay is not available on this device');
-    }
-  };
-
-  const handleGooglePay = () => {
-    // Check if Google Pay is available
-    if (window.google && window.google.payments) {
-      handlePayment('google');
-    } else {
-      notificationService.error('Google Pay is not available on this browser');
-    }
-  };
-
-  const handleCardPayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!cardData.number || !cardData.expiry || !cardData.cvv || !cardData.name) {
-      notificationService.error('Please fill in all required fields');
-      return;
-    }
-    
-    // Pass customer info back to parent component
+    // Customer info callback
     if (onCustomerInfo) {
       onCustomerInfo({
-        name: cardData.name,
-        email: cardData.email,
+        name: cardData.name || 'Anonymous Customer',
+        email: cardData.email || 'anonymous@example.com',
+        phone: cardData.phone
+      });
+    }
+
+    // Simulate payment processing
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simulate payment success (90% success rate for demo)
+      if (Math.random() > 0.1) {
+        setPaymentStatus('success');
+        toast.success(t.payment.success);
+        setTimeout(() => {
+          onSuccess();
+          onClose();
+          resetForm();
+        }, 1500);
+      } else {
+        throw new Error('Payment failed');
+      }
+    } catch (error) {
+      setPaymentStatus('failed');
+      toast.error(t.payment.failed);
+      setTimeout(() => {
+        setPaymentStatus('idle');
+        setIsProcessing(false);
+      }, 2000);
+    }
+  };
+
+  const handleApplePay = async () => {
+    toast.info('Apple Pay integration would be implemented here');
+    handlePayment();
+  };
+
+  const handleGooglePay = async () => {
+    toast.info('Google Pay integration would be implemented here');
+    handlePayment();
+  };
+
+  const handleCashPayment = () => {
+    if (onCustomerInfo) {
+      onCustomerInfo({
+        name: cardData.name || 'Cash Customer',
+        email: cardData.email || 'cash@gatoblanco.com',
         phone: cardData.phone
       });
     }
     
-    handlePayment('card');
+    toast.success('Cash payment recorded - please pay at counter');
+    onSuccess();
+    onClose();
+    resetForm();
   };
 
-  const formatCardNumber = (value: string): string => {
+  const resetForm = () => {
+    setCardData({ number: '', expiry: '', cvv: '', name: '', email: '', phone: '' });
+    setPaymentStatus('idle');
+    setIsProcessing(false);
+  };
+
+  const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = v.match(/\d{4,16}/g);
     const match = matches && matches[0] || '';
@@ -124,218 +138,218 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     }
   };
 
-  const formatExpiry = (value: string): string => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    if (v.length >= 2) {
-      return v.substring(0, 2) + '/' + v.substring(2, 4);
+  const isFormValid = () => {
+    if (paymentMethod === 'cash') {
+      return cardData.name && cardData.email;
     }
-    return v;
+    if (paymentMethod === 'card') {
+      return cardData.number && cardData.expiry && cardData.cvv && cardData.name && cardData.email;
+    }
+    return cardData.name && cardData.email;
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock size={20} className="text-accent" />
-            Secure Payment
-          </CardTitle>
-          <CardDescription>
-            Complete your {orderType} purchase - {formatPrice(total, currency, false)}
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          {/* Payment Method Selection */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Choose Payment Method</Label>
-            
-            {/* Apple Pay */}
-            <Button
-              onClick={handleApplePay}
-              disabled={isProcessing}
-              className="w-full h-12 bg-black hover:bg-black/90 text-white border border-gray-300 flex items-center gap-3"
-            >
-              <AppleLogo size={20} weight="fill" />
-              <span className="font-medium">Pay with Apple Pay</span>
-            </Button>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold nuclear-text">
+            💳 Payment Checkout 💳
+          </DialogTitle>
+          <DialogDescription>
+            Complete your order for {currency === 'USD' ? `$${(total / 4200).toFixed(2)}` : `$${total.toLocaleString('es-CO')} COP`}
+          </DialogDescription>
+        </DialogHeader>
 
-            {/* Google Pay */}
-            <Button
-              onClick={handleGooglePay}
-              disabled={isProcessing}
-              variant="outline"
-              className="w-full h-12 border-2 flex items-center gap-3"
-            >
-              <GoogleLogo size={20} />
-              <span className="font-medium">Pay with Google Pay</span>
-            </Button>
+        {paymentStatus === 'processing' && (
+          <div className="text-center py-8">
+            <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-lg">{t.payment.processing}</p>
+          </div>
+        )}
 
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or pay with card</span>
+        {paymentStatus === 'success' && (
+          <div className="text-center py-8">
+            <CheckCircle size={64} className="text-green-500 mx-auto mb-4" />
+            <p className="text-lg text-green-600">{t.payment.success}</p>
+          </div>
+        )}
+
+        {paymentStatus === 'failed' && (
+          <div className="text-center py-8">
+            <XCircle size={64} className="text-red-500 mx-auto mb-4" />
+            <p className="text-lg text-red-600">{t.payment.failed}</p>
+          </div>
+        )}
+
+        {paymentStatus === 'idle' && (
+          <div className="space-y-6">
+            {/* Payment Method Selection */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Choose Payment Method</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Button
+                  variant={paymentMethod === 'apple' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('apple')}
+                  className="h-16 flex-col gap-2"
+                >
+                  <AppleLogo size={24} />
+                  <span className="text-xs">Apple Pay</span>
+                </Button>
+                
+                <Button
+                  variant={paymentMethod === 'google' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('google')}
+                  className="h-16 flex-col gap-2"
+                >
+                  <GoogleLogo size={24} />
+                  <span className="text-xs">Google Pay</span>
+                </Button>
+                
+                <Button
+                  variant={paymentMethod === 'card' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('card')}
+                  className="h-16 flex-col gap-2"
+                >
+                  <CreditCard size={24} />
+                  <span className="text-xs">Card</span>
+                </Button>
+                
+                <Button
+                  variant={paymentMethod === 'cash' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('cash')}
+                  className="h-16 flex-col gap-2"
+                >
+                  <DeviceMobile size={24} />
+                  <span className="text-xs">Cash</span>
+                </Button>
               </div>
             </div>
 
-            {/* Card Payment Form */}
-            <form onSubmit={handleCardPayment} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="cardNumber">Card Number</Label>
-                <Input
-                  id="cardNumber"
-                  type="text"
-                  placeholder="1234 5678 9012 3456"
-                  value={cardData.number}
-                  onChange={(e) => setCardData(prev => ({ 
-                    ...prev, 
-                    number: formatCardNumber(e.target.value) 
-                  }))}
-                  maxLength={19}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="expiry">Expiry</Label>
+            {/* Customer Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Customer Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="customer-name">Full Name *</Label>
                   <Input
-                    id="expiry"
-                    type="text"
-                    placeholder="MM/YY"
-                    value={cardData.expiry}
-                    onChange={(e) => setCardData(prev => ({ 
-                      ...prev, 
-                      expiry: formatExpiry(e.target.value) 
-                    }))}
-                    maxLength={5}
-                    required
+                    id="customer-name"
+                    value={cardData.name}
+                    onChange={(e) => setCardData({ ...cardData, name: e.target.value })}
+                    placeholder="Enter your full name"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cvv">CVV</Label>
+                <div>
+                  <Label htmlFor="customer-email">Email *</Label>
                   <Input
-                    id="cvv"
-                    type="text"
-                    placeholder="123"
-                    value={cardData.cvv}
-                    onChange={(e) => setCardData(prev => ({ 
-                      ...prev, 
-                      cvv: e.target.value.replace(/[^0-9]/g, '') 
-                    }))}
-                    maxLength={4}
-                    required
+                    id="customer-email"
+                    type="email"
+                    value={cardData.email}
+                    onChange={(e) => setCardData({ ...cardData, email: e.target.value })}
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="customer-phone">Phone (optional)</Label>
+                  <Input
+                    id="customer-phone"
+                    value={cardData.phone}
+                    onChange={(e) => setCardData({ ...cardData, phone: e.target.value })}
+                    placeholder="+57 300 123 4567"
                   />
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="cardName">Cardholder Name</Label>
-                <Input
-                  id="cardName"
-                  type="text"
-                  placeholder="John Doe"
-                  value={cardData.name}
-                  onChange={(e) => setCardData(prev => ({ 
-                    ...prev, 
-                    name: e.target.value 
-                  }))}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="john@example.com"
-                  value={cardData.email}
-                  onChange={(e) => setCardData(prev => ({ 
-                    ...prev, 
-                    email: e.target.value 
-                  }))}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+57 300 123 4567"
-                  value={cardData.phone}
-                  onChange={(e) => setCardData(prev => ({ 
-                    ...prev, 
-                    phone: e.target.value 
-                  }))}
-                />
-              </div>
-
-              {/* Security Badge */}
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                <ShieldCheck size={16} className="text-accent" />
-                <span>Your payment information is encrypted and secure</span>
-              </div>
-
-              {/* Payment Summary */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="font-medium">Total:</span>
-                  <span className="text-xl font-bold text-accent">
-                    {formatPrice(total, currency, false)}
-                  </span>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={onClose}
-                    disabled={isProcessing}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={isProcessing}
-                    className="flex-1 bg-accent hover:bg-accent/90 text-accent-foreground gap-2"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard size={16} />
-                        Pay Now
-                      </>
-                    )}
-                  </Button>
+            {/* Payment Details */}
+            {paymentMethod === 'card' && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Card Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="card-number">Card Number</Label>
+                    <Input
+                      id="card-number"
+                      value={cardData.number}
+                      onChange={(e) => setCardData({ ...cardData, number: formatCardNumber(e.target.value) })}
+                      placeholder="1234 5678 9012 3456"
+                      maxLength={19}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="card-expiry">Expiry Date</Label>
+                      <Input
+                        id="card-expiry"
+                        value={cardData.expiry}
+                        onChange={(e) => setCardData({ ...cardData, expiry: e.target.value })}
+                        placeholder="MM/YY"
+                        maxLength={5}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="card-cvv">CVV</Label>
+                      <Input
+                        id="card-cvv"
+                        value={cardData.cvv}
+                        onChange={(e) => setCardData({ ...cardData, cvv: e.target.value })}
+                        placeholder="123"
+                        maxLength={4}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </form>
+            )}
+
+            {paymentMethod === 'cash' && (
+              <div className="bg-muted p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">Cash Payment Instructions</h3>
+                <p className="text-sm text-muted-foreground">
+                  Please proceed to the counter to complete your cash payment. Your order will be prepared once payment is received.
+                </p>
+              </div>
+            )}
+
+            {/* Order Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>Total:</span>
+                  <span className="nuclear-text">{currency === 'USD' ? `$${(total / 4200).toFixed(2)}` : `$${total.toLocaleString('es-CO')} COP`}</span>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <ShieldCheck size={16} className="text-green-500" />
+                  <span className="text-xs text-muted-foreground">Secure payment processing</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <Button variant="outline" onClick={onClose} className="flex-1">
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  if (paymentMethod === 'apple') handleApplePay();
+                  else if (paymentMethod === 'google') handleGooglePay();
+                  else if (paymentMethod === 'cash') handleCashPayment();
+                  else handlePayment();
+                }}
+                disabled={!isFormValid() || isProcessing}
+                className="flex-1 nuclear-button"
+              >
+                {paymentMethod === 'cash' ? 'Record Cash Payment' : `Pay ${currency === 'USD' ? `$${(total / 4200).toFixed(2)}` : `$${total.toLocaleString('es-CO')} COP`}`}
+              </Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
-
-// Type declarations for payment APIs
-declare global {
-  interface Window {
-    ApplePaySession?: any;
-    google?: {
-      payments?: any;
-    };
-  }
-}

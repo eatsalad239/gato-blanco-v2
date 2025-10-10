@@ -17,12 +17,7 @@
         "prod:up": "docker-compose up -d",
         "prod:down": "docker-compose down",
         "prod:logs": "docker-compose logs -f",
-        "backup:db": "docker exec -t $(docker-compose ps -q database) pg_dumpall -c -U gato_blanco_user > backup_$(date +%Y%m%d_%H%M%S).sql",
-        "icons": "node create-pwa-icons.js",
-        "android:build": "cd android-app && ./gradlew assembleRelease",
-        "android:install": "cd android-app && ./gradlew installDebug",
-        "check:deployment": "./check-deployment.sh",
-        "setup:production": "cp .env.example .env && echo 'Please edit .env file with your production settings'"
+        "backup:db": "docker exec -t $(docker-compose ps -q database) pg_dumpall -c -U gato_blanco_user > backup_$(date +%Y%m%d_%H%M%S).sql"
     },
     "dependencies": {
         "@github/spark": "^0.39.0",
