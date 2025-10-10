@@ -32,6 +32,7 @@ import { BookingDialog } from './components/BookingDialog';
 import { SimpleAdminDashboard } from './components/SimpleAdminDashboard';
 import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
+import { PayButton } from './components/PayButton';
 
 import { useLanguageStore, translations } from './lib/translations';
 import { fullMenu, services } from './data/content';
@@ -270,6 +271,7 @@ function App() {
                       : '🎵 PAISA EVENTS'
                     }
                   </Button>
+                  <PayButton totalCOP={20000} />
                 </motion.div>
               </motion.section>
 
