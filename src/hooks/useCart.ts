@@ -11,6 +11,7 @@ interface CartItem {
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useKV<CartItem[]>('cart-items', []);
+  const [tip, setTipValue] = useKV<number>('cart-tip', 0);
 
   const addToCart = (item: MenuItem, price: number, quantity: number = 1) => {
     setCartItems(currentItems => {
@@ -35,7 +36,7 @@ export const useCart = () => {
   };
 
   const removeFromCart = (cartItemId: string) => {
-    setCartItems(currentItems => 
+    setCartItems(currentItems =>
       (currentItems || []).filter(item => item.id !== cartItemId)
     );
   };
@@ -55,6 +56,7 @@ export const useCart = () => {
 
   const clearCart = () => {
     setCartItems([]);
+    setTipValue(0);
   };
 
   const getTotal = () => {
@@ -65,6 +67,18 @@ export const useCart = () => {
     return (cartItems || []).reduce((count, item) => count + item.quantity, 0);
   };
 
+  const setTip = (tipAmount: number) => {
+    setTipValue(tipAmount);
+  };
+
+  const getTip = () => {
+    return tip || 0;
+  };
+
+  const getTotalWithTip = () => {
+    return getTotal() + getTip();
+  };
+
   return {
     cartItems: cartItems || [],
     addToCart,
@@ -72,6 +86,9 @@ export const useCart = () => {
     updateQuantity,
     clearCart,
     getTotal,
-    getItemCount
+    getItemCount,
+    setTip,
+    getTip,
+    getTotalWithTip
   };
 };
