@@ -71,7 +71,21 @@ export const gringoConnectionInfo = {
       en: 'Networking events for expats and local entrepreneurs.',
       es: 'Eventos de networking para expatriados y emprendedores locales.',
     },
+  ],  services: [
+    {
+      en: 'Backpacker Budget Tour – Street art, local markets and public transport experiences.',
+      es: 'Tour de Mochileros – Arte callejero, mercados locales y experiencias en transporte público.',
+    },
+    {
+      en: 'VIP Executive Experience – Private chauffeur, upscale dining and business networking.',
+      es: 'Experiencia Ejecutiva VIP – Chofer privado, cenas exclusivas y networking empresarial.',
+    },
+    {
+      en: 'Affiliate Partner Program – Earn commissions by referring travellers to Gato Blanco services.',
+      es: 'Programa de Afiliados – Gana comisiones refiriendo viajeros a los servicios de Gato Blanco.',
+    },
   ],
+
   
 
 };
