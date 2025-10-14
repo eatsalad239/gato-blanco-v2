@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Trash, Plus, Minus } from '@phosphor-icons/react';
+import { Input } from '@/components/ui/input';
+import { ShoppingCart, Trash, Plus, Minus, Sparkle } from '@phosphor-icons/react';
 import { useCart } from '../hooks/useCart';
 import { useAdmin } from '../hooks/useAdmin';
 import { useLanguageStore, translations } from '../lib/translations';
@@ -11,17 +12,35 @@ import { PaymentModal } from './PaymentModal';
 import { toast } from 'sonner';
 
 export const CartDrawer: React.FC = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart, setTip, getTip, getTotalWithTip } = useCart();
   const { addOrder } = useAdmin();
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '' });
+  const [customTip, setCustomTip] = useState('');
+  const [selectedTipPercent, setSelectedTipPercent] = useState<number | null>(null);
   
   const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
   const total = getTotal();
   const itemCount = getItemCount();
+  const tipAmount = getTip();
+  const totalWithTip = getTotalWithTip();
+
+  const handleTipSelection = (percent: number) => {
+    const tipValue = total * (percent / 100);
+    setTip(tipValue);
+    setSelectedTipPercent(percent);
+    setCustomTip('');
+  };
+
+  const handleCustomTip = (value: string) => {
+    setCustomTip(value);
+    const tipValue = parseFloat(value) || 0;
+    setTip(tipValue);
+    setSelectedTipPercent(null);
+  };
 
   const handleCheckout = () => {
     setPaymentModalOpen(true);
@@ -35,7 +54,7 @@ export const CartDrawer: React.FC = () => {
         quantity: item.quantity,
         price: item.price
       })),
-      total,
+      total: totalWithTip,
       currency,
       customerName: customerInfo.name || 'Anonymous',
       customerEmail: customerInfo.email || 'anonymous@example.com',
@@ -43,123 +62,187 @@ export const CartDrawer: React.FC = () => {
       isGringo,
       type: 'pickup'
     });
-
     clearCart();
     setPaymentModalOpen(false);
     toast.success('Order placed successfully! 🎉');
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="relative gap-2">
-          <ShoppingCart size={20} />
-          {itemCount > 0 && (
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center p-0">
-              {itemCount}
-            </Badge>
-          )}
-          {t.menu.viewCart}
-        </Button>
-      </SheetTrigger>
-      
-      <SheetContent className="w-full sm:max-w-lg">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <ShoppingCart size={24} />
-            {t.cart.title}
-          </SheetTitle>
-          <SheetDescription>
-            {itemCount === 0 ? t.cart.empty : `${itemCount} items`}
-          </SheetDescription>
-        </SheetHeader>
+    <>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="relative gap-2">
+            <ShoppingCart size={20} />
+            {itemCount > 0 && (
+              <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center p-0">
+                {itemCount}
+              </Badge>
+            )}
+            {t.menu.viewCart}
+          </Button>
+        </SheetTrigger>
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              {t.menu.yourCart}
+              {isGringo && (
+                <Badge variant="secondary" className="gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                  <Sparkle size={14} weight="fill" />
+                  Gringo Connection
+                </Badge>
+              )}
+            </SheetTitle>
+            <SheetDescription>
+              {itemCount === 0 ? t.menu.emptyCart : `${itemCount} ${itemCount === 1 ? 'item' : 'items'} in cart`}
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="mt-6 flex-1 overflow-auto">
-          {cartItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-muted-foreground">
-              <ShoppingCart size={64} className="mb-4 opacity-50" />
-              <p>{t.cart.empty}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {cartItems.map((cartItem) => (
-                <div key={cartItem.id} className="flex items-center gap-3 p-4 bg-card rounded-lg border">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-card-foreground">
-                      {cartItem.item.name[currentLanguage?.code || 'en']}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {`$${cartItem.price.toLocaleString('es-CO')} COP`}
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
+          <div className="mt-6 space-y-4">
+            {cartItems.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <ShoppingCart size={48} className="mx-auto mb-4 opacity-50" />
+                <p>{t.menu.emptyCart}</p>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  {cartItems.map((item) => (
+                    <div key={item.id} className="flex gap-4 p-4 rounded-lg border bg-card">
+                      <div className="flex-1 space-y-1">
+                        <h4 className="font-medium leading-none">
+                          {currentLanguage?.code === 'en' ? item.item.name.en : item.item.name.es}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {formatPrice(item.price, currency)} each
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Minus size={16} />
+                          </Button>
+                          <span className="w-8 text-center font-medium">{item.quantity}</span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Plus size={16} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => removeFromCart(item.id)}
+                            className="ml-auto h-8 w-8 p-0"
+                          >
+                            <Trash size={16} />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="text-right font-semibold">
+                        {formatPrice(item.price * item.quantity, currency)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Tip Section */}
+                <div className="border-t pt-4 space-y-3">
+                  <h4 className="font-medium">Add Tip</h4>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[10, 15, 20].map((percent) => (
+                      <Button
+                        key={percent}
+                        variant={selectedTipPercent === percent ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => handleTipSelection(percent)}
+                        className="h-10"
+                      >
+                        {percent}%
+                      </Button>
+                    ))}
                     <Button
-                      variant="outline"
+                      variant={customTip ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() => updateQuantity(cartItem.id, cartItem.quantity - 1)}
-                      className="h-8 w-8 p-0"
+                      className="h-10"
+                      onClick={() => {
+                        setSelectedTipPercent(null);
+                      }}
                     >
-                      <Minus size={12} />
-                    </Button>
-                    
-                    <span className="w-8 text-center font-medium">
-                      {cartItem.quantity}
-                    </span>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Plus size={12} />
+                      Custom
                     </Button>
                   </div>
-                  
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeFromCart(cartItem.id)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Trash size={12} />
+                  {(selectedTipPercent === null || customTip) && (
+                    <Input
+                      type="number"
+                      placeholder="Enter custom tip amount"
+                      value={customTip}
+                      onChange={(e) => handleCustomTip(e.target.value)}
+                      className="w-full"
+                    />
+                  )}
+                </div>
+
+                {/* Summary Section */}
+                <div className="border-t pt-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Subtotal</span>
+                    <span className="font-medium">{formatPrice(total, currency)}</span>
+                  </div>
+                  {tipAmount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span>Tip</span>
+                      <span className="font-medium">{formatPrice(tipAmount, currency)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-lg font-bold pt-2 border-t">
+                    <span>Total</span>
+                    <span>{formatPrice(totalWithTip, currency)}</span>
+                  </div>
+                </div>
+
+                {/* Gringo Connection Info */}
+                {isGringo && (
+                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <Sparkle size={18} weight="fill" className="text-blue-600 dark:text-blue-400 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-medium text-blue-900 dark:text-blue-100">Gringo Connection Member</p>
+                        <p className="text-blue-700 dark:text-blue-300 text-xs mt-1">
+                          You're enjoying USD pricing and exclusive expat benefits!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-4">
+                  <Button variant="outline" onClick={clearCart} className="flex-1">
+                    Clear Cart
+                  </Button>
+                  <Button onClick={handleCheckout} className="flex-1">
+                    {t.menu.checkout}
                   </Button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {cartItems.length > 0 && (
-          <div className="border-t pt-4 space-y-4">
-            <div className="flex justify-between items-center text-lg font-semibold">
-              <span>{t.cart.total}:</span>
-              <span className="text-primary font-mono">
-                {currency === 'USD' ? `$${(total / 4200).toFixed(2)}` : `$${total.toLocaleString('es-CO')} COP`}
-              </span>
-            </div>
-            
-            <Button 
-              onClick={handleCheckout}
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
-              size="lg"
-            >
-              {t.cart.checkout}
-            </Button>
+              </>
+            )}
           </div>
-        )}
-      </SheetContent>
-      
+        </SheetContent>
+      </Sheet>
+
       <PaymentModal
-        total={total}
+        open={paymentModalOpen}
+        onOpenChange={setPaymentModalOpen}
+        total={totalWithTip}
         currency={currency}
-        isOpen={paymentModalOpen}
-        onClose={() => setPaymentModalOpen(false)}
         onSuccess={handlePaymentSuccess}
-        onCustomerInfo={(info) => setCustomerInfo(info)}
-        orderType="coffee"
+        customerInfo={customerInfo}
+        setCustomerInfo={setCustomerInfo}
       />
-    </Sheet>
+    </>
   );
 };
