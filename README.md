@@ -1,9 +1,7 @@
 # Gato Blanco Connect 🐱☕
-
 A bilingual marketplace platform connecting [Gato Blanco](https://www.instagram.com/gatoblanco.mde/) coffee shop in Zona Rosa, Medellín with premium services for digital nomads and expats.
 
 ## 🌟 Overview
-
 Gato Blanco Connect is a modern web application that serves as a curated marketplace for the Gato Blanco community. It bridges the gap between a beloved local coffee shop and the services digital nomads need—from housing and coworking spaces to visa assistance and local experiences.
 
 ### Key Features
@@ -20,6 +18,42 @@ Gato Blanco Connect is a modern web application that serves as a curated marketp
 - **Smart Filtering** - Filter by category, language support, and search keywords
 - **Mobile-Responsive** - Optimized for all devices
 - **SEO Optimized** - Metadata and structured content for search engines
+- **✨ Gringo Connection** - Premium features for expat customers (see below)
+
+### 🌐 Gringo Connection Feature
+
+The **Gringo Connection** is a unique dual-pricing and premium service feature designed to provide enhanced experiences for international customers while maintaining local pricing for Colombian patrons.
+
+#### What is Gringo Connection?
+
+- **Smart Pricing System**: Automatically detects user language/location preferences and displays appropriate pricing
+  - Local pricing in COP (Colombian Pesos) for Spanish-speaking/Colombian customers
+  - USD pricing with enhanced service premium for English-speaking/expat customers
+- **Premium Service Badge**: Cart displays "Gringo Connection" badge with sparkle icon for premium customers
+- **Enhanced Support**: Priority customer service and expat-specific assistance
+- **Transparent Pricing**: Clear indication of currency and included premium services
+- **Revenue Optimization**: Helps Gato Blanco maximize revenue from international market while remaining accessible to locals
+
+#### Technical Implementation
+
+- **Frontend**: `CartDrawer.tsx` displays Gringo Connection badge and member information
+- **Translations**: Full bilingual support in `translations.ts` with "Gringo Services" section
+- **Database**: `init.sql` includes `price_gringo` fields for dual pricing across all products
+- **Analytics**: Admin dashboard tracks Gringo customer patterns and revenue separately
+- **Pricing Logic**: `pricing.ts` and `content.ts` contain GRINGO_MULTIPLIER (1.5x markup)
+- **Payment Processing**: `payments.ts` includes additional 1% fee for premium service
+
+#### Files Containing Gringo Connection Logic
+
+- `src/components/CartDrawer.tsx` - UI display and member info box
+- `src/lib/translations.ts` - Bilingual text support
+- `src/lib/pricing.ts` - Price calculations
+- `src/lib/content.ts` - Constants and multipliers
+- `src/lib/payments.ts` - Payment processing
+- `src/components/admin/ManagementComponents.tsx` - Customer tracking
+- `src/components/admin/EnhancedAdminDashboard.tsx` - Revenue analytics
+- `init.sql` - Database schema with price_gringo columns
+- `PRD.md` - Product requirements and business logic documentation
 
 ## 🚀 Quick Start
 
@@ -58,20 +92,24 @@ npm run lint         # Run ESLint for code quality checks
 ## 🛠️ Tech Stack
 
 ### Frontend Framework
+
 - **React 18** - Modern React with hooks and concurrent features
 - **TypeScript** - Type-safe development
 - **Vite** - Lightning-fast build tool and dev server
 
 ### Styling & UI
+
 - **Tailwind CSS 3** - Utility-first CSS framework
 - **Radix UI** - Accessible, unstyled component primitives
 - **Lucide React** - Beautiful icon library
 
 ### State Management & Routing
+
 - **React Router DOM** - Client-side routing
 - **Zustand** - Lightweight state management
 
 ### Development Tools
+
 - **ESLint** - Code quality and consistency
 - **TypeScript ESLint** - TypeScript-specific linting
 - **PostCSS & Autoprefixer** - CSS processing
@@ -85,16 +123,22 @@ gato-blanco-connect/
 │   │   ├── Header.tsx       # Navigation with language toggle
 │   │   ├── Hero.tsx         # Landing section
 │   │   ├── ServiceCard.tsx  # Provider display cards
-│   │   └── FilterBar.tsx    # Search and filtering
+│   │   ├── FilterBar.tsx    # Search and filtering
+│   │   └── CartDrawer.tsx   # Shopping cart with Gringo Connection
 │   ├── data/
 │   │   └── services.ts      # Service provider data
+│   ├── lib/
+│   │   ├── translations.ts  # Bilingual support including Gringo Services
+│   │   ├── pricing.ts       # Price calculations with gringo multiplier
+│   │   └── content.ts       # App constants
 │   ├── App.tsx              # Main application component
 │   ├── main.tsx             # Application entry point
 │   └── index.css            # Global styles
 ├── public/                  # Static assets
-├── PRD.md                   # Product Requirements Document
+├── PRD.md                   # Product Requirements (includes Gringo Connection docs)
 ├── AUDIT-FINAL.md           # Quality audit report
 ├── DEPLOYMENT-GUIDE.md      # Deployment instructions
+├── init.sql                 # Database schema with price_gringo fields
 └── package.json             # Project dependencies
 ```
 
@@ -113,6 +157,7 @@ For detailed deployment instructions, see [DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE
 ### Build Output
 
 Production builds are optimized and output to the `dist/` directory:
+
 - Minified JavaScript bundles
 - Optimized CSS
 - Compressed assets
@@ -125,6 +170,7 @@ Production builds are optimized and output to the `dist/` directory:
 - **Performance-First** - Optimized bundle sizes and lazy loading
 - **Mobile-First** - Responsive design for all screen sizes
 - **Brand Consistency** - Reflects Gato Blanco's aesthetic and values
+- **Market-Aware** - Dual pricing strategy respects local economy while serving international clientele
 
 ## 🔧 Configuration
 
@@ -148,10 +194,19 @@ To add new service providers, edit `src/data/services.ts`:
 ```typescript
 {
   id: 'unique-id',
-  name: { en: 'English Name', es: 'Spanish Name' },
+  name: {
+    en: 'English Name',
+    es: 'Spanish Name'
+  },
   category: 'Housing', // or other category
-  description: { en: 'English description', es: 'Spanish description' },
-  price: { en: '$100/month', es: '$100/mes' },
+  description: {
+    en: 'English description',
+    es: 'Spanish description'
+  },
+  price: {
+    en: '$100/month',
+    es: '$100/mes'
+  },
   contact: 'contact@example.com',
   phone: '+57 123 456 7890',
   website: 'https://example.com',
@@ -197,6 +252,8 @@ For questions, suggestions, or partnerships:
 - [ ] Admin panel for content management
 - [ ] Analytics dashboard for providers
 - [ ] Email notifications for inquiries
+- [ ] Enhanced Gringo Connection analytics and reporting
+- [ ] Automatic language/location detection for dynamic pricing
 
 ---
 
