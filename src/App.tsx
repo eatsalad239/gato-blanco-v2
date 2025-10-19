@@ -271,7 +271,7 @@ function App() {
                       : '🎵 PAISA EVENTS'
                     }
                   </Button>
-                  <PayButton totalCOP={20000} />
+                  <PayButton amount={20000} />
                 </motion.div>
               </motion.section>
 

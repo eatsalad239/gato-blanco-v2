@@ -3,7 +3,7 @@ declare const GITHUB_RUNTIME_PERMANENT_NAME: string
 declare const BASE_KV_SERVICE_URL: string
 
 interface ImportMetaEnv {
-  readonly VITE_WOMPI_PUBLIC_KEY: string;
+  readonly VITE_WHOP_PLAN_ID: string;
 }
 
 interface ImportMeta {
