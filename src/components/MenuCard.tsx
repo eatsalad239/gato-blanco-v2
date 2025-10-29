@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Clock, Wine, Lightning, Atom, Fire } from '@phosphor-icons/react';
 import { MenuItem } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
-import { formatPrice } from '../lib/pricing';
+import { formatPrice, detectUserType } from '../lib/pricing';
 import { useCart } from '../hooks/useCart';
 import { motion } from 'framer-motion';
 
@@ -167,8 +167,12 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
               </div>
             )}
             
-            <Button 
-              onClick={() => addToCart(item, item.basePrice, 1)}
+            <Button
+              onClick={() => {
+                const isGringo = detectUserType(currentLanguage?.code || 'en');
+                const finalPrice = isGringo ? item.basePrice * 1.5 : item.basePrice;
+                addToCart(item, finalPrice, 1);
+              }}
               disabled={!available}
               className={`w-full gap-2 font-bold ${available ? 'nuclear-button' : ''}`}
               variant={available ? "default" : "secondary"}

@@ -6,6 +6,7 @@ import { Coffee, Plus } from '@phosphor-icons/react';
 import { CoffeeItem } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice, detectUserType, getCurrency } from '../lib/pricing';
+import { GRINGO_MULTIPLIER } from '../data/content';
 import { useCart } from '../hooks/useCart';
 import { toast } from 'sonner';
 
@@ -23,11 +24,9 @@ export const CoffeeCard: React.FC<CoffeeCardProps> = ({ item }) => {
   const price = formatPrice(item.basePrice, currency, isGringo);
 
   const handleAddToCart = () => {
-    const numericPrice = isGringo 
-      ? (item.basePrice * 1.5) / 4200 
-      : item.basePrice * 1.5;
-    
-    addToCart(item, numericPrice);
+    // Calculate final price including gringo markup if applicable
+    const finalPrice = isGringo ? item.basePrice * GRINGO_MULTIPLIER : item.basePrice;
+    addToCart(item, finalPrice, 1);
     toast.success(`${item.name[currentLanguage?.code || 'en']} ${(t.menu.addToCart || '').toLowerCase()}`);
   };
 

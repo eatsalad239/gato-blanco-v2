@@ -113,7 +113,7 @@ export const CartDrawer: React.FC = () => {
                           {currentLanguage?.code === 'en' ? item.item.name.en : item.item.name.es}
                         </h4>
                         <p className="text-sm text-muted-foreground">
-                          {formatPrice(item.price, currency)} each
+                          {formatPrice(item.price, currency, false)} each
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <Button
@@ -144,7 +144,7 @@ export const CartDrawer: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-right font-semibold">
-                        {formatPrice(item.price * item.quantity, currency)}
+                        {formatPrice(item.price * item.quantity, currency, false)}
                       </div>
                     </div>
                   ))}
@@ -191,17 +191,17 @@ export const CartDrawer: React.FC = () => {
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
-                    <span className="font-medium">{formatPrice(total, currency)}</span>
+                    <span className="font-medium">{formatPrice(total, currency, false)}</span>
                   </div>
                   {tipAmount > 0 && (
                     <div className="flex justify-between text-sm">
                       <span>Tip</span>
-                      <span className="font-medium">{formatPrice(tipAmount, currency)}</span>
+                      <span className="font-medium">{formatPrice(tipAmount, currency, false)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-lg font-bold pt-2 border-t">
                     <span>Total</span>
-                    <span>{formatPrice(totalWithTip, currency)}</span>
+                    <span>{formatPrice(totalWithTip, currency, false)}</span>
                   </div>
                 </div>
 
