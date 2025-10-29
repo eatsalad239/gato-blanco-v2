@@ -702,6 +702,105 @@ function App() {
                       </motion.div>
                     ))}
                   </div>
+
+                  {/* Gringo Connection Section */}
+                  {isGringo && (
+                    <motion.div
+                      className="mt-8 p-6 bg-gradient-to-r from-plasma-blue/10 to-electric-cyan/10 rounded-lg border border-plasma-blue/20"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.8, duration: 0.6 }}
+                    >
+                      <div className="text-center mb-6">
+                        <h3 className="text-2xl font-black nuclear-text mb-2">
+                          🌍 {currentLanguage?.code === 'es' ? 'LA CONEXIÓN GRINGO' : 'THE GRINGO CONNECTION'} 🌍
+                        </h3>
+                        <p className="text-lg text-electric-cyan font-medium">
+                          {currentLanguage?.code === 'es'
+                            ? 'Tu vínculo a la auténtica cultura paisa y comunidad'
+                            : 'Your link to authentic Paisa culture and community'
+                          }
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <p className="text-muted-foreground leading-relaxed">
+                          {currentLanguage?.code === 'es'
+                            ? 'La Conexión Gringo se asocia con Gato Blanco para ofrecer a expatriados y nómadas digitales espacios de coworking, clases de salsa y español, tours seleccionados y un lugar seguro para conectar. Fundada por Daniel con los dueños Yeri y Dani, fue creada para ayudar a los recién llegados a conocer Medellín como un local.'
+                            : 'The Gringo Connection partners with Gato Blanco to provide expats and digital nomads with coworking spaces, salsa and Spanish classes, curated tours, and a safe space to connect. Founded by Daniel with owners Yeri and Dani, it was built to help newcomers experience Medellín like a local.'
+                          }
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="font-bold text-nuclear-blue mb-3">
+                              ✨ {currentLanguage?.code === 'es' ? 'VENTAJAS EXCLUSIVAS' : 'EXCLUSIVE PERKS'}
+                            </h4>
+                            <ul className="space-y-2 text-sm">
+                              <li className="flex items-start gap-2">
+                                <span className="text-electric-cyan">💼</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Espacio de coworking con internet de alta velocidad y café incluido'
+                                  : 'Coworking space with high-speed internet and coffee included'
+                                }</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-electric-cyan">💃</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Clases semanales de salsa y español'
+                                  : 'Weekly salsa and Spanish classes'
+                                }</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-electric-cyan">🗺️</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Tours seleccionados a Guatapé, fincas cafeteras y lugares locales'
+                                  : 'Curated tours to Guatapé, coffee farms and local hotspots'
+                                }</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-electric-cyan">🤝</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Eventos de networking para expatriados y emprendedores locales'
+                                  : 'Networking events for expats and local entrepreneurs'
+                                }</span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-plasma-blue mb-3">
+                              🎯 {currentLanguage?.code === 'es' ? 'SERVICIOS ESPECIALIZADOS' : 'SPECIALIZED SERVICES'}
+                            </h4>
+                            <ul className="space-y-2 text-sm">
+                              <li className="flex items-start gap-2">
+                                <span className="text-plasma-blue">🎒</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Tour de Mochileros – Arte callejero, mercados locales y transporte público'
+                                  : 'Backpacker Budget Tour – Street art, local markets and public transport'
+                                }</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-plasma-blue">💼</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Experiencia Ejecutiva VIP – Chofer privado, cenas exclusivas'
+                                  : 'VIP Executive Experience – Private chauffeur, upscale dining'
+                                }</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-plasma-blue">💰</span>
+                                <span>{currentLanguage?.code === 'es'
+                                  ? 'Programa de Afiliados – Gana comisiones refiriendo viajeros'
+                                  : 'Affiliate Partner Program – Earn commissions by referring travelers'
+                                }</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
                 </CardContent>
               </Card>
             </motion.div>
