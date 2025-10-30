@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Clock, Wine, Lightning, Atom, Fire } from '@phosphor-icons/react';
 import { MenuItem } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
-import { formatPrice, detectUserType } from '../lib/pricing';
+import { formatPrice, detectUserType, getCurrency } from '../lib/pricing';
+import { GRINGO_MULTIPLIER } from '../data/content';
 import { useCart } from '../hooks/useCart';
 import { motion } from 'framer-motion';
 
@@ -18,7 +19,11 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
   const { addToCart } = useCart();
-  
+
+  const isGringo = detectUserType(currentLanguage?.code || 'en');
+  const currency = getCurrency(isGringo);
+  const finalPrice = isGringo ? item.basePrice * GRINGO_MULTIPLIER : item.basePrice;
+
   const isAlcoholic = ['liquor', 'cocktail', 'beer', 'wine'].includes(item.category);
   const currentTime = new Date().getHours();
   
@@ -132,7 +137,7 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
                     transition: { duration: 2, repeat: Infinity }
                   }}
                 >
-                  💰 {formatPrice(item.basePrice)}
+                  💰 {formatPrice(finalPrice, currency, isGringo)}
                 </motion.div>
               </div>
             </div>
@@ -161,8 +166,6 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
             
             <Button
               onClick={() => {
-                const isGringo = detectUserType(currentLanguage?.code || 'en');
-                const finalPrice = isGringo ? item.basePrice * 1.5 : item.basePrice;
                 addToCart(item, finalPrice, 1);
               }}
               disabled={!available}
