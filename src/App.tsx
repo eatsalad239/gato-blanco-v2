@@ -33,6 +33,9 @@ import { SimpleAdminDashboard } from './components/SimpleAdminDashboard';
 import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
 import { PayButton } from './components/PayButton';
+import { RealTimeChat } from './components/RealTimeChat';
+// import { AdvancedBookingSystem } from './components/AdvancedBookingSystem';
+import { OwnerBackendSystem } from './components/OwnerBackendSystem';
 
 import { useLanguageStore, translations } from './lib/translations';
 import { fullMenu, services } from './data/content';
@@ -80,12 +83,12 @@ function App() {
   const pulseVariants = {
     animate: {
       scale: [1, 1.05, 1],
-      opacity: [0.8, 1, 0.8],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+      opacity: [0.8, 1, 0.8]
+    },
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut"
     }
   };
 
@@ -190,6 +193,7 @@ function App() {
                 <TabsTrigger value="services" className="text-xs sm:text-sm nuclear-button">⚡ {t.nav.services}</TabsTrigger>
                 <TabsTrigger value="events" className="text-xs sm:text-sm nuclear-button">🎉 {t.nav.events}</TabsTrigger>
                 <TabsTrigger value="about" className="text-xs sm:text-sm nuclear-button">ℹ️ {t.nav.about}</TabsTrigger>
+                <TabsTrigger value="owner" className="text-xs sm:text-sm nuclear-button">🚀 {isGringo ? 'Owner' : 'Dueño'}</TabsTrigger>
               </TabsList>
             </motion.div>
           )}
@@ -703,8 +707,8 @@ function App() {
                     ))}
                   </div>
 
-                  {/* Gringo Connection Section */}
-                  {isGringo && (
+                  {/* Gringo Connection Section - Show to all visitors */}
+                  {true && (
                     <motion.div
                       className="mt-8 p-6 bg-gradient-to-r from-plasma-blue/10 to-electric-cyan/10 rounded-lg border border-plasma-blue/20"
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -805,6 +809,20 @@ function App() {
               </Card>
             </motion.div>
           </TabsContent>
+
+          {/* Owner Dashboard */}
+    <TabsContent value="owner" className="space-y-8">
+      {/* Temporarily disabled for deployment
+      <OwnerBackendSystem
+        isGringo={isGringo}
+        currentLanguage={currentLanguage}
+      />
+      */}
+      <div className="text-center py-8">
+        <h3 className="text-2xl font-bold mb-4">🚀 Owner Dashboard Coming Soon</h3>
+        <p className="text-muted-foreground">Advanced business management tools will be available shortly.</p>
+      </div>
+    </TabsContent>
         </Tabs>
         )}
       </main>
@@ -857,7 +875,14 @@ function App() {
       {isMobile && (
         <CartDrawer />
       )}
-      
+
+    {/* Real-time Chat Support - Temporarily disabled for deployment
+    <RealTimeChat
+      currentLanguage={currentLanguage}
+      isGringo={detectUserType(currentLanguage?.code || 'en')}
+    />
+    */}
+
       <Toaster position="top-right" />
     </div>
   );

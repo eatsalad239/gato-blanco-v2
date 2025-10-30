@@ -81,11 +81,7 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
   const cardVariants = {
     hover: {
       scale: 1.05,
-      rotateY: 5,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut"
-      }
+      rotateY: 5
     }
   };
 
@@ -93,14 +89,9 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
     animate: {
       boxShadow: [
         "0 0 20px rgba(59, 130, 246, 0.3)",
-        "0 0 30px rgba(59, 130, 246, 0.6)", 
+        "0 0 30px rgba(59, 130, 246, 0.6)",
         "0 0 20px rgba(59, 130, 246, 0.3)"
-      ],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+      ]
     }
   };
 
@@ -108,10 +99,11 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
     <motion.div
       variants={cardVariants}
       whileHover="hover"
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className="h-full"
     >
       <Card className={`h-full nuclear-card transition-all ${!available ? 'opacity-60' : ''}`}>
-        <motion.div variants={glowVariants} animate="animate">
+        <motion.div variants={glowVariants} animate="animate" transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div className="space-y-2 flex-1">

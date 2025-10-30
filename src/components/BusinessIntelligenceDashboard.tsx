@@ -48,7 +48,6 @@ import {
   Download,
   Upload,
   ArrowClockwise,
-  Activity,
   Robot,
   Database,
   ChartLine,
@@ -81,6 +80,7 @@ import {
   LinkedinLogo,
   CreditCard
 } from '@phosphor-icons/react';
+import { Activity } from 'lucide-react';
 import { useKV } from '@github/spark/hooks';
 
 interface BusinessMetrics {

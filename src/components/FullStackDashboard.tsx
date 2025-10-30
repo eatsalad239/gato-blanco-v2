@@ -23,7 +23,6 @@ import {
   Package,
   ChartBar,
   ChartPie,
-  Activity,
   Lightning,
   Star,
   CreditCard,
@@ -31,6 +30,7 @@ import {
   Download,
   ArrowClockwise
 } from '@phosphor-icons/react';
+import { Activity } from 'lucide-react';
 
 import { useBusiness } from '../lib/business';
 import { usePayments } from '../lib/payments';

@@ -94,7 +94,9 @@ export const translations = {
     },
     cart: {
       title: 'Your Order',
+      yourCart: 'Your Cart',
       empty: 'Your cart is empty',
+      emptyCart: 'Your cart is empty',
       total: 'Total',
       checkout: 'Proceed to Checkout',
       remove: 'Remove'
@@ -228,7 +230,9 @@ export const translations = {
     },
     cart: {
       title: 'Tu Pedido',
+      yourCart: 'Tu Carrito',
       empty: 'Tu carrito está vacío',
+      emptyCart: 'Tu carrito está vacío',
       total: 'Total',
       checkout: 'Proceder al Pago',
       remove: 'Eliminar'

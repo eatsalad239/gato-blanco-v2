@@ -43,8 +43,8 @@ import {
   Gauge,
   Globe,
   DeviceMobile,
-  Activity
 } from '@phosphor-icons/react';
+import { Activity } from 'lucide-react';
 import { useKV } from '@github/spark/hooks';
 
 interface MarketingAutomation {

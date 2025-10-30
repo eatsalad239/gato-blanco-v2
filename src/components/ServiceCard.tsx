@@ -48,11 +48,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
   const cardVariants = {
     hover: {
       scale: 1.05,
-      rotateY: 8,
-      transition: {
-        duration: 0.4,
-        ease: "easeOut"
-      }
+      rotateY: 8
     }
   };
 
@@ -62,24 +58,14 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
         "0 0 25px rgba(59, 130, 246, 0.4)",
         "0 0 40px rgba(59, 130, 246, 0.7)",
         "0 0 25px rgba(59, 130, 246, 0.4)"
-      ],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+      ]
     }
   };
 
   const pulseVariants = {
     animate: {
       scale: [1, 1.1, 1],
-      opacity: [0.8, 1, 0.8],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+      opacity: [0.8, 1, 0.8]
     }
   };
 
@@ -87,16 +73,17 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
     <motion.div
       variants={cardVariants}
       whileHover="hover"
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className="group h-full"
     >
       <Card className="nuclear-card overflow-hidden h-full">
-        <motion.div variants={glowVariants} animate="animate">
+        <motion.div variants={glowVariants} animate="animate" transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
           <div className="h-4 bg-gradient-to-r from-nuclear-blue via-electric-cyan to-plasma-blue"></div>
           <CardHeader className="pb-4">
             <div className="flex justify-between items-start gap-3">
               <div className="flex-1">
                 <CardTitle className="text-xl font-black nuclear-text flex items-center gap-3 mb-2">
-                  <motion.div variants={pulseVariants} animate="animate">
+                  <motion.div variants={pulseVariants} animate="animate" transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
                     {getCategoryIcon(service.category)}
                   </motion.div>
                   ⚡ {service.name[currentLanguage?.code || 'en']} ⚡
