@@ -12,35 +12,17 @@ import { PaymentModal } from './PaymentModal';
 import { toast } from 'sonner';
 
 export const CartDrawer: React.FC = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart, setTip, tip, getTotalWithTip } = useCart();
+  const { cartItems, removeFromCart, clearCart, getTotal, getItemCount } = useCart();
   const { addOrder } = useAdmin();
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '' });
-  const [customTip, setCustomTip] = useState('');
-  const [selectedTipPercent, setSelectedTipPercent] = useState<number | null>(null);
-  
+
   const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
   const total = getTotal();
   const itemCount = getItemCount();
-  const tipAmount = tip;
-  const totalWithTip = getTotalWithTip();
-
-  const handleTipSelection = (percent: number) => {
-    const tipValue = total * (percent / 100);
-    setTip(tipValue);
-    setSelectedTipPercent(percent);
-    setCustomTip('');
-  };
-
-  const handleCustomTip = (value: string) => {
-    setCustomTip(value);
-    const tipValue = parseFloat(value) || 0;
-    setTip(tipValue);
-    setSelectedTipPercent(null);
-  };
 
   const handleCheckout = () => {
     setPaymentModalOpen(true);
@@ -150,58 +132,11 @@ export const CartDrawer: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Tip Section */}
-                <div className="border-t pt-4 space-y-3">
-                  <h4 className="font-medium">Add Tip</h4>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[10, 15, 20].map((percent) => (
-                      <Button
-                        key={percent}
-                        variant={selectedTipPercent === percent ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => handleTipSelection(percent)}
-                        className="h-10"
-                      >
-                        {percent}%
-                      </Button>
-                    ))}
-                    <Button
-                      variant={customTip ? 'default' : 'outline'}
-                      size="sm"
-                      className="h-10"
-                      onClick={() => {
-                        setSelectedTipPercent(null);
-                      }}
-                    >
-                      Custom
-                    </Button>
-                  </div>
-                  {(selectedTipPercent === null || customTip) && (
-                    <Input
-                      type="number"
-                      placeholder="Enter custom tip amount"
-                      value={customTip}
-                      onChange={(e) => handleCustomTip(e.target.value)}
-                      className="w-full"
-                    />
-                  )}
-                </div>
-
                 {/* Summary Section */}
                 <div className="border-t pt-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Subtotal</span>
-                    <span className="font-medium">{formatPrice(total, currency, false)}</span>
-                  </div>
-                  {tipAmount > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span>Tip</span>
-                      <span className="font-medium">{formatPrice(tipAmount, currency, false)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-lg font-bold pt-2 border-t">
+                  <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>{formatPrice(totalWithTip, currency, false)}</span>
+                    <span>{formatPrice(total, currency, false)}</span>
                   </div>
                 </div>
 
@@ -237,7 +172,7 @@ export const CartDrawer: React.FC = () => {
       <PaymentModal
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
-        total={totalWithTip}
+        total={total}
         currency={currency}
         onSuccess={handlePaymentSuccess}
         orderType="coffee"

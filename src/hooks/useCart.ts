@@ -9,55 +9,47 @@ interface CartItem {
   price: number;
 }
 
+// Simple working cart
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [tip, setTipValue] = useState<number>(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem('gato-blanco-cart');
-    const savedTip = localStorage.getItem('gato-blanco-tip');
-
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Failed to parse cart from localStorage:', error);
+    try {
+      const saved = localStorage.getItem('cart');
+      if (saved) {
+        setCartItems(JSON.parse(saved));
       }
+    } catch (e) {
+      console.error('Failed to load cart');
     }
-
-    if (savedTip) {
-      try {
-        setTipValue(parseFloat(savedTip));
-      } catch (error) {
-        console.error('Failed to parse tip from localStorage:', error);
-      }
-    }
+    setIsLoaded(true);
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage
   useEffect(() => {
-    localStorage.setItem('gato-blanco-cart', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  // Save tip to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('gato-blanco-tip', tip.toString());
-  }, [tip]);
+    if (isLoaded) {
+      try {
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+      } catch (e) {
+        console.error('Failed to save cart');
+      }
+    }
+  }, [cartItems, isLoaded]);
 
   const addToCart = (item: MenuItem, price: number, quantity: number = 1) => {
-    setCartItems(currentItems => {
-      const existingItem = currentItems.find(cartItem => cartItem.item.id === item.id);
-
-      if (existingItem) {
-        return currentItems.map(cartItem =>
+    console.log('Adding item:', item.name.en, 'price:', price);
+    setCartItems(prev => {
+      const existing = prev.find(cartItem => cartItem.item.id === item.id);
+      if (existing) {
+        return prev.map(cartItem =>
           cartItem.item.id === item.id
             ? { ...cartItem, quantity: cartItem.quantity + quantity }
             : cartItem
         );
       }
-
-      return [...currentItems, {
+      return [...prev, {
         id: generateId(),
         item,
         quantity,
@@ -66,61 +58,28 @@ export const useCart = () => {
     });
   };
 
-  const removeFromCart = (cartItemId: string) => {
-    setCartItems(currentItems =>
-      currentItems.filter(item => item.id !== cartItemId)
-    );
-  };
-
-  const updateQuantity = (cartItemId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(cartItemId);
-      return;
-    }
-
-    setCartItems(currentItems =>
-      currentItems.map(item =>
-        item.id === cartItemId ? { ...item, quantity } : item
-      )
-    );
+  const removeFromCart = (id: string) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
   };
 
   const clearCart = () => {
     setCartItems([]);
-    setTipValue(0);
   };
 
   const getTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
 
   const getItemCount = () => {
-    return cartItems.reduce((count, item) => count + item.quantity, 0);
-  };
-
-  const setTip = (tipAmount: number) => {
-    setTipValue(tipAmount);
-  };
-
-  const getTip = () => {
-    return tip;
-  };
-
-  const getTotalWithTip = () => {
-    return getTotal() + getTip();
+    return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   };
 
   return {
     cartItems,
-    tip,
     addToCart,
     removeFromCart,
-    updateQuantity,
     clearCart,
     getTotal,
-    getItemCount,
-    setTip,
-    getTip,
-    getTotalWithTip
+    getItemCount
   };
 };
