@@ -34,7 +34,7 @@ import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
 import { PayButton } from './components/PayButton';
 import { RealTimeChat } from './components/RealTimeChat';
-import { AdvancedBookingSystem } from './components/AdvancedBookingSystem';
+// import { AdvancedBookingSystem } from './components/AdvancedBookingSystem';
 import { OwnerBackendSystem } from './components/OwnerBackendSystem';
 
 import { useLanguageStore, translations } from './lib/translations';
@@ -811,12 +811,18 @@ function App() {
           </TabsContent>
 
           {/* Owner Dashboard */}
-          <TabsContent value="owner" className="space-y-8">
-            <OwnerBackendSystem
-              isGringo={isGringo}
-              currentLanguage={currentLanguage}
-            />
-          </TabsContent>
+    <TabsContent value="owner" className="space-y-8">
+      {/* Temporarily disabled for deployment
+      <OwnerBackendSystem
+        isGringo={isGringo}
+        currentLanguage={currentLanguage}
+      />
+      */}
+      <div className="text-center py-8">
+        <h3 className="text-2xl font-bold mb-4">🚀 Owner Dashboard Coming Soon</h3>
+        <p className="text-muted-foreground">Advanced business management tools will be available shortly.</p>
+      </div>
+    </TabsContent>
         </Tabs>
         )}
       </main>
@@ -870,11 +876,12 @@ function App() {
         <CartDrawer />
       )}
 
-      {/* Real-time Chat Support */}
-      <RealTimeChat
-        currentLanguage={currentLanguage}
-        isGringo={detectUserType(currentLanguage?.code || 'en')}
-      />
+    {/* Real-time Chat Support - Temporarily disabled for deployment
+    <RealTimeChat
+      currentLanguage={currentLanguage}
+      isGringo={detectUserType(currentLanguage?.code || 'en')}
+    />
+    */}
 
       <Toaster position="top-right" />
     </div>
