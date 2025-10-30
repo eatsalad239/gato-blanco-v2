@@ -19,6 +19,7 @@ interface BookingData {
   time: string;
   guests: number;
   name: string;
+  lastName?: string;
   email: string;
   phone: string;
   notes: string;

@@ -84,7 +84,7 @@ export const CartDrawer: React.FC = () => {
         <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              {t.menu.yourCart}
+              {t.cart.yourCart}
               {isGringo && (
                 <Badge variant="secondary" className="gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
                   <Sparkle size={14} weight="fill" />
@@ -93,7 +93,7 @@ export const CartDrawer: React.FC = () => {
               )}
             </SheetTitle>
             <SheetDescription>
-              {itemCount === 0 ? t.menu.emptyCart : `${itemCount} ${itemCount === 1 ? 'item' : 'items'} in cart`}
+              {itemCount === 0 ? t.cart.emptyCart : `${itemCount} ${itemCount === 1 ? 'item' : 'items'} in cart`}
             </SheetDescription>
           </SheetHeader>
 
@@ -101,7 +101,7 @@ export const CartDrawer: React.FC = () => {
             {cartItems.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <ShoppingCart size={48} className="mx-auto mb-4 opacity-50" />
-                <p>{t.menu.emptyCart}</p>
+                <p>{t.cart.emptyCart}</p>
               </div>
             ) : (
               <>
@@ -235,13 +235,13 @@ export const CartDrawer: React.FC = () => {
       </Sheet>
 
       <PaymentModal
-        open={paymentModalOpen}
-        onOpenChange={setPaymentModalOpen}
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
         total={totalWithTip}
         currency={currency}
         onSuccess={handlePaymentSuccess}
-        customerInfo={customerInfo}
-        setCustomerInfo={setCustomerInfo}
+        orderType="coffee"
+        onCustomerInfo={setCustomerInfo}
       />
     </>
   );

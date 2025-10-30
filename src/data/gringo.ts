@@ -13,7 +13,7 @@ export const gringoSpecials: MenuItem[] = [
       es: 'Bebida de cortesia para los visitantes nuevos de Gato Blanco.',
     },
     basePrice: 0,
-    category: 'special',
+    category: 'coffee',
     availability: { allDay: true },
   },
   {
@@ -24,7 +24,7 @@ export const gringoSpecials: MenuItem[] = [
       es: 'Acceso a un evento de intercambio de idiomas con una bebida gratis.',
     },
     basePrice: 0,
-    category: 'special',
+    category: 'coffee',
     availability: { allDay: true },
   },
 ];
