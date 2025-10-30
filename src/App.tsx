@@ -33,6 +33,9 @@ import { SimpleAdminDashboard } from './components/SimpleAdminDashboard';
 import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
 import { PayButton } from './components/PayButton';
+import { RealTimeChat } from './components/RealTimeChat';
+import { AdvancedBookingSystem } from './components/AdvancedBookingSystem';
+import { OwnerBackendSystem } from './components/OwnerBackendSystem';
 
 import { useLanguageStore, translations } from './lib/translations';
 import { fullMenu, services } from './data/content';
@@ -190,6 +193,7 @@ function App() {
                 <TabsTrigger value="services" className="text-xs sm:text-sm nuclear-button">⚡ {t.nav.services}</TabsTrigger>
                 <TabsTrigger value="events" className="text-xs sm:text-sm nuclear-button">🎉 {t.nav.events}</TabsTrigger>
                 <TabsTrigger value="about" className="text-xs sm:text-sm nuclear-button">ℹ️ {t.nav.about}</TabsTrigger>
+                <TabsTrigger value="owner" className="text-xs sm:text-sm nuclear-button">🚀 {isGringo ? 'Owner' : 'Dueño'}</TabsTrigger>
               </TabsList>
             </motion.div>
           )}
@@ -703,8 +707,8 @@ function App() {
                     ))}
                   </div>
 
-                  {/* Gringo Connection Section */}
-                  {isGringo && (
+                  {/* Gringo Connection Section - Show to all visitors */}
+                  {true && (
                     <motion.div
                       className="mt-8 p-6 bg-gradient-to-r from-plasma-blue/10 to-electric-cyan/10 rounded-lg border border-plasma-blue/20"
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -805,6 +809,14 @@ function App() {
               </Card>
             </motion.div>
           </TabsContent>
+
+          {/* Owner Dashboard */}
+          <TabsContent value="owner" className="space-y-8">
+            <OwnerBackendSystem
+              isGringo={isGringo}
+              currentLanguage={currentLanguage}
+            />
+          </TabsContent>
         </Tabs>
         )}
       </main>
@@ -857,7 +869,13 @@ function App() {
       {isMobile && (
         <CartDrawer />
       )}
-      
+
+      {/* Real-time Chat Support */}
+      <RealTimeChat
+        currentLanguage={currentLanguage}
+        isGringo={detectUserType(currentLanguage?.code || 'en')}
+      />
+
       <Toaster position="top-right" />
     </div>
   );
