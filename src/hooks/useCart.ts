@@ -1,4 +1,4 @@
-import { useKV } from '@github/spark/hooks';
+import { useState, useEffect } from 'react';
 import { MenuItem } from '../types';
 import { generateId } from '../lib/pricing';
 
@@ -10,23 +10,54 @@ interface CartItem {
 }
 
 export const useCart = () => {
-  const [cartItems, setCartItems] = useKV<CartItem[]>('cart-items', []);
-  const [tip, setTipValue] = useKV<number>('cart-tip', 0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [tip, setTipValue] = useState<number>(0);
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem('gato-blanco-cart');
+    const savedTip = localStorage.getItem('gato-blanco-tip');
+
+    if (savedCart) {
+      try {
+        setCartItems(JSON.parse(savedCart));
+      } catch (error) {
+        console.error('Failed to parse cart from localStorage:', error);
+      }
+    }
+
+    if (savedTip) {
+      try {
+        setTipValue(parseFloat(savedTip));
+      } catch (error) {
+        console.error('Failed to parse tip from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('gato-blanco-cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Save tip to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('gato-blanco-tip', tip.toString());
+  }, [tip]);
 
   const addToCart = (item: MenuItem, price: number, quantity: number = 1) => {
     setCartItems(currentItems => {
-      const items = currentItems || [];
-      const existingItem = items.find(cartItem => cartItem.item.id === item.id);
-      
+      const existingItem = currentItems.find(cartItem => cartItem.item.id === item.id);
+
       if (existingItem) {
-        return items.map(cartItem =>
+        return currentItems.map(cartItem =>
           cartItem.item.id === item.id
             ? { ...cartItem, quantity: cartItem.quantity + quantity }
             : cartItem
         );
       }
-      
-      return [...items, {
+
+      return [...currentItems, {
         id: generateId(),
         item,
         quantity,
@@ -37,7 +68,7 @@ export const useCart = () => {
 
   const removeFromCart = (cartItemId: string) => {
     setCartItems(currentItems =>
-      (currentItems || []).filter(item => item.id !== cartItemId)
+      currentItems.filter(item => item.id !== cartItemId)
     );
   };
 
@@ -46,9 +77,9 @@ export const useCart = () => {
       removeFromCart(cartItemId);
       return;
     }
-    
+
     setCartItems(currentItems =>
-      (currentItems || []).map(item =>
+      currentItems.map(item =>
         item.id === cartItemId ? { ...item, quantity } : item
       )
     );
@@ -60,11 +91,11 @@ export const useCart = () => {
   };
 
   const getTotal = () => {
-    return (cartItems || []).reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   const getItemCount = () => {
-    return (cartItems || []).reduce((count, item) => count + item.quantity, 0);
+    return cartItems.reduce((count, item) => count + item.quantity, 0);
   };
 
   const setTip = (tipAmount: number) => {
@@ -72,7 +103,7 @@ export const useCart = () => {
   };
 
   const getTip = () => {
-    return tip || 0;
+    return tip;
   };
 
   const getTotalWithTip = () => {
@@ -80,7 +111,8 @@ export const useCart = () => {
   };
 
   return {
-    cartItems: cartItems || [],
+    cartItems,
+    tip,
     addToCart,
     removeFromCart,
     updateQuantity,

@@ -12,7 +12,7 @@ import { PaymentModal } from './PaymentModal';
 import { toast } from 'sonner';
 
 export const CartDrawer: React.FC = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart, setTip, getTip, getTotalWithTip } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotal, getItemCount, clearCart, setTip, tip, getTotalWithTip } = useCart();
   const { addOrder } = useAdmin();
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
@@ -25,7 +25,7 @@ export const CartDrawer: React.FC = () => {
   const currency = getCurrency(isGringo);
   const total = getTotal();
   const itemCount = getItemCount();
-  const tipAmount = getTip();
+  const tipAmount = tip;
   const totalWithTip = getTotalWithTip();
 
   const handleTipSelection = (percent: number) => {
