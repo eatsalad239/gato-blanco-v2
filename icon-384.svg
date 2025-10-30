@@ -1,0 +1,38 @@
+<svg width="384" height="384" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4469ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="lightning" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e7ff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="192" cy="192" r="180" fill="url(#bg)" stroke="#60a5fa" stroke-width="6"/>
+  
+  <!-- Coffee cup body -->
+  <path d="M96 154 Q96 135 115 135 L269 135 Q288 135 288 154 L288 269 Q288 307 269 307 L115 307 Q96 307 96 269 Z" 
+        fill="#f8fafc" stroke="#e2e8f0" stroke-width="4"/>
+  
+  <!-- Coffee cup handle -->
+  <path d="M288 173 Q327 173 327 212 Q327 250 288 250" 
+        fill="none" stroke="#e2e8f0" stroke-width="8"/>
+  
+  <!-- Lightning bolt -->
+  <path d="M164 64 L144 115 L178 115 L154 180 L220 100 L186 100 L210 60 Z" 
+        fill="url(#lightning)" stroke="#1e40af" stroke-width="2"/>
+  
+  <!-- Steam lines -->
+  <path d="M134 96 Q134 77 142 77 Q142 96 142 77" fill="none" stroke="#94a3b8" stroke-width="4" opacity="0.6"/>
+  <path d="M192 96 Q192 77 200 77 Q200 96 200 77" fill="none" stroke="#94a3b8" stroke-width="4" opacity="0.6"/>
+  <path d="M250 96 Q250 77 258 77 Q258 96 258 77" fill="none" stroke="#94a3b8" stroke-width="4" opacity="0.6"/>
+  
+  <!-- Coffee liquid -->
+  <ellipse cx="192" cy="180" rx="80" ry="16" fill="#8b4513" opacity="0.8"/>
+  
+  <!-- Brand text -->
+  <text x="192" y="360" text-anchor="middle" font-size="24" fill="#60a5fa" font-weight="bold" font-family="Arial">GATO BLANCO</text>
+</svg>

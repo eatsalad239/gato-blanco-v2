@@ -1,0 +1,86 @@
+{
+  "name": "Gato Blanco - Café Colombiano",
+  "short_name": "Gato Blanco",
+  "description": "Authentic Colombian coffee experience in Zona Rosa, Medellín. Coffee, services, and nightlife for locals and internationals.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#c79b4b",
+  "orientation": "portrait-primary",
+  "categories": ["food", "business", "lifestyle"],
+  "lang": "es-CO",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile view of Gato Blanco cafe app"
+    },
+    {
+      "src": "/screenshot-desktop.png", 
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop view of Gato Blanco cafe app"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Order Coffee",
+      "short_name": "Order",
+      "description": "Quick order from our coffee menu",
+      "url": "/menu",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Book Service",
+      "short_name": "Book",
+      "description": "Book gringo services & experiences",
+      "url": "/services",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Admin Dashboard",
+      "short_name": "Admin",
+      "description": "Business management dashboard",
+      "url": "/admin",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "scope": "/",
+  "id": "co.medellin.gatoblanco",
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}
