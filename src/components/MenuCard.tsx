@@ -138,6 +138,7 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
                   }}
                 >
                   💰 {formatPrice(finalPrice, currency, isGringo)}
+                  {isGringo && <span className="text-xs text-blue-600 dark:text-blue-400 ml-2">(Gringo Special)</span>}
                 </motion.div>
               </div>
             </div>
