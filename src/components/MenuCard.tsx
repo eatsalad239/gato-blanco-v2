@@ -2,12 +2,14 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Clock, Wine, Lightning, Atom, Fire } from '@phosphor-icons/react';
+import { Plus, Clock, Wine, Lightning, Atom, Fire, Heart } from '@phosphor-icons/react';
 import { MenuItem } from '../types';
 import { useLanguageStore, translations } from '../lib/translations';
 import { formatPrice, detectUserType, getCurrency } from '../lib/pricing';
 import { GRINGO_MULTIPLIER } from '../data/content';
 import { useCart } from '../hooks/useCart';
+import { useFavorites } from '../hooks/useFavorites';
+import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
 interface MenuCardProps {
@@ -18,10 +20,10 @@ interface MenuCardProps {
 export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
-  const { addToCart, cartItems } = useCart();
-
-  // Debug: log when component re-renders
-  console.log('🔄 MenuCard render:', item.name.en, 'Cart size:', cartItems.length);
+  const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
+  
+  const favorite = isFavorite(item.id);
 
   const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
@@ -108,11 +110,28 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
       <Card className={`h-full transition-all border-2 ${available ? 'border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 hover:shadow-xl shadow-md' : 'opacity-60 border-gray-300 dark:border-gray-700'}`}>
         <div>
           <CardHeader className="pb-3 bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20">
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between gap-2">
               <div className="space-y-2 flex-1">
-                <CardTitle className="text-lg leading-tight font-bold bg-gradient-to-r from-amber-700 to-orange-700 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
-                  {item.name[currentLanguage?.code || 'en']}
-                </CardTitle>
+                <div className="flex items-start justify-between gap-2">
+                  <CardTitle className="text-lg leading-tight font-bold bg-gradient-to-r from-amber-700 to-orange-700 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent flex-1">
+                    {item.name[currentLanguage?.code || 'en']}
+                  </CardTitle>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(item.id);
+                    }}
+                    className="flex-shrink-0 p-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
+                    aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+                  >
+                    <Heart 
+                      size={20} 
+                      weight={favorite ? "fill" : "regular"}
+                      className={favorite ? "text-red-500" : "text-gray-400"}
+                    />
+                  </button>
+                </div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className={getCategoryColor()}>
                     <div className="flex items-center gap-1 font-bold">
@@ -163,12 +182,28 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🛒 ADDING TO CART:', item.name.en, 'Price:', finalPrice, 'Available:', available);
-                if (available) {
-                  addToCart(item, finalPrice, 1);
-                  console.log('✅ Item added to cart');
-                } else {
-                  console.log('❌ Item not available');
+                try {
+                  if (available) {
+                    addToCart(item, finalPrice, 1);
+                    toast.success(
+                      currentLanguage?.code === 'es' 
+                        ? `¡${item.name.es} agregado al carrito!` 
+                        : `${item.name.en} added to cart!`,
+                      { duration: 2000 }
+                    );
+                  } else {
+                    toast.error(
+                      currentLanguage?.code === 'es'
+                        ? 'Este artículo no está disponible en este momento'
+                        : 'This item is not available right now'
+                    );
+                  }
+                } catch (error) {
+                  toast.error(
+                    currentLanguage?.code === 'es'
+                      ? 'Error al agregar al carrito'
+                      : 'Failed to add to cart'
+                  );
                 }
               }}
               disabled={!available}

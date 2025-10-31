@@ -36,6 +36,8 @@ import { PayButton } from './components/PayButton';
 import { RealTimeChat } from './components/RealTimeChat';
 import { PremiumHero } from './components/PremiumHero';
 import { CustomerTestimonials } from './components/CustomerTestimonials';
+import { MenuSearch } from './components/MenuSearch';
+import { FavoritesSection } from './components/FavoritesSection';
 // import { AdvancedBookingSystem } from './components/AdvancedBookingSystem';
 import { OwnerBackendSystem } from './components/OwnerBackendSystem';
 
@@ -54,6 +56,8 @@ function App() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [coffeeEnergy, setCoffeeEnergy] = useState(0);
+  const [filteredMenuItems, setFilteredMenuItems] = useState(fullMenu);
+  const [filteredDrinks, setFilteredDrinks] = useState(fullMenu.filter(item => ['cocktail', 'beer', 'wine', 'liquor'].includes(item.category)));
   const isMobile = useIsMobile();
   
   const isGringo = detectUserType(currentLanguage?.code || 'en');
@@ -196,10 +200,11 @@ function App() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-grid nuclear-border bg-card/50 backdrop-blur-sm">
+              <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid nuclear-border bg-card/50 backdrop-blur-sm">
                 <TabsTrigger value="home" className="text-xs sm:text-sm nuclear-button">🏠 {t.nav.home}</TabsTrigger>
                 <TabsTrigger value="menu" className="text-xs sm:text-sm nuclear-button">☕ {t.nav.menu}</TabsTrigger>
                 <TabsTrigger value="drinks" className="text-xs sm:text-sm nuclear-button">🍹 {t.nav.drinks}</TabsTrigger>
+                <TabsTrigger value="favorites" className="text-xs sm:text-sm nuclear-button">❤️ {currentLanguage?.code === 'es' ? 'Favoritos' : 'Favorites'}</TabsTrigger>
                 <TabsTrigger value="services" className="text-xs sm:text-sm nuclear-button">⚡ {t.nav.services}</TabsTrigger>
                 <TabsTrigger value="events" className="text-xs sm:text-sm nuclear-button">🎉 {t.nav.events}</TabsTrigger>
                 <TabsTrigger value="about" className="text-xs sm:text-sm nuclear-button">ℹ️ {t.nav.about}</TabsTrigger>
@@ -275,6 +280,9 @@ function App() {
               </p>
             </motion.div>
             
+            {/* Menu Search & Filter */}
+            <MenuSearch items={fullMenu} onFilterChange={setFilteredMenuItems} />
+            
             <Tabs defaultValue="coffee" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4 nuclear-border">
                 <TabsTrigger value="coffee" className="nuclear-button">
@@ -292,7 +300,7 @@ function App() {
               </TabsList>
               
               <TabsContent value="coffee" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'coffee').map((item, index) => (
+                {filteredMenuItems.filter(item => item.category === 'coffee').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
@@ -305,7 +313,7 @@ function App() {
               </TabsContent>
               
               <TabsContent value="food" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'food').map((item, index) => (
+                {filteredMenuItems.filter(item => item.category === 'food').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
@@ -318,7 +326,7 @@ function App() {
               </TabsContent>
               
               <TabsContent value="pastries" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'pastry').map((item, index) => (
+                {filteredMenuItems.filter(item => item.category === 'pastry').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateX: -90 }}
@@ -367,7 +375,13 @@ function App() {
               </div>
             </motion.div>
             
-            <Tabs defaultValue="cocktails" className="space-y-6" onValueChange={(value) => console.log('Tab changed to:', value)}>
+            {/* Drinks Search */}
+            <MenuSearch 
+              items={fullMenu.filter(item => ['cocktail', 'beer', 'wine', 'liquor'].includes(item.category))} 
+              onFilterChange={setFilteredDrinks} 
+            />
+            
+            <Tabs defaultValue="cocktails" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4 nuclear-border">
                 <TabsTrigger value="cocktails" className="nuclear-button">
                   🍸 {currentLanguage?.code === 'es' ? 'CÓCTELES' : 'COCKTAILS'}
@@ -384,7 +398,7 @@ function App() {
               </TabsList>
               
               <TabsContent value="cocktails" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'cocktail').map((item, index) => (
+                {filteredDrinks.filter(item => item.category === 'cocktail').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
@@ -397,7 +411,7 @@ function App() {
               </TabsContent>
               
               <TabsContent value="beer" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'beer').map((item, index) => (
+                {filteredDrinks.filter(item => item.category === 'beer').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
@@ -410,7 +424,7 @@ function App() {
               </TabsContent>
               
               <TabsContent value="spirits" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'liquor').map((item, index) => (
+                {filteredDrinks.filter(item => item.category === 'liquor').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
@@ -423,7 +437,7 @@ function App() {
               </TabsContent>
               
               <TabsContent value="wine" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fullMenu.filter(item => item.category === 'wine').map((item, index) => (
+                {filteredDrinks.filter(item => item.category === 'wine').map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.8, rotateZ: -45 }}
@@ -435,6 +449,10 @@ function App() {
                 ))}
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          <TabsContent value="favorites" className="space-y-8">
+            <FavoritesSection />
           </TabsContent>
 
           <TabsContent value="events" className="space-y-8">

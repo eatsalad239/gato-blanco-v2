@@ -101,25 +101,50 @@ export const CartDrawer: React.FC = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="h-8 w-8 p-0"
+                            onClick={() => {
+                              if (item.quantity > 1) {
+                                updateQuantity(item.id, item.quantity - 1);
+                                toast.success('Quantity updated');
+                              } else {
+                                removeFromCart(item.id);
+                                toast.success(
+                                  currentLanguage?.code === 'es'
+                                    ? 'Artículo eliminado'
+                                    : 'Item removed'
+                                );
+                              }
+                            }}
+                            className="h-8 w-8 p-0 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                            disabled={item.quantity <= 1}
                           >
                             <Minus size={16} />
                           </Button>
-                          <span className="w-8 text-center font-medium">{item.quantity}</span>
+                          <span className="w-12 text-center font-bold text-lg bg-amber-50 dark:bg-amber-900/20 rounded px-2 py-1">
+                            {item.quantity}
+                          </span>
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="h-8 w-8 p-0"
+                            onClick={() => {
+                              updateQuantity(item.id, item.quantity + 1);
+                              toast.success('Quantity updated');
+                            }}
+                            className="h-8 w-8 p-0 hover:bg-amber-100 dark:hover:bg-amber-900/30"
                           >
                             <Plus size={16} />
                           </Button>
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => removeFromCart(item.id)}
-                            className="ml-auto h-8 w-8 p-0"
+                            onClick={() => {
+                              removeFromCart(item.id);
+                              toast.success(
+                                currentLanguage?.code === 'es'
+                                  ? 'Artículo eliminado del carrito'
+                                  : 'Item removed from cart'
+                              );
+                            }}
+                            className="ml-auto h-8 w-8 p-0 hover:bg-red-600"
                           >
                             <Trash size={16} />
                           </Button>
@@ -156,11 +181,25 @@ export const CartDrawer: React.FC = () => {
                 )}
 
                 <div className="flex gap-2 pt-4">
-                  <Button variant="outline" onClick={clearCart} className="flex-1">
-                    Clear Cart
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      clearCart();
+                      toast.success(
+                        currentLanguage?.code === 'es'
+                          ? 'Carrito vaciado'
+                          : 'Cart cleared'
+                      );
+                    }} 
+                    className="flex-1 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300"
+                  >
+                    {currentLanguage?.code === 'es' ? 'Vaciar Carrito' : 'Clear Cart'}
                   </Button>
-                  <Button onClick={handleCheckout} className="flex-1">
-                    {t.menu.checkout}
+                  <Button 
+                    onClick={handleCheckout} 
+                    className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold shadow-lg hover:shadow-xl"
+                  >
+                    {t.menu.checkout} • {formatPrice(total, currency, false)}
                   </Button>
                 </div>
               </>

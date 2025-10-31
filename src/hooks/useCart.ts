@@ -91,30 +91,62 @@ export const useCart = () => {
       const saved = localStorage.getItem('cart');
       if (saved) {
         const items = JSON.parse(saved);
-        dispatch({ type: 'LOAD_CART', items });
+        // Validate items structure
+        if (Array.isArray(items) && items.every(item => item.id && item.item && item.quantity > 0)) {
+          dispatch({ type: 'LOAD_CART', items });
+        } else {
+          console.warn('Invalid cart data, clearing');
+          localStorage.removeItem('cart');
+          dispatch({ type: 'SET_LOADED' });
+        }
       } else {
         dispatch({ type: 'SET_LOADED' });
       }
     } catch (e) {
-      console.error('Failed to load cart');
+      console.error('Failed to load cart:', e);
+      localStorage.removeItem('cart'); // Clear corrupted data
       dispatch({ type: 'SET_LOADED' });
     }
   }, []);
 
   // Save cart to localStorage
   useEffect(() => {
-    if (state.isLoaded) {
+    if (state.isLoaded && state.items.length >= 0) {
       try {
-        localStorage.setItem('cart', JSON.stringify(state.items));
+        const cartData = JSON.stringify(state.items);
+        localStorage.setItem('cart', cartData);
       } catch (e) {
-        console.error('Failed to save cart');
+        console.error('Failed to save cart:', e);
+        // If quota exceeded, try to save only essential data
+        try {
+          const essentialData = state.items.map(item => ({
+            id: item.id,
+            itemId: item.item.id,
+            quantity: item.quantity,
+            price: item.price
+          }));
+          localStorage.setItem('cart', JSON.stringify(essentialData));
+        } catch (e2) {
+          console.error('Failed to save essential cart data');
+        }
       }
     }
   }, [state.items, state.isLoaded]);
 
   const addToCart = (item: MenuItem, price: number, quantity: number = 1) => {
-    console.log('🛒 ADDING TO CART:', item.name.en, 'Price:', price, 'Current cart size:', state.items.length);
-    dispatch({ type: 'ADD_ITEM', item, price, quantity });
+    try {
+      if (!item || !item.id) {
+        throw new Error('Invalid item');
+      }
+      if (price <= 0) {
+        throw new Error('Invalid price');
+      }
+      console.log('🛒 ADDING TO CART:', item.name.en, 'Price:', price, 'Current cart size:', state.items.length);
+      dispatch({ type: 'ADD_ITEM', item, price, quantity });
+    } catch (error) {
+      console.error('Failed to add to cart:', error);
+      throw error;
+    }
   };
 
   const updateQuantity = (id: string, quantity: number) => {

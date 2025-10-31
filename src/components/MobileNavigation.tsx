@@ -8,7 +8,8 @@ import {
   Info, 
   ShoppingCart,
   Wine,
-  MusicNote
+  MusicNote,
+  Heart
 } from '@phosphor-icons/react';
 import { useLanguageStore, translations } from '../lib/translations';
 import { useCart } from '../hooks/useCart';
@@ -37,13 +38,14 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
     { id: 'home', label: t.nav.home, icon: House },
     { id: 'menu', label: t.nav.menu, icon: Coffee },
     { id: 'drinks', label: t.nav.drinks, icon: Wine },
+    { id: 'favorites', label: currentLanguage?.code === 'es' ? 'Favoritos' : 'Favorites', icon: Heart },
     { id: 'services', label: t.nav.services, icon: Calendar },
     { id: 'events', label: t.nav.events, icon: MusicNote }
   ];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50 px-1 py-1 safe-area-inset-bottom">
-      <div className="flex items-center justify-around">
+      <div className="flex items-center justify-around overflow-x-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
