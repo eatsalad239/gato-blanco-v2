@@ -12,7 +12,7 @@ import { PaymentModal } from './PaymentModal';
 import { toast } from 'sonner';
 
 export const CartDrawer: React.FC = () => {
-  const { cartItems, removeFromCart, clearCart, getTotal, getItemCount } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, clearCart, getTotal, getItemCount } = useCart();
   const { addOrder } = useAdmin();
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
@@ -36,7 +36,7 @@ export const CartDrawer: React.FC = () => {
         quantity: item.quantity,
         price: item.price
       })),
-      total: totalWithTip,
+      total: total,
       currency,
       customerName: customerInfo.name || 'Anonymous',
       customerEmail: customerInfo.email || 'anonymous@example.com',

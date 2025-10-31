@@ -52,22 +52,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
     }
   };
 
-  const glowVariants = {
-    animate: {
-      boxShadow: [
-        "0 0 25px rgba(59, 130, 246, 0.4)",
-        "0 0 40px rgba(59, 130, 246, 0.7)",
-        "0 0 25px rgba(59, 130, 246, 0.4)"
-      ]
-    }
-  };
-
-  const pulseVariants = {
-    animate: {
-      scale: [1, 1.1, 1],
-      opacity: [0.8, 1, 0.8]
-    }
-  };
+  // Removed infinite glow and pulse animations - use static styling instead
 
   return (
     <motion.div
@@ -77,15 +62,15 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
       className="group h-full"
     >
       <Card className="nuclear-card overflow-hidden h-full">
-        <motion.div variants={glowVariants} animate="animate" transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+        <div>
           <div className="h-4 bg-gradient-to-r from-nuclear-blue via-electric-cyan to-plasma-blue"></div>
           <CardHeader className="pb-4">
             <div className="flex justify-between items-start gap-3">
               <div className="flex-1">
                 <CardTitle className="text-xl font-black nuclear-text flex items-center gap-3 mb-2">
-                  <motion.div variants={pulseVariants} animate="animate" transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
+                  <div>
                     {getCategoryIcon(service.category)}
-                  </motion.div>
+                  </div>
                   ⚡ {service.name[currentLanguage?.code || 'en']} ⚡
                 </CardTitle>
                 <CardDescription className="text-muted-foreground leading-relaxed">
@@ -123,15 +108,9 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
               <div className="flex items-center justify-between pt-4 border-t-2 border-nuclear-blue/50">
                 <div className="text-right">
                   <div className="text-xs text-electric-cyan font-bold">{t.services.from}</div>
-                  <motion.div 
-                    className="text-3xl font-black nuclear-text"
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      transition: { duration: 2.5, repeat: Infinity }
-                    }}
-                  >
+                  <div className="text-3xl font-black nuclear-text">
                     💰 {price}
-                  </motion.div>
+                  </div>
                 </div>
                 <Button 
                   onClick={() => onBook(service)}
@@ -143,7 +122,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBook }) => 
               </div>
             </div>
           </CardContent>
-        </motion.div>
+        </div>
       </Card>
     </motion.div>
   );

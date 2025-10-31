@@ -34,6 +34,8 @@ import { MobileNavigation } from './components/MobileNavigation';
 import { EventsSection } from './components/EventsSection';
 import { PayButton } from './components/PayButton';
 import { RealTimeChat } from './components/RealTimeChat';
+import { PremiumHero } from './components/PremiumHero';
+import { CustomerTestimonials } from './components/CustomerTestimonials';
 // import { AdvancedBookingSystem } from './components/AdvancedBookingSystem';
 import { OwnerBackendSystem } from './components/OwnerBackendSystem';
 
@@ -48,7 +50,7 @@ function App() {
   const t = translations[currentLanguage?.code || 'en'];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('drinks');
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [coffeeEnergy, setCoffeeEnergy] = useState(0);
@@ -80,17 +82,7 @@ function App() {
     exit: { scale: 0.8, opacity: 0, rotateY: 180 }
   };
 
-  const pulseVariants = {
-    animate: {
-      scale: [1, 1.05, 1],
-      opacity: [0.8, 1, 0.8]
-    },
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  };
+  // Removed infinite pulse animation - use static styling instead
 
   return (
     <div className={`min-h-screen bg-background power-pattern ${isMobile ? 'pb-20' : ''}`}>
@@ -105,12 +97,9 @@ function App() {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <div className="flex items-center gap-3">
-                <motion.div 
-                  className="w-14 h-14 bg-gradient-to-br from-nuclear-blue to-electric-cyan rounded-full flex items-center justify-center nuclear-glow"
-                  animate={pulseVariants.animate}
-                >
+                <div className="w-14 h-14 bg-gradient-to-br from-nuclear-blue to-electric-cyan rounded-full flex items-center justify-center nuclear-glow">
                   <Lightning size={32} className="text-primary-foreground" weight="fill" />
-                </motion.div>
+                </div>
                 <div>
                   <h1 className="text-2xl font-black nuclear-text">🇨🇴 GATO BLANCO 🇨🇴</h1>
                   <p className="text-sm text-electric-cyan font-medium">
@@ -179,7 +168,28 @@ function App() {
             </div>
           </motion.div>
         ) : (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
+        <>
+          {/* Debug: Test buttons always visible */}
+          <div className="fixed top-4 right-4 z-50 flex gap-2">
+            <button
+              onClick={() => console.log('🔴 TEST BUTTON CLICKED')}
+              className="bg-red-500 text-white px-3 py-2 rounded text-xs font-bold min-h-[44px] touch-manipulation"
+            >
+              TEST
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('cart');
+                window.location.reload();
+                console.log('🧹 CART CLEARED - PAGE RELOADING');
+              }}
+              className="bg-blue-500 text-white px-3 py-2 rounded text-xs font-bold min-h-[44px] touch-manipulation"
+            >
+              CLEAR CART
+            </button>
+          </div>
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
           {!isMobile && (
             <motion.div
               initial={{ y: -50, opacity: 0 }}
@@ -199,119 +209,54 @@ function App() {
           )}
 
           <AnimatePresence mode="wait">
-            <TabsContent value="home" className="space-y-12">
-              <motion.section 
-                className="text-center space-y-8 py-16"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <div className="space-y-6">
-                  <motion.h1 
-                    className="text-5xl sm:text-8xl font-black nuclear-text"
-                    animate={{
-                      textShadow: [
-                        "0 0 20px rgba(59, 130, 246, 0.5)",
-                        "0 0 40px rgba(59, 130, 246, 0.8)",
-                        "0 0 20px rgba(59, 130, 246, 0.5)"
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    {currentLanguage?.code === 'es' 
-                      ? '☕ CAFÉ COLOMBIANO PREMIUM ☕'
-                      : '☕ PREMIUM COLOMBIAN COFFEE ☕'
-                    }
-                  </motion.h1>
-                  <motion.p 
-                    className="text-2xl sm:text-4xl text-electric-cyan font-bold"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    {currentLanguage?.code === 'es'
-                      ? '🇨🇴 AUTÉNTICA EXPERIENCIA PAISA 🇨🇴'
-                      : '🇨🇴 AUTHENTIC PAISA EXPERIENCE 🇨🇴'
-                    }
-                  </motion.p>
-                  <motion.p 
-                    className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                  >
-                    {currentLanguage?.code === 'es'
-                      ? 'Experimenta la auténtica cultura del café colombiano en el corazón de la Zona Rosa, Medellín! Nuestros baristas expertos crean bebidas artesanales con los mejores granos colombianos, ¡trayéndote el verdadero espíritu paisa! 🇨🇴☕'
-                      : t.hero.description
-                    }
-                  </motion.p>
-                </div>
-                <motion.div 
-                  className="flex flex-col sm:flex-row gap-6 justify-center"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 }}
-                >
-                  <Button 
-                    size="lg" 
-                    className="nuclear-button px-10 py-4 text-xl font-bold"
-                    onClick={() => setActiveTab('services')}
-                  >
-                    <Coffee size={24} className="mr-2" />
-                    {currentLanguage?.code === 'es' 
-                      ? '🇨🇴 DESCUBRIR SERVICIOS'
-                      : '🇨🇴 DISCOVER SERVICES'
-                    }
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    className="nuclear-button px-10 py-4 text-xl gap-3"
-                    onClick={() => setActiveTab('events')}
-                  >
-                    <MusicNote size={24} />
-                    {currentLanguage?.code === 'es'
-                      ? '🎵 EVENTOS PAISAS'
-                      : '🎵 PAISA EVENTS'
-                    }
-                  </Button>
-                  <PayButton amount={20000} />
-                </motion.div>
-              </motion.section>
+            <TabsContent value="home" className="space-y-0">
+              {/* Premium Hero Section */}
+              <PremiumHero />
 
-              {/* NUCLEAR STATS GRID */}
+              {/* Customer Testimonials */}
+              <CustomerTestimonials />
+
+              {/* Feature Highlights */}
               <motion.section 
-                className="grid grid-cols-1 md:grid-cols-4 gap-8"
+                className="py-20 bg-white dark:bg-gray-900"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, staggerChildren: 0.1 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
               >
-                {[
-                  { icon: Star, value: "⭐ 4.9/5", label: currentLanguage?.code === 'es' ? "CALIFICACIÓN PREMIUM" : "PREMIUM RATING", color: "text-yellow-400" },
-                  { icon: Coffee, value: "☕ 1000+", label: currentLanguage?.code === 'es' ? "TAZAS SERVIDAS" : "CUPS SERVED", color: "text-nuclear-blue" },
-                  { icon: Lightning, value: "🇨🇴 AUTÉNTICO", label: currentLanguage?.code === 'es' ? "CAFÉ COLOMBIANO" : "COLOMBIAN COFFEE", color: "text-electric-cyan" },
-                  { icon: Sparkle, value: "✨ LEGENDARIO", label: currentLanguage?.code === 'es' ? "SABOR PAISA" : "PAISA FLAVOR", color: "text-plasma-blue" }
-                ].map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ scale: 0, rotateY: 180 }}
-                    animate={{ scale: 1, rotateY: 0 }}
-                    transition={{ delay: 1.2 + index * 0.1, duration: 0.6 }}
-                  >
-                    <Card className="text-center nuclear-card">
-                      <CardHeader>
-                        <motion.div
-                          animate={pulseVariants.animate}
-                          className={`${stat.color} mx-auto`}
-                        >
-                          <stat.icon size={40} weight="fill" />
-                        </motion.div>
-                        <CardTitle className="text-3xl nuclear-text">{stat.value}</CardTitle>
-                        <CardDescription className="text-electric-cyan font-bold">{stat.label}</CardDescription>
-                      </CardHeader>
-                    </Card>
-                  </motion.div>
-                ))}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    {[
+                      { icon: Star, value: "⭐ 4.9/5", label: currentLanguage?.code === 'es' ? "CALIFICACIÓN PREMIUM" : "PREMIUM RATING", color: "text-yellow-400" },
+                      { icon: Coffee, value: "☕ 1000+", label: currentLanguage?.code === 'es' ? "TAZAS SERVIDAS" : "CUPS SERVED", color: "text-amber-600" },
+                      { icon: Lightning, value: "🇨🇴 AUTÉNTICO", label: currentLanguage?.code === 'es' ? "CAFÉ COLOMBIANO" : "COLOMBIAN COFFEE", color: "text-orange-600" },
+                      { icon: Sparkle, value: "✨ LEGENDARIO", label: currentLanguage?.code === 'es' ? "SABOR PAISA" : "PAISA FLAVOR", color: "text-amber-500" }
+                    ].map((stat, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <Card className="text-center border-2 border-amber-100 dark:border-amber-900/30 hover:shadow-xl transition-all">
+                          <CardHeader>
+                            <div className={`${stat.color} mx-auto`}>
+                              <stat.icon size={40} weight="fill" />
+                            </div>
+                            <CardTitle className="text-3xl font-black bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                              {stat.value}
+                            </CardTitle>
+                            <CardDescription className="text-gray-600 dark:text-gray-400 font-semibold">
+                              {stat.label}
+                            </CardDescription>
+                          </CardHeader>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               </motion.section>
             </TabsContent>
           </AnimatePresence>
@@ -422,7 +367,7 @@ function App() {
               </div>
             </motion.div>
             
-            <Tabs defaultValue="cocktails" className="space-y-6">
+            <Tabs defaultValue="cocktails" className="space-y-6" onValueChange={(value) => console.log('Tab changed to:', value)}>
               <TabsList className="grid w-full grid-cols-4 nuclear-border">
                 <TabsTrigger value="cocktails" className="nuclear-button">
                   🍸 {currentLanguage?.code === 'es' ? 'CÓCTELES' : 'COCKTAILS'}
@@ -824,6 +769,7 @@ function App() {
       </div>
     </TabsContent>
         </Tabs>
+        </>
         )}
       </main>
 

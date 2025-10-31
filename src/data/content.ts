@@ -187,13 +187,37 @@ export const fullMenu: MenuItem[] = [
   {
     id: 'corona',
     name: { en: 'Corona', es: 'Corona' },
-    description: { 
-      en: 'Mexican beer with lime, gringo favorite', 
-      es: 'Cerveza mexicana con limón, favorita de gringos' 
+    description: {
+      en: 'Mexican beer with lime, gringo favorite',
+      es: 'Cerveza mexicana con limón, favorita de gringos'
     },
     basePrice: 8000,
     category: 'beer',
     alcoholContent: 4.5,
+    availability: { startTime: '16:00', endTime: '02:00' }
+  },
+  {
+    id: 'heineken',
+    name: { en: 'Heineken', es: 'Heineken' },
+    description: {
+      en: 'Premium Dutch lager, crisp and refreshing',
+      es: 'Cerveza premium holandesa, crujiente y refrescante'
+    },
+    basePrice: 9000,
+    category: 'beer',
+    alcoholContent: 5.0,
+    availability: { startTime: '16:00', endTime: '02:00' }
+  },
+  {
+    id: 'artesanal-colombiana',
+    name: { en: 'Colombian Craft Beer', es: 'Cerveza Artesanal Colombiana' },
+    description: {
+      en: 'Local craft beer with unique Colombian flavors',
+      es: 'Cerveza artesanal local con sabores colombianos únicos'
+    },
+    basePrice: 12000,
+    category: 'beer',
+    alcoholContent: 5.5,
     availability: { startTime: '16:00', endTime: '02:00' }
   },
 
@@ -201,14 +225,38 @@ export const fullMenu: MenuItem[] = [
   {
     id: 'vino-tinto-colombia',
     name: { en: 'Colombian Red Wine', es: 'Vino Tinto Colombiano' },
-    description: { 
-      en: 'Local red wine from Colombian vineyards', 
-      es: 'Vino tinto local de viñedos colombianos' 
+    description: {
+      en: 'Local red wine from Colombian vineyards',
+      es: 'Vino tinto local de viñedos colombianos'
     },
     basePrice: 45000,
     category: 'wine',
     alcoholContent: 13,
     availability: { startTime: '17:00', endTime: '02:00' }
+  },
+  {
+    id: 'vino-blanco-chileno',
+    name: { en: 'Chilean White Wine', es: 'Vino Blanco Chileno' },
+    description: {
+      en: 'Crisp Chilean Sauvignon Blanc',
+      es: 'Sauvignon Blanc chileno crujiente'
+    },
+    basePrice: 40000,
+    category: 'wine',
+    alcoholContent: 12.5,
+    availability: { startTime: '17:00', endTime: '02:00' }
+  },
+  {
+    id: 'champagne-frances',
+    name: { en: 'French Champagne', es: 'Champán Francés' },
+    description: {
+      en: 'Premium French sparkling wine for celebrations',
+      es: 'Vino espumoso francés premium para celebraciones'
+    },
+    basePrice: 85000,
+    category: 'wine',
+    alcoholContent: 12,
+    availability: { startTime: '19:00', endTime: '02:00' }
   },
 
   // Cocktails
@@ -239,14 +287,38 @@ export const fullMenu: MenuItem[] = [
   {
     id: 'gringo-especial',
     name: { en: 'Gringo Especial', es: 'Gringo Especial' },
-    description: { 
-      en: 'House special cocktail for international visitors', 
-      es: 'Cóctel especial de la casa para visitantes internacionales' 
+    description: {
+      en: 'House special cocktail for international visitors',
+      es: 'Cóctel especial de la casa para visitantes internacionales'
     },
     basePrice: 25000,
     category: 'cocktail',
     alcoholContent: 18,
     availability: { startTime: '20:00', endTime: '02:00' }
+  },
+  {
+    id: 'margarita-clasica',
+    name: { en: 'Classic Margarita', es: 'Margarita Clásica' },
+    description: {
+      en: 'Traditional tequila cocktail with lime and salt',
+      es: 'Cóctel tradicional de tequila con limón y sal'
+    },
+    basePrice: 22000,
+    category: 'cocktail',
+    alcoholContent: 16,
+    availability: { startTime: '19:00', endTime: '02:00' }
+  },
+  {
+    id: 'cosmopolitan',
+    name: { en: 'Cosmopolitan', es: 'Cosmopolita' },
+    description: {
+      en: 'Vodka cocktail with cranberry, lime and triple sec',
+      es: 'Cóctel de vodka con arándano, limón y triple sec'
+    },
+    basePrice: 24000,
+    category: 'cocktail',
+    alcoholContent: 15,
+    availability: { startTime: '19:00', endTime: '02:00' }
   }
 ];
 

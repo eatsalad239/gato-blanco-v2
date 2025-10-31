@@ -18,7 +18,10 @@ interface MenuCardProps {
 export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
   const { currentLanguage } = useLanguageStore();
   const t = translations[currentLanguage?.code || 'en'];
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
+
+  // Debug: log when component re-renders
+  console.log('🔄 MenuCard render:', item.name.en, 'Cart size:', cartItems.length);
 
   const isGringo = detectUserType(currentLanguage?.code || 'en');
   const currency = getCurrency(isGringo);
@@ -26,25 +29,28 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
 
   const isAlcoholic = ['liquor', 'cocktail', 'beer', 'wine'].includes(item.category);
   const currentTime = new Date().getHours();
-  
+
   // Check if item is available based on time
   const isAvailable = () => {
     if (item.availability?.allDay) return true;
     if (!item.availability?.startTime) return true;
-    
+
     const startHour = parseInt(item.availability.startTime.split(':')[0]);
-    const endHour = item.availability.endTime ? 
+    const endHour = item.availability.endTime ?
       parseInt(item.availability.endTime.split(':')[0]) : 24;
-    
+
     // Handle overnight availability (e.g., 20:00 - 02:00)
     if (endHour < startHour) {
       return currentTime >= startHour || currentTime <= endHour;
     }
-    
+
     return currentTime >= startHour && currentTime <= endHour;
   };
 
   const available = isAvailable();
+
+  // Debug availability
+  console.log('📊', item.name.en, 'Available:', available, 'Time:', currentTime, 'Hours:', item.availability?.startTime, '-', item.availability?.endTime);
 
   const getCategoryIcon = () => {
     switch (item.category) {
@@ -90,15 +96,7 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
     }
   };
 
-  const glowVariants = {
-    animate: {
-      boxShadow: [
-        "0 0 20px rgba(59, 130, 246, 0.3)",
-        "0 0 30px rgba(59, 130, 246, 0.6)",
-        "0 0 20px rgba(59, 130, 246, 0.3)"
-      ]
-    }
-  };
+  // Removed infinite glow animation - just use static shadow
 
   return (
     <motion.div
@@ -107,13 +105,13 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="h-full"
     >
-      <Card className={`h-full nuclear-card transition-all ${!available ? 'opacity-60' : ''}`}>
-        <motion.div variants={glowVariants} animate="animate" transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
-          <CardHeader className="pb-3">
+      <Card className={`h-full transition-all border-2 ${available ? 'border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 hover:shadow-xl shadow-md' : 'opacity-60 border-gray-300 dark:border-gray-700'}`}>
+        <div>
+          <CardHeader className="pb-3 bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20">
             <div className="flex items-start justify-between">
               <div className="space-y-2 flex-1">
-                <CardTitle className="text-lg leading-tight nuclear-text">
-                  ⚡ {item.name[currentLanguage?.code || 'en']} ⚡
+                <CardTitle className="text-lg leading-tight font-bold bg-gradient-to-r from-amber-700 to-orange-700 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
+                  {item.name[currentLanguage?.code || 'en']}
                 </CardTitle>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className={getCategoryColor()}>
@@ -130,16 +128,12 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
                 </div>
               </div>
               <div className="text-right">
-                <motion.div 
-                  className="text-xl font-black nuclear-text"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    transition: { duration: 2, repeat: Infinity }
-                  }}
-                >
-                  💰 {formatPrice(finalPrice, currency, isGringo)}
-                  {isGringo && <span className="text-xs text-blue-600 dark:text-blue-400 ml-2">(Gringo Special)</span>}
-                </motion.div>
+                <div className="text-xl font-black">
+                  <span className="bg-gradient-to-r from-amber-600 to-orange-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
+                    {formatPrice(finalPrice, currency, isGringo)}
+                  </span>
+                  {isGringo && <span className="text-xs text-blue-600 dark:text-blue-400 ml-2 block">(Gringo Special)</span>}
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -166,18 +160,31 @@ export function MenuCard({ item, showAvailability = true }: MenuCardProps) {
             )}
             
             <Button
-              onClick={() => {
-                addToCart(item, finalPrice, 1);
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🛒 ADDING TO CART:', item.name.en, 'Price:', finalPrice, 'Available:', available);
+                if (available) {
+                  addToCart(item, finalPrice, 1);
+                  console.log('✅ Item added to cart');
+                } else {
+                  console.log('❌ Item not available');
+                }
               }}
               disabled={!available}
-              className={`w-full gap-2 font-bold ${available ? 'nuclear-button' : ''}`}
+              className={`w-full gap-2 font-bold min-h-[44px] touch-manipulation transition-all ${
+                available 
+                  ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl active:scale-95' 
+                  : 'bg-gray-200 dark:bg-gray-700'
+              }`}
               variant={available ? "default" : "secondary"}
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               <Plus size={16} weight="bold" />
-              {available ? `⚡ ${t.menu.addToCart} ⚡` : '🚫 Not Available'}
+              {available ? t.menu.addToCart : (currentLanguage?.code === 'es' ? 'No Disponible' : 'Not Available')}
             </Button>
           </CardContent>
-        </motion.div>
+        </div>
       </Card>
     </motion.div>
   );
